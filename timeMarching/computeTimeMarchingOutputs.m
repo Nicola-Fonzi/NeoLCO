@@ -62,7 +62,7 @@ outputGap = switchOnType(type,rotation.');
 outputTorque = switchOnType(type,torque.');
 
 [outputFrequency.fVect, outputFrequency.pVect] = createFFTfromVariableTimeStepVector(time, rotation, options.timeStepForFFT, options.maxFrequencyInterest);
-% We want everything in the format so that the raw is the
+% We want everything in the format so that the row is the
 % point, the column the value
 outputFrequency.fVect = outputFrequency.fVect.';
 outputFrequency.pVect = outputFrequency.pVect.';
