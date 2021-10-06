@@ -1,49 +1,20 @@
 %*******************************************************************************
-% Copyright (C) 2008 - 2021                                                    *
+% Copyright (C) 2020 - 2021                                                    *
 %                                                                              *
-% Sergio Ricci (sergio.ricci@polimi.it)                                        *
+% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
 %                                                                              *
 % Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
-% This file is part of NeoCASS Software (www.neocass.org)                      *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
 %                                                                              *
-% NeoCASS is free software; you can redistribute it and/or                     *
-% modify it under the terms of the GNU General Public                          *
-% License as published by the Free Software Foundation;                        *
-% either version 3, or (at your option) any later version.                     *
-%                                                                              *
-% NeoCASS is distributed in the hope that it will be useful,                   *
-% but WITHOUT ANY WARRANTY; without even the implied                           *
-% warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR                      *
-% PURPOSE.  See the GNU General Public License for more                        *
-% details.                                                                     *
-%                                                                              *
-% You should have received a copy of the GNU General Public                    *
-% License along with NeoCASS; see the file GNU GENERAL                         *
-% PUBLIC LICENSE.TXT.  If not, see <http://www.gnu.org/licenses/>.             *
 %*******************************************************************************
 %                                                                              *
 %                                                                              *
 %                                                                              *
-% Version: 3.0.0                                                               *
+% Version: 2.0.0                                                               *
 %                                                                              *
 %                                                                              *
-%                                                                              *
-%*******************************************************************************
-%                                                                              *
-% Authors:                                                                     *
-%                                                                              *
-%                      Sergio Ricci         <sergio.ricci@polimi.it>           *
-%                      Alessandro Degaspari <alessandro.degaspari@polimi.it>   *
-%                      Luca Riccobene       <luca.riccobene@polimi.it>         *
-%                      Federico Fonte       <federico.fonte@polimi.it>         *
-%                      Francesco Toffol     <francesco.toffol@polimi.it>       *
-%                      Nicola Fonzi         <nicola.fonzi@polimi.it>           *
-%                                                                              *
-%                                                                              *
-% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
-% Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 %*******************************************************************************
 function set_neolco_version(version)
@@ -59,7 +30,7 @@ home = pwd;
 versionNum = split(version,'.');
 versionNum = cellfun(@(x) str2double(x),versionNum);
 
-version_old = get_neocass_version();
+version_old = get_neolco_version();
 versionNum_old = split(version_old,'.');
 versionNum_old = cellfun(@(x) str2double(x),versionNum_old);
 
@@ -69,9 +40,9 @@ if versionNum_old(1) > versionNum(1) || ...
     error('The old version is newer that the version you are trying to set')
 end
 
-thisFile = which('set_neocass_version');
+thisFile = which('set_neolco_version');
 [versionDir,~,~] = fileparts(thisFile);
-mainDir = extractBetween(versionDir,'',strcat(filesep,'version'));
+mainDir = extractBetween(versionDir,'',strcat(filesep,'versioning'));
 walkOnFiles(mainDir{1},version);
 
 cd(home);
@@ -92,7 +63,7 @@ for iSubfolder = 1:length(subfolders)
         chdir(subfolders{iSubfolder})
         files = dir(pwd);
         for iFile = 1:length(files)
-            if ~isfolder(files(iFile).name)
+            if ~isfolder(files(iFile).name) && my_isfunction(files(iFile).name)==1
                 content = fileread(files(iFile).name);
                 % Remove previous header
                 contentStripped = extractAfter(content,'function');
@@ -123,22 +94,8 @@ fprintf(fid,'%%                                                                 
 fprintf(fid,'%% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *\n');
 fprintf(fid,'%% Via La Masa 34, 20156 Milano - ITALY                                         *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% This file is part of NeoLCO Software                                         *\n');
+fprintf(fid,'%% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% NeoLCO is free software; you can redistribute it and/or                      *\n');
-fprintf(fid,'%% modify it under the terms of the GNU General Public                          *\n');
-fprintf(fid,'%% License as published by the Free Software Foundation;                        *\n');
-fprintf(fid,'%% either version 3, or (at your option) any later version.                     *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% NeoCASS is distributed in the hope that it will be useful,                   *\n');
-fprintf(fid,'%% but WITHOUT ANY WARRANTY; without even the implied                           *\n');
-fprintf(fid,'%% warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR                      *\n');
-fprintf(fid,'%% PURPOSE.  See the GNU General Public License for more                        *\n');
-fprintf(fid,'%% details.                                                                     *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% You should have received a copy of the GNU General Public                    *\n');
-fprintf(fid,'%% License along with NeoLCO; see the file GNU GENERAL                          *\n');
-fprintf(fid,'%% PUBLIC LICENSE.TXT.  If not, see <http://www.gnu.org/licenses/>.             *\n');
 fprintf(fid,'%%*******************************************************************************\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%                                                                              *\n');
@@ -149,4 +106,25 @@ fprintf(fid,'%%                                                                 
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%*******************************************************************************\n');
 fprintf(fid,'function');
+return
+
+function ID = my_isfunction(FUNNAME)
+try    
+    nargin(FUNNAME) ; % nargin errors when FUNNAME is not a function
+    ID = 1  + isa(FUNNAME, 'function_handle') ; % 1 for m-file, 2 for handle
+catch ME
+    % catch the error of nargin
+    switch (ME.identifier)        
+        case 'MATLAB:nargin:isScript'
+            ID = -1 ; % script
+        case 'MATLAB:narginout:notValidMfile'
+            ID = -2 ; % probably another type of file, or it does not exist
+        case 'MATLAB:narginout:functionDoesnotExist'
+            ID = -3 ; % probably a handle, but not to a function
+        case 'MATLAB:narginout:BadInput'
+            ID = -4 ; % probably a variable or an array
+        otherwise
+            ID = 0 ; % unknown cause for error
+    end
+end
 return

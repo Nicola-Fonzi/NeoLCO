@@ -1,3 +1,22 @@
+%*******************************************************************************
+% Copyright (C) 2020 - 2021                                                    *
+%                                                                              *
+% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+%                                                                              *
+% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
+% Via La Masa 34, 20156 Milano - ITALY                                         *
+%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
+%                                                                              *
+%*******************************************************************************
+%                                                                              *
+%                                                                              *
+%                                                                              *
+% Version: 2.0.0                                                               *
+%                                                                              *
+%                                                                              *
+%                                                                              *
+%*******************************************************************************
 function [reducedBasis, resultsFolder] = obtainOptimalBase(inputData, model, struData, options, model_stiff, struData_stiff, parameters, HingeDOF)
 
 

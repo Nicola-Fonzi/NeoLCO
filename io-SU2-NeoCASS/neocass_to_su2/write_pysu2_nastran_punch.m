@@ -1,28 +1,22 @@
-% \file write_pysu2_nastran_punch.m
-%  \brief Writes modal model (eigenvalues and mode shapes) in Nastran-like format (.pch)
-%  \authors Vittorio Cavalieri, Nicola Fonzi
-%  \version 7.0.8 "Blackbird"
-%
-% SU2 Project Website: https://su2code.github.io
-%
-% The SU2 Project is maintained by the SU2 Foundation
-% (http://su2foundation.org)
-%
-% Copyright 2012-2021, SU2 Contributors (cf. AUTHORS.md)
-%
-% SU2 is free software; you can redistribute it and/or
-% modify it under the terms of the GNU Lesser General Public
-% License as published by the Free Software Foundation; either
-% version 2.1 of the License, or (at your option) any later version.
-%
-% SU2 is distributed in the hope that it will be useful,
-% but WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-% Lesser General Public License for more details.
-%
-% You should have received a copy of the GNU Lesser General Public
-% License along with SU2. If not, see <http://www.gnu.org/licenses/>.
-
+%*******************************************************************************
+% Copyright (C) 2020 - 2021                                                    *
+%                                                                              *
+% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+%                                                                              *
+% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
+% Via La Masa 34, 20156 Milano - ITALY                                         *
+%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
+%                                                                              *
+%*******************************************************************************
+%                                                                              *
+%                                                                              *
+%                                                                              *
+% Version: 2.0.0                                                               *
+%                                                                              *
+%                                                                              *
+%                                                                              *
+%*******************************************************************************
 function write_pysu2_nastran_punch(filename,K,U,ID_table)
 
 % Read matrices and identifiers

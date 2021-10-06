@@ -1,3 +1,22 @@
+%*******************************************************************************
+% Copyright (C) 2020 - 2021                                                    *
+%                                                                              *
+% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+%                                                                              *
+% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
+% Via La Masa 34, 20156 Milano - ITALY                                         *
+%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
+%                                                                              *
+%*******************************************************************************
+%                                                                              *
+%                                                                              *
+%                                                                              *
+% Version: 2.0.0                                                               *
+%                                                                              *
+%                                                                              *
+%                                                                              *
+%*******************************************************************************
 function [flutterSpeed, flutterFrequency, KeqVect, resultsFlutter, aeroData] = describingFunctionsPK(maxKeq, maxNumberKeq, inputData, HINGE_CELAS_ID, hingeScalarPoint, struOpt, fid, eigOpt, ...
     recomputeBase, flutterOptions, reducedBasis, searchFlutterQuenchingPoint, modesToPlotDF)
 
