@@ -1,0 +1,1385 @@
+1
+ 
+ 
+ 
+ 
+                      Warning: This computer program is protected by copyright law and international treaties.       
+                  Unauthorized use, reproduction or distribution of this computer program, or any portion of it, may 
+                                          result in severe civil and criminal penalties.                             
+                         Copyright (C) 2013 MSC Software Corporation and its licensors. All rights reserved.         
+ 
+ 
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * *                                 * *
+                                              * *           MSC Software          * *
+                                              * *               CORP              * *
+                                              * *                                 * *
+                                              * *      M S C   N a s t r a n      * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *     Version 2013.1.0-CL237422   * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *          NOV 27, 2013           * *
+                                              * *                                 * *
+                                              * *              Intel              * *
+                                              * *        MODEL 386/486/586        * *
+                                              * *    Windows 10 Home 6.2 9200     * *
+                                              * *        Compiled for 8664        * *
+                                              * *                                 * *
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * * * * * * * * * * * * * * * * * * * *
+1 News file -  (November 22,2013):
+  
+               Welcome to MSC Nastran 2013.1
+  
+  
+   Details of the new capabilities can be found in the MSC Nastran 2013.1
+     Release Guide available online in the installation documentation
+     sub-directory.
+   Additional information can be found at the MSC Nastran Product Support page:
+  
+      http://simcompanion.mscsoftware.com
+  
+  
+   The support page provides links to these valuable information:
+      * A searchable Knowledge Base containing examples and answers to thousands
+        of frequently asked questions written by MSC Software subject-matter
+        experts.
+      * Peer-to-peer Discussion Forums enabling you to post questions for your
+        MSC Software products and receive answers from other users worldwide.
+      * A list of known issues with the product and any workarounds.
+      * Instructions on how to contact technical support
+      * A mechanism for sending us product feedback or enhancement requests.
+      * Hardware and software requirements.
+      * Examples and Tutorials
+      * and much more.
+  
+   For information on training, please visit our Training web site
+  
+      http://www.mscsoftware.com/Contents/Services/Training/
+  
+   MSC Nastran brings powerful new features and enhancements for engineering
+   solutions.
+  
+   The highlights for the MSC Nastran 2013.1 release include:
+  
+  •   HPC
+     –   ACMS Performance Improvements which reduces wall time.
+  
+  •   Dynamics
+     –   New Axisymmetric Rotor Dynamics model
+     -   Rotors may be included in external Superelements
+  
+  •   Durability: Nastran Embedded Fatigue (NEF)
+     – Superelement support
+     – Restart support
+       – Out-of-core processing
+       – Histogram and time history output (HISTOGRAM case control)
+       – Static failure criteria (DAMAGE line on FTGPARM entry)
+       –	Duty cycle event name specification (FTGEVNT entry)
+       – Enhanced F06 output
+1 
+  
+  •   Advanced Nonlinear Implicit (SOL 400)
+     -	Stress recovery with advanced elements for perturbation load cases.
+     -   Improve Contact User Interface Improvements to make input file more
+ 	readable and reduce the amount of input for models with many contact
+ 	bodies.
+     -	Sequential thermal-mechanical analysis for 3-D thermal shell elements
+     -	Support of Digimat multi-scale composites material modeling
+  	
+  
+  •   Explicit Dynamics (SOL 700)
+     –	Support for User Subroutines
+     -	Support of Digimat multi-scale composites material modeling
+  
+  •  Ease of Use
+     -	User Defined Services (UDS) Enhancements to simplify usage.
+     -	Extension to Monitor Points to allow results in local coordinate system
+  
+  
+  
+  
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     1
+                                                                                                                                    
+0        N A S T R A N    F I L E    A N D    S Y S T E M    P A R A M E T E R    E C H O                                           
+0                                                                                                                                   
+                                                                                                                                    
+                                                                                                                                    
+     NASTRAN BUFFSIZE=8193 $(D:/WINDOWS_PROGRAMS/MSC.SOFTWARE/20131/CONF/NAST20131.RC
+     INIT MASTER(S)                                                                  
+     NASTRAN OP2NEW=0, SYSTEM(319)=1                                                 
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     2
+                                                                                                                                    
+0        N A S T R A N    E X E C U T I V E    C O N T R O L    E C H O                                                             
+0                                                                                                                                   
+                                                                                                                                    
+                                                                                                                                    
+     SOL 145                                                                                 
+     TIME 10000                                                                              
+     CEND                                                                                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     3
+                                                                                                                                    
+0                                                                                                                                   
+0                                        C A S E    C O N T R O L    E C H O                                                        
+                 COMMAND                                                                                                            
+                 COUNT                                                                                                              
+                  1        RESVEC=NO                                                                             
+                  2        ECHO = SORT                                                                           
+                  3        METHOD = 1                                                                            
+                  4        FMETHOD = 1                                                                           
+                  5        MPC = 1                                                                               
+                  6        SPC = 1                                                                               
+                  7        DISPLACEMENT(PRINT,PUNCH) = ALL                                                       
+                  8      $  SDAMPING=300                                                                         
+                  9      BEGIN BULK                                                                              
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     4
+                                                                                                                                    
+0                                                                                                                                   
+                                              I N P U T   B U L K   D A T A   E C H O                                               
+                 ENTRY                                                                                                              
+                 COUNT        .   1  ..   2  ..   3  ..   4  ..   5  ..   6  ..   7  ..   8  ..   9  ..  10  .                      
+                              $INCLUDE "d:\Desktop\PhD\neocass\Examples\wingWithFreeplay\model.bdf"
+                              $END OF INCLUDE FILE "d:\Desktop\PhD\neocass\Examples\wingWithFreeplay\model.bdf"
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     5
+                                                                                                                                    
+0                                                                                                                                   
+                                                  S O R T E D   B U L K   D A T A   E C H O                                         
+                 ENTRY                                                                                                              
+                 COUNT        .   1  ..   2  ..   3  ..   4  ..   5  ..   6  ..   7  ..   8  ..   9  ..  10  .                      
+                    1-        AERO    0       55.     .254    1.
+                    2-        CAERO1  1       1       0       24      12                      1       +
+                    3-        +       0.      0.      0.      .1855   0.      .52     0.      .1855
+                    4-        CAERO1  1001    1       0       24      6                       1       +
+                    5-        +       .1955   0.      0.      .0585   .1955   .52     0.      .0585
+                    6-        CELAS2  7       1465.7761       3       100     3       0.
+                    7-        CELAS2  8       19.396  1       5       100     5       0.
+                    8-        CELAS4  9       2.028   54000
+                    9-        CONM2   10      300     0       .62868  0.      0.      0.              +
+                   10-        +       0.      0.      .00275750.      0.      0.
+                   11-        CONM2   11      700     0       .18597  0.      0.      0.              +
+                   12-        +       0.      0.      .00014700.      0.      0.
+                   13-        CONM2   12      100     0       .9497   0.      0.      0.
+                   14-        EIGRL   1                       20      0                       MASS
+                   15-        FLFACT  11      2.425
+                   16-        FLFACT  12      .1
+                   17-        FLFACT  13      -10.    11.     11.5    12.     12.5    13.     13.5    +
+                   18-        +       14.     14.5    15.     15.5    16.     16.5    17.     17.5    +
+                   19-        +       18.     18.5    19.     19.5    -20.    20.5    22.     24.     +
+                   20-        +       26.     28.     30.
+                   21-        FLUTTER 1       PK      11      12      13      L       20
+                   22-        GRID    1       0       .0635   .26     0.      0
+                   23-        GRID    100     0       .0635   .26     0.      0
+                   24-        GRID    200     0       0.      0.      0.      0
+                   25-        GRID    201     0       0.      .04727270.      0
+                   26-        GRID    202     0       0.      .09454550.      0
+                   27-        GRID    203     0       0.      .14181820.      0
+                   28-        GRID    204     0       0.      .18909090.      0
+                   29-        GRID    205     0       0.      .23636360.      0
+                   30-        GRID    206     0       0.      .28363640.      0
+                   31-        GRID    207     0       0.      .33090910.      0
+                   32-        GRID    208     0       0.      .37818180.      0
+                   33-        GRID    209     0       0.      .42545450.      0
+                   34-        GRID    210     0       0.      .47272730.      0
+                   35-        GRID    211     0       0.      .52     0.      0
+                   36-        GRID    300     0       .093237 .26     0.      0
+                   37-        GRID    400     0       .1855   .52     0.      0
+                   38-        GRID    401     0       .1855   .468    0.      0
+                   39-        GRID    402     0       .1855   .416    0.      0
+                   40-        GRID    403     0       .1855   .364    0.      0
+                   41-        GRID    404     0       .1855   .312    0.      0
+                   42-        GRID    405     0       .1855   .26     0.      0
+                   43-        GRID    406     0       .1855   .208    0.      0
+                   44-        GRID    407     0       .1855   .156    0.      0
+                   45-        GRID    408     0       .1855   .104    0.      0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     6
+                                                                                                                                    
+0                                                                                                                                   
+                                                  S O R T E D   B U L K   D A T A   E C H O                                         
+                 ENTRY                                                                                                              
+                 COUNT        .   1  ..   2  ..   3  ..   4  ..   5  ..   6  ..   7  ..   8  ..   9  ..  10  .                      
+                   46-        GRID    409     0       .1855   .052    0.      0
+                   47-        GRID    410     0       .1855   0.      0.      0
+                   48-        GRID    500     0       .1955   .52     0.      0
+                   49-        GRID    501     0       .1955   .468    0.      0
+                   50-        GRID    502     0       .1955   .416    0.      0
+                   51-        GRID    503     0       .1955   .364    0.      0
+                   52-        GRID    504     0       .1955   .312    0.      0
+                   53-        GRID    505     0       .1955   .26     0.      0
+                   54-        GRID    506     0       .1955   .208    0.      0
+                   55-        GRID    507     0       .1955   .156    0.      0
+                   56-        GRID    508     0       .1955   .104    0.      0
+                   57-        GRID    509     0       .1955   .052    0.      0
+                   58-        GRID    510     0       .1955   0.      0.      0
+                   59-        GRID    600     0       .254    0.      0.      0
+                   60-        GRID    601     0       .254    .052    0.      0
+                   61-        GRID    602     0       .254    .104    0.      0
+                   62-        GRID    603     0       .254    .156    0.      0
+                   63-        GRID    604     0       .254    .208    0.      0
+                   64-        GRID    605     0       .254    .26     0.      0
+                   65-        GRID    606     0       .254    .312    0.      0
+                   66-        GRID    607     0       .254    .364    0.      0
+                   67-        GRID    608     0       .254    .416    0.      0
+                   68-        GRID    609     0       .254    .468    0.      0
+                   69-        GRID    610     0       .254    .52     0.      0
+                   70-        GRID    700     0       .201544 .26     0.      0
+                   71-        GRID    45000   0       .1955   0.      0.      0
+                   72-        MKAERO1 .1                                                              +
+                   73-        +       .0001   .002    .005    .007    .01     .02     .03     .05
+                   74-        MKAERO1 .1                                                              +
+                   75-        +       .07     .09     .11     .2      .3      .4      .5      .8
+                   76-        MKAERO1 .1                                                              +
+                   77-        +       1.      1.25    1.5     1.8     2.2     3.
+                   78-        MPC     1       510     5       1.      45000   5       -1.             +
+                   79-        +               54000   0       -1.
+                   80-        PAERO1  1
+                   81-        PARAM   AUTOSPC NO
+                   82-        PARAM   GRDPNT  0
+                   83-        PARAM   OGEOM   NO
+                   84-        PARAM   POST    -1
+                   85-        RBE2    1       100     123456  200     201     202     203     205     +
+                   86-        +       204     206     207     209     208     210     211     410     +
+                   87-        +       409     408     407     406     405     404     403     402     +
+                   88-        +       401     400     300
+                   89-        RBE2    2       410     123456  45000
+                   90-        RBE2    3       510     123456  509     508     507     506     505     +
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     7
+                                                                                                                                    
+0                                                                                                                                   
+                                                  S O R T E D   B U L K   D A T A   E C H O                                         
+                 ENTRY                                                                                                              
+                 COUNT        .   1  ..   2  ..   3  ..   4  ..   5  ..   6  ..   7  ..   8  ..   9  ..  10  .                      
+                   91-        +       504     503     502     501     500     610     609     608     +
+                   92-        +       607     606     605     604     603     602     601     600
+                   93-        RBE2    4       505     123456  700
+                   94-        RBE2    5       45000   12346   510
+                   95-        RBE2    6       1       1246    100
+                   96-        SET1    1       200     201     202     203     204     205     206     +
+                   97-        +       207     208     209     210     211     400     401     402     +
+                   98-        +       403     404     405     406     407     408     409     410
+                   99-        SET1    2       500     501     502     503     504     505     506     +
+                  100-        +       507     508     509     510     600     601     602     603     +
+                  101-        +       604     605     606     607     608     609     610
+                  102-        SPC1    1       123456  1
+                  103-        SPLINE1 1       1       1       288     1       0.      TPS     BOTH
+                  104-        SPLINE1 2       1001    1001    1144    2       0.      TPS     BOTH
+                  105-        SPOINT  54000
+                  106-        TABDMP1 300     CRIT                                                    +
+                  107-        +       0.      0.      .99     0.      1.      .016    35000.  .015    +
+                  108-        +       ENDT
+                              ENDDATA
+                        TOTAL COUNT= 109
+                              INPUT BULK DATA ENTRY COUNT = 114
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     8
+                                                                                                                                    
+0                                                                                                                                   
+                                        M O D E L   S U M M A R Y          BULK = 0
+                                   ENTRY NAME        NUMBER OF ENTRIES
+                                   ----------        -----------------
+                                         AERO                        1
+                                       CAERO1                        2
+                                       CELAS2                        2
+                                       CELAS4                        1
+                                        CONM2                        3
+                                        EIGRL                        1
+                                       FLFACT                        3
+                                      FLUTTER                        1
+                                         GRID                       50
+                                      MKAERO1                        3
+                                          MPC                        1
+                                       PAERO1                        1
+                                        PARAM                        4
+                                         RBE2                        6
+                                         SET1                        2
+                                         SPC1                        1
+                                      SPLINE1                        2
+                                       SPOINT                        1
+                                      TABDMP1                        1
+
+ ^^^     
+ ^^^ >>> IFP OPERATIONS COMPLETE <<< 
+ ^^^     
+ *** USER INFORMATION MESSAGE 4109 (OUTPX2)
+     THE LABEL IS XXXXXXXX FOR FORTRAN UNIT 12
+     (MAXIMUM SIZE OF FORTRAN RECORDS WRITTEN =          7 WORDS.)
+           (NUMBER OF FORTRAN RECORDS WRITTEN =          8 RECORDS.)
+                (TOTAL DATA WRITTEN FOR LABEL =         17 WORDS.)
+ *** SYSTEM INFORMATION MESSAGE 7357 (GICOMD)
+     SPLINE         1 IS COMPRISED OF A SET OF COPLANAR GRID POINTS.  TPS METHOD REVERTS TO IPS FOR THIS CASE.
+ *** SYSTEM INFORMATION MESSAGE 7357 (GICOMD)
+     SPLINE         2 IS COMPRISED OF A SET OF COPLANAR GRID POINTS.  TPS METHOD REVERTS TO IPS FOR THIS CASE.
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE     9
+                                                                                                                                    
+0                                                                                                                                   
+                           O U T P U T   F R O M   G R I D   P O I N T   W E I G H T   G E N E R A T O R
+0                                                     REFERENCE POINT =        0
+                                                                M O
+                      *  1.764350E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00 -4.587310E-01 *
+                      *  0.000000E+00  1.764350E+00  0.000000E+00  0.000000E+00  0.000000E+00  1.564033E-01 *
+                      *  0.000000E+00  0.000000E+00  1.764350E+00  4.587310E-01 -1.564033E-01  0.000000E+00 *
+                      *  0.000000E+00  0.000000E+00  4.587310E-01  1.192701E-01 -4.066486E-02  0.000000E+00 *
+                      *  0.000000E+00  0.000000E+00 -1.564033E-01 -4.066486E-02  1.975327E-02  0.000000E+00 *
+                      * -4.587310E-01  1.564033E-01  0.000000E+00  0.000000E+00  0.000000E+00  1.361188E-01 *
+                                                                 S
+                                           *  1.000000E+00  0.000000E+00  0.000000E+00 *
+                                           *  0.000000E+00  1.000000E+00  0.000000E+00 *
+                                           *  0.000000E+00  0.000000E+00  1.000000E+00 *
+                               DIRECTION
+                          MASS AXIS SYSTEM (S)     MASS              X-C.G.        Y-C.G.        Z-C.G.
+                                  X            1.764350E+00      0.000000E+00  2.600000E-01  0.000000E+00
+                                  Y            1.764350E+00      8.864643E-02  0.000000E+00  0.000000E+00
+                                  Z            1.764350E+00      8.864643E-02  2.600000E-01  0.000000E+00
+                                                                I(S)
+                                           *  0.000000E+00 -6.938894E-18  0.000000E+00 *
+                                           * -6.938894E-18  5.888672E-03  0.000000E+00 *
+                                           *  0.000000E+00  0.000000E+00  2.984132E-03 *
+                                                                I(Q)
+                                           *  0.000000E+00                             *
+                                           *                5.888672E-03               *
+                                           *                              2.984132E-03 *
+                                                                 Q
+                                           *  1.000000E+00  0.000000E+00  0.000000E+00 *
+                                           *  0.000000E+00  1.000000E+00  0.000000E+00 *
+                                           *  0.000000E+00  0.000000E+00  1.000000E+00 *
+
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    10
+                                                                                                                                    
+0                                                                                                                                   
+ *** USER INFORMATION MESSAGE 5458 (REIG)
+     QL HOUSEHOLDER METHOD IS AUTOMATICALLY SELECTED .
+     User information:
+     Based upon automatic selection criteria the eigensolution was changed
+     to this method. To turn off this automatic selection, please set
+     system cell 359 to 0. In the case of an original Lanczos method
+     selection, setting the NE field to zero on the READ DMAP line will
+     also turn off this automatic option.
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    11
+                                                                                                                                    
+0                                                                                                                                   
+ 
+                                              R E A L   E I G E N V A L U E S
+   MODE    EXTRACTION      EIGENVALUE            RADIANS             CYCLES            GENERALIZED         GENERALIZED
+    NO.       ORDER                                                                       MASS              STIFFNESS
+        1         1        7.812316E+02        2.795052E+01        4.448463E+00        1.000000E+00        7.812316E+02
+        2         2        3.409960E+03        5.839487E+01        9.293832E+00        1.000000E+00        3.409960E+03
+        3         3        1.483986E+04        1.218190E+02        1.938809E+01        1.000000E+00        1.483986E+04
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -1.69667E+00    2.86748E+01       VELOCITY =     1.00000E+01
+
+   EIGENVECTOR
+                    1.00000E+00    0.00000E+00
+                    1.92579E-02    6.81962E-03
+                   -9.80948E-04   -1.97404E-03
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -3.49447E+00    5.65024E+01       VELOCITY =     1.00000E+01
+
+   EIGENVECTOR
+                    1.79928E-01    1.87578E-01
+                    1.00000E+00    0.00000E+00
+                   -8.30364E-03   -1.25389E-02
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -4.69188E+00    1.22724E+02       VELOCITY =     1.00000E+01
+
+   EIGENVECTOR
+                    9.14920E-02    6.59018E-02
+                    1.32619E-01    1.24837E-01
+                    1.00000E+00    0.00000E+00
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -4.59594E+00    3.36359E+01       VELOCITY =     2.00000E+01
+
+   EIGENVECTOR
+                    1.00000E+00    0.00000E+00
+                    1.12859E-01    3.60242E-02
+                   -7.78735E-03   -6.37162E-03
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -4.68562E+00    4.87273E+01       VELOCITY =     2.00000E+01
+
+   EIGENVECTOR
+                    1.00000E+00    0.00000E+00
+                    7.79797E-01   -2.40424E-01
+                   -3.86693E-02   -8.51693E-03
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    12
+                                                                                                                                    
+0                                                                                                                                   
+
+
+                                               EIGENVECTOR FROM THE    PK METHOD
+   EIGENVALUE =    -1.06569E+01    1.28188E+02       VELOCITY =     2.00000E+01
+
+   EIGENVECTOR
+                    4.01016E-01    1.42812E-01
+                    4.68100E-01    2.14278E-01
+                    1.00000E+00    0.00000E+00
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    13
+                                                                                                                                    
+0                                                                                                                                   
+0                                                       FLUTTER  SUMMARY
+                         CONFIGURATION = AEROSG2D     XY-SYMMETRY = ASYMMETRIC     XZ-SYMMETRY = ASYMMETRIC
+       POINT =    1     MACH NUMBER =  0.1000     DENSITY RATIO =  2.4250E+00     METHOD = PK  
+
+
+       KFREQ            1./KFREQ         VELOCITY            DAMPING         FREQUENCY            COMPLEX   EIGENVALUE
+        0.3642       2.7459657E+00     1.0000000E+01    -1.1833870E-01     4.5637436E+00    -1.6966722E+00     2.8674849E+01
+        0.3339       2.9944978E+00     1.1000000E+01    -1.3052118E-01     4.6034675E+00    -1.8876258E+00     2.8924438E+01
+        0.3209       3.1158426E+00     1.1500000E+01    -1.3667883E-01     4.6252871E+00    -1.9860483E+00     2.9061537E+01
+        0.3091       3.2351124E+00     1.2000000E+01    -1.4289591E-01     4.6484509E+00    -2.0867860E+00     2.9207079E+01
+        0.2983       3.3521729E+00     1.2500000E+01    -1.4918382E-01     4.6730456E+00    -2.1901388E+00     2.9361612E+01
+        0.2884       3.4668813E+00     1.3000000E+01    -1.5555607E-01     4.6991658E+00    -2.2964532E+00     2.9525730E+01
+        0.2794       3.5790799E+00     1.3500000E+01    -1.6202776E-01     4.7269254E+00    -2.4061244E+00     2.9700150E+01
+        0.2711       3.6885953E+00     1.4000000E+01    -1.6861695E-01     4.7564549E+00    -2.5196168E+00     2.9885689E+01
+        0.2635       3.7952347E+00     1.4500000E+01    -1.7534444E-01     4.7879076E+00    -2.6374707E+00     3.0083311E+01
+        0.2565       3.8987808E+00     1.5000000E+01    -1.8223518E-01     4.8214631E+00    -2.7603295E+00     3.0294146E+01
+        0.2501       3.9989893E+00     1.5500000E+01    -1.8931875E-01     4.8573327E+00    -2.8889587E+00     3.0519522E+01
+        0.2442       4.0955777E+00     1.6000000E+01    -1.9663119E-01     4.8957720E+00    -3.0242903E+00     3.0761044E+01
+        0.2388       4.1883512E+00     1.6500000E+01    -2.0422974E-01     4.9369330E+00    -3.1675692E+00     3.1019667E+01
+        0.2338       4.2766590E+00     1.7000000E+01    -2.1214445E-01     4.9815059E+00    -3.3200316E+00     3.1299726E+01
+        0.2293       4.3601885E+00     1.7500000E+01    -2.2046031E-01     5.0297823E+00    -3.4836094E+00     3.1603054E+01
+        0.2253       4.4383960E+00     1.8000000E+01    -2.2927345E-01     5.0823298E+00    -3.6607199E+00     3.1933220E+01
+        0.2217       4.5106149E+00     1.8500000E+01    -2.3871544E-01     5.1398726E+00    -3.8546305E+00     3.2294773E+01
+        0.2185       4.5760150E+00     1.9000000E+01    -2.4897499E-01     5.2033443E+00    -4.0699415E+00     3.2693577E+01
+        0.2158       4.6335425E+00     1.9500000E+01    -2.6033625E-01     5.2739725E+00    -4.3134265E+00     3.3137348E+01
+        0.2136       4.6819124E+00     2.0000000E+01    -2.7327573E-01     5.3533187E+00    -4.5959368E+00     3.3635895E+01
+        0.2119       4.7191825E+00     2.0500000E+01    -2.8854376E-01     5.4438162E+00    -4.9347482E+00     3.4204506E+01
+        0.2104       4.7533336E+00     2.2000000E+01    -3.7416705E-01     5.8001704E+00    -6.8179874E+00     3.6443546E+01
+        0.1960       5.1015491E+00     2.4000000E+01    -6.4264911E-01     5.8955665E+00    -1.1902805E+01     3.7042938E+01
+        0.1741       5.7428112E+00     2.6000000E+01    -8.7663710E-01     5.6736851E+00    -1.5625537E+01     3.5648815E+01
+        0.1533       6.5245256E+00     2.8000000E+01    -1.1057311E+00     5.3780575E+00    -1.8682064E+01     3.3791332E+01
+        0.1335       7.4927421E+00     3.0000000E+01    -1.3582675E+00     5.0176096E+00    -2.1410759E+01     3.1526571E+01
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    14
+                                                                                                                                    
+0                                                                                                                                   
+0                                                       FLUTTER  SUMMARY
+                         CONFIGURATION = AEROSG2D     XY-SYMMETRY = ASYMMETRIC     XZ-SYMMETRY = ASYMMETRIC
+       POINT =    2     MACH NUMBER =  0.1000     DENSITY RATIO =  2.4250E+00     METHOD = PK  
+
+
+       KFREQ            1./KFREQ         VELOCITY            DAMPING         FREQUENCY            COMPLEX   EIGENVALUE
+        0.7176       1.3935714E+00     1.0000000E+01    -1.2369259E-01     8.9926386E+00    -3.4944651E+00     5.6502419E+01
+        0.6484       1.5423037E+00     1.1000000E+01    -1.3458350E-01     8.9379759E+00    -3.7790349E+00     5.6158958E+01
+        0.6180       1.6180066E+00     1.1500000E+01    -1.3986297E-01     8.9070501E+00    -3.9136908E+00     5.5964649E+01
+        0.5901       1.6947628E+00     1.2000000E+01    -1.4501257E-01     8.8733730E+00    -4.0424466E+00     5.5753048E+01
+        0.5641       1.7726310E+00     1.2500000E+01    -1.5003560E-01     8.8370647E+00    -4.1653571E+00     5.5524918E+01
+        0.5400       1.8517661E+00     1.3000000E+01    -1.5491422E-01     8.7977905E+00    -4.2816854E+00     5.5278149E+01
+        0.5175       1.9323097E+00     1.3500000E+01    -1.5964149E-01     8.7553482E+00    -4.3910570E+00     5.5011475E+01
+        0.4964       2.0144229E+00     1.4000000E+01    -1.6419908E-01     8.7095098E+00    -4.4927716E+00     5.4723469E+01
+        0.4766       2.0982866E+00     1.4500000E+01    -1.6857301E-01     8.6600332E+00    -4.5862474E+00     5.4412594E+01
+        0.4579       2.1841075E+00     1.5000000E+01    -1.7274746E-01     8.6066399E+00    -4.6708422E+00     5.4077114E+01
+        0.4401       2.2721221E+00     1.5500000E+01    -1.7669868E-01     8.5490217E+00    -4.7456927E+00     5.3715088E+01
+        0.4233       2.3626041E+00     1.6000000E+01    -1.8040051E-01     8.4868279E+00    -4.8098664E+00     5.3324314E+01
+        0.4072       2.4558728E+00     1.6500000E+01    -1.8381773E-01     8.4196587E+00    -4.8621879E+00     5.2902275E+01
+        0.3918       2.5523071E+00     1.7000000E+01    -1.8690419E-01     8.3470373E+00    -4.9011869E+00     5.2445984E+01
+        0.3770       2.6523571E+00     1.7500000E+01    -1.8959862E-01     8.2684183E+00    -4.9250140E+00     5.1952003E+01
+        0.3628       2.7566502E+00     1.8000000E+01    -1.9179334E-01     8.1828995E+00    -4.9304962E+00     5.1414677E+01
+        0.3490       2.8657119E+00     1.8500000E+01    -1.9341251E-01     8.0901308E+00    -4.9157524E+00     5.0831795E+01
+        0.3355       2.9804728E+00     1.9000000E+01    -1.9425341E-01     7.9888597E+00    -4.8753223E+00     5.0195488E+01
+        0.3224       3.1020389E+00     1.9500000E+01    -1.9404121E-01     7.8777785E+00    -4.8022814E+00     4.9497543E+01
+        0.3094       3.2318733E+00     2.0000000E+01    -1.9232020E-01     7.7551827E+00    -4.6856174E+00     4.8727253E+01
+        0.2966       3.3719392E+00     2.0500000E+01    -1.8828842E-01     7.6188688E+00    -4.5067554E+00     4.7870766E+01
+        0.2580       3.8752847E+00     2.2000000E+01    -1.3659923E-01     7.1143532E+00    -3.0530474E+00     4.4700802E+01
+        0.2257       4.4311981E+00     2.4000000E+01     6.5998316E-02     6.7874465E+00     1.4073080E+00     4.2646786E+01
+        0.2056       4.8627305E+00     2.6000000E+01     2.1913023E-01     6.7005358E+00     4.6127691E+00     4.2100708E+01
+        0.1885       5.3042402E+00     2.8000000E+01     3.4677711E-01     6.6153259E+00     7.2069507E+00     4.1565319E+01
+        0.1732       5.7741981E+00     3.0000000E+01     4.6491522E-01     6.5109739E+00     9.5097609E+00     4.0909657E+01
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    15
+                                                                                                                                    
+0                                                                                                                                   
+0                                                       FLUTTER  SUMMARY
+                         CONFIGURATION = AEROSG2D     XY-SYMMETRY = ASYMMETRIC     XZ-SYMMETRY = ASYMMETRIC
+       POINT =    3     MACH NUMBER =  0.1000     DENSITY RATIO =  2.4250E+00     METHOD = PK  
+
+
+       KFREQ            1./KFREQ         VELOCITY            DAMPING         FREQUENCY            COMPLEX   EIGENVALUE
+        1.5586       6.4160556E-01     1.0000000E+01    -7.6462589E-02     1.9532068E+01    -4.6918826E+00     1.2272361E+02
+        1.4209       7.0380354E-01     1.1000000E+01    -8.4779516E-02     1.9586535E+01    -5.2167311E+00     1.2306583E+02
+        1.3611       7.3468328E-01     1.1500000E+01    -8.8992111E-02     1.9616163E+01    -5.4842277E+00     1.2325199E+02
+        1.3065       7.6540416E-01     1.2000000E+01    -9.3246557E-02     1.9647476E+01    -5.7555847E+00     1.2344874E+02
+        1.2563       7.9595941E-01     1.2500000E+01    -9.7538657E-02     1.9680473E+01    -6.0306230E+00     1.2365606E+02
+        1.2102       8.2633889E-01     1.3000000E+01    -1.0187259E-01     1.9715216E+01    -6.3097010E+00     1.2387436E+02
+        1.1675       8.5653460E-01     1.3500000E+01    -1.0624550E-01     1.9751734E+01    -6.5927358E+00     1.2410381E+02
+        1.1280       8.8653803E-01     1.4000000E+01    -1.1065786E-01     1.9790056E+01    -6.8798537E+00     1.2434460E+02
+        1.0913       9.1634011E-01     1.4500000E+01    -1.1510883E-01     1.9830227E+01    -7.1711068E+00     1.2459699E+02
+        1.0572       9.4593334E-01     1.5000000E+01    -1.1959721E-01     1.9872255E+01    -7.4665174E+00     1.2486106E+02
+        1.0253       9.7530794E-01     1.5500000E+01    -1.2412386E-01     1.9916193E+01    -7.7662516E+00     1.2513713E+02
+        0.9956       1.0044568E+00     1.6000000E+01    -1.2868574E-01     1.9962049E+01    -8.0702209E+00     1.2542525E+02
+        0.9677       1.0333704E+00     1.6500000E+01    -1.3328342E-01     2.0009874E+01    -8.3785791E+00     1.2572575E+02
+        0.9416       1.0620410E+00     1.7000000E+01    -1.3791400E-01     2.0059679E+01    -8.6912498E+00     1.2603868E+02
+        0.9170       1.0904604E+00     1.7500000E+01    -1.4257596E-01     2.0111504E+01    -9.0082569E+00     1.2636431E+02
+        0.8940       1.1186212E+00     1.8000000E+01    -1.4726640E-01     2.0165354E+01    -9.3295221E+00     1.2670266E+02
+        0.8722       1.1465154E+00     1.8500000E+01    -1.5198383E-01     2.0221260E+01    -9.6550713E+00     1.2705393E+02
+        0.8517       1.1741357E+00     1.9000000E+01    -1.5672521E-01     2.0279243E+01    -9.9848261E+00     1.2741824E+02
+        0.8323       1.2014747E+00     1.9500000E+01    -1.6148938E-01     2.0339317E+01    -1.0318825E+01     1.2779571E+02
+        0.8140       1.2285103E+00     2.0000000E+01    -1.6627024E-01     2.0401758E+01    -1.0656928E+01     1.2818803E+02
+        0.7966       1.2552655E+00     2.0500000E+01    -1.7106898E-01     2.0466078E+01    -1.0999065E+01     1.2859216E+02
+        0.7498       1.3337059E+00     2.2000000E+01    -1.8552987E-01     2.0671833E+01    -1.2048770E+01     1.2988496E+02
+        0.6974       1.4338406E+00     2.4000000E+01    -2.0484118E-01     2.0976196E+01    -1.3498761E+01     1.3179733E+02
+        0.6542       1.5286591E+00     2.6000000E+01    -2.2399575E-01     2.1314692E+01    -1.4999222E+01     1.3392416E+02
+        0.6180       1.6180172E+00     2.8000000E+01    -2.4279496E-01     2.1686590E+01    -1.6541725E+01     1.3626086E+02
+        0.5876       1.7018785E+00     3.0000000E+01    -2.6106572E-01     2.2090679E+01    -1.8117939E+01     1.3879984E+02
+ *** USER INFORMATION MESSAGE 4114 (OUTPX2)
+     DATA BLOCK OUG1     WRITTEN ON FORTRAN UNIT  12 IN BINARY (LTLEND) FORMAT USING NDDL DESCRIPTION FOR OUG, TRL =
+                    101                 0              4284                 0                 0                 0                 5
+     NAME OF DATA BLOCK WRITTEN ON FORTRAN UNIT IS OUG1    
+        (MAXIMUM POSSIBLE FORTRAN RECORD SIZE =       16386 WORDS.)
+     (MAXIMUM SIZE OF FORTRAN RECORDS WRITTEN =         714 WORDS.)
+           (NUMBER OF FORTRAN RECORDS WRITTEN =          70 RECORDS.)
+           (TOTAL DATA WRITTEN FOR DATA BLOCK =        5233 WORDS.)
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    16
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.696672E+00,  2.867485E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          1
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0           -6.930959E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            3.033610E-03   0.0            9.530885E-02   0.0
+0          200      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          201      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          202      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          203      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          204      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          205      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          206      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          207      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          208      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          209      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          210      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          211      G      0.0            0.0           -5.660472E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            9.085721E-03   0.0            9.530885E-02   0.0
+0          300      G      0.0            0.0           -7.525927E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0            1.994105E-04   0.0            9.530885E-02   0.0
+0          400      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    17
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.696672E+00,  2.867485E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          1
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          402      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          403      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          404      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          405      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          406      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          407      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          408      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          409      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          410      G      0.0            0.0           -9.371895E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -8.594070E-03   0.0            9.530885E-02   0.0
+0          500      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          501      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          502      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          503      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          504      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          505      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    18
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.696672E+00,  2.867485E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          1
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          507      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          508      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          509      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          510      G      0.0            0.0           -9.571971E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0           -1.951451E-02   0.0
+0          600      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          601      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          602      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          603      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          604      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          605      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          606      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          607      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          608      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          609      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+0          610      G      0.0            0.0           -1.109451E+00   0.0            2.602638E+00   0.0
+                           0.0            0.0           -8.405560E-03   0.0           -1.951451E-02   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    19
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.696672E+00,  2.867485E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          1
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -9.729275E-01   0.0            2.602638E+00   0.0
+                           0.0            0.0           -9.429213E-03   0.0           -1.951451E-02   0.0
+0        45000      G      0.0            0.0           -9.571971E-01   0.0            2.000767E+00   0.0
+                           0.0            0.0           -9.547158E-03   0.0            9.530885E-02   0.0
+0        54000      S      6.018710E-01                    
+                          -1.148234E-01                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    20
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -3.494465E+00,  5.650242E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          2
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0            2.966400E-01   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.305676E-01   0.0            3.927405E-01   0.0
+0          200      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          201      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          202      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          203      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          204      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          205      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          206      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          207      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          208      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          209      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          210      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          211      G      0.0            0.0            1.113649E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.056285E-01   0.0            3.927405E-01   0.0
+0          300      G      0.0            0.0           -8.596477E-02   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.422465E-01   0.0            3.927405E-01   0.0
+0          400      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    21
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -3.494465E+00,  5.650242E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          2
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          402      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          403      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          404      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          405      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          406      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          407      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          408      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          409      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          410      G      0.0            0.0           -1.273047E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.784819E-01   0.0            3.927405E-01   0.0
+0          500      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          501      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          502      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          503      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          504      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          505      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    22
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -3.494465E+00,  5.650242E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          2
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          507      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          508      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          509      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          510      G      0.0            0.0           -1.401710E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0           -5.600883E-01   0.0
+0          600      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          601      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          602      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          603      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          604      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          605      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          606      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          607      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          608      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          609      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+0          610      G      0.0            0.0           -2.557830E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.496441E-01   0.0           -5.600883E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    23
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -3.494465E+00,  5.650242E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          2
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -1.521156E+00   0.0            1.976274E+01   0.0
+                           0.0            0.0           -1.790241E-01   0.0           -5.600883E-01   0.0
+0        45000      G      0.0            0.0           -1.401710E+00   0.0            1.286629E+01   0.0
+                           0.0            0.0           -1.824093E-01   0.0            3.927405E-01   0.0
+0        54000      S      6.896451E+00                    
+                          -9.528288E-01                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    24
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.691883E+00,  1.227236E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          3
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0           -8.646505E-02   0.0           -3.249417E+00   0.0
+                           0.0            0.0            6.485997E-03   0.0            1.677173E+00   0.0
+0          200      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          201      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          202      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          203      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          204      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          205      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          206      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          207      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          208      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          209      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          210      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          211      G      0.0            0.0           -2.928030E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0            1.129865E-01   0.0            1.677173E+00   0.0
+0          300      G      0.0            0.0            1.016286E-02   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -4.338811E-02   0.0            1.677173E+00   0.0
+0          400      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    25
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.691883E+00,  1.227236E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          3
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          402      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          403      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          404      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          405      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          406      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          407      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          408      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          409      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          410      G      0.0            0.0            3.099638E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -1.981292E-01   0.0            1.677173E+00   0.0
+0          500      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          501      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          502      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          503      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          504      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          505      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    26
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.691883E+00,  1.227236E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          3
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          507      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          508      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          509      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          510      G      0.0            0.0            3.424580E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.149009E-01   0.0            2.648709E+00   0.0
+0          600      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          601      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          602      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          603      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          604      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          605      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          606      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          607      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          608      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          609      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+0          610      G      0.0            0.0           -4.446448E+00   0.0            8.186165E+01   0.0
+                           0.0            0.0           -3.698504E-01   0.0            2.648709E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    27
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.691883E+00,  1.227236E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          3
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -1.523138E-01   0.0            8.186165E+01   0.0
+                           0.0            0.0           -2.309097E-01   0.0            2.648709E+00   0.0
+0        45000      G      0.0            0.0            3.424580E-01   0.0           -3.249417E+00   0.0
+                           0.0            0.0           -2.149009E-01   0.0            1.677173E+00   0.0
+0        54000      S      8.511106E+01                    
+                           9.715357E-01                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    28
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.595937E+00,  3.363589E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          4
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0           -6.530471E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            1.570731E-02   0.0            4.829034E-01   0.0
+0          200      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          201      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          202      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          203      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          204      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          205      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          206      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          207      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          208      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          209      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          210      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          211      G      0.0            0.0           -4.494616E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            4.637168E-02   0.0            4.829034E-01   0.0
+0          300      G      0.0            0.0           -7.483860E-01   0.0            3.206071E+00   0.0
+                           0.0            0.0            1.347210E-03   0.0            4.829034E-01   0.0
+0          400      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    29
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.595937E+00,  3.363589E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          4
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          402      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          403      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          404      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          405      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          406      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          407      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          408      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          409      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          410      G      0.0            0.0           -1.044188E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.320691E-02   0.0            4.829034E-01   0.0
+0          500      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          501      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          502      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          503      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          504      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          505      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    30
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.595937E+00,  3.363589E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          4
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          507      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          508      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          509      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          510      G      0.0            0.0           -1.076249E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            2.173450E-01   0.0
+0          600      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          601      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          602      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          603      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          604      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          605      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          606      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          607      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          608      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          609      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+0          610      G      0.0            0.0           -1.306593E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -6.075063E-02   0.0            2.173450E-01   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    31
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.595937E+00,  3.363589E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          4
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -1.100047E+00   0.0            3.937507E+00   0.0
+                           0.0            0.0           -4.934957E-02   0.0            2.173450E-01   0.0
+0        45000      G      0.0            0.0           -1.076249E+00   0.0            3.206071E+00   0.0
+                           0.0            0.0           -4.803594E-02   0.0            4.829034E-01   0.0
+0        54000      S      7.314358E-01                    
+                          -2.655584E-01                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    32
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.685617E+00,  4.872725E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          5
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0           -3.690657E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -1.008339E-01   0.0           -2.964159E+00   0.0
+0          200      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          201      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          202      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          203      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          204      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          205      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          206      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          207      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          208      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          209      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          210      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          211      G      0.0            0.0            3.741994E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -2.890581E-01   0.0           -2.964159E+00   0.0
+0          300      G      0.0            0.0           -7.171361E-01   0.0            1.170496E+01   0.0
+                           0.0            0.0           -1.268873E-02   0.0           -2.964159E+00   0.0
+0          400      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    33
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.685617E+00,  4.872725E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          5
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          402      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          403      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          404      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          405      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          406      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          407      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          408      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          409      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          410      G      0.0            0.0           -1.797071E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.607935E-01   0.0           -2.964159E+00   0.0
+0          500      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          501      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          502      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          503      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          504      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          505      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    34
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.685617E+00,  4.872725E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          5
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          507      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          508      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          509      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          510      G      0.0            0.0           -1.914121E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -5.482702E+00   0.0
+0          600      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          601      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          602      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          603      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          604      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          605      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          606      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          607      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          608      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          609      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+0          610      G      0.0            0.0           -2.782290E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            6.111732E-01   0.0           -5.482702E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    35
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -4.685617E+00,  4.872725E+01
+                                       C O M P L E X   E I G E N V E C T O R   NO.          5
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -2.003817E+00   0.0            1.484051E+01   0.0
+                           0.0            0.0            3.235725E-01   0.0           -5.482702E+00   0.0
+0        45000      G      0.0            0.0           -1.914121E+00   0.0            1.170496E+01   0.0
+                           0.0            0.0            2.904351E-01   0.0           -2.964159E+00   0.0
+0        54000      S      3.135552E+00                    
+                          -2.518543E+00                    
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    36
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.065693E+01,  1.281880E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          6
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0            1      G      0.0            0.0            0.0            0.0            0.0            0.0
+                           0.0            0.0            0.0            0.0            0.0            0.0
+0          100      G      0.0            0.0           -1.619042E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -9.692151E-03   0.0            2.930903E+00   0.0
+0          200      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          201      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          202      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          203      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          204      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          205      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          206      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          207      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          208      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          209      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          210      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          211      G      0.0            0.0           -6.728212E-02   0.0            1.490111E+00   0.0
+                           0.0            0.0            1.764202E-01   0.0            2.930903E+00   0.0
+0          300      G      0.0            0.0           -2.062156E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -9.684842E-02   0.0            2.930903E+00   0.0
+0          400      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    37
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.065693E+01,  1.281880E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          6
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          401      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          402      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          403      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          404      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          405      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          406      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          407      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          408      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          409      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          410      G      0.0            0.0           -3.436978E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.672623E-01   0.0            2.930903E+00   0.0
+0          500      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          501      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          502      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          503      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          504      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          505      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    38
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.065693E+01,  1.281880E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          6
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          506      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          507      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          508      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          509      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          510      G      0.0            0.0           -3.585989E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -3.965714E-01   0.0            4.614533E+00   0.0
+0          600      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          601      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          602      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          603      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          604      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          605      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          606      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          607      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          608      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          609      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+0          610      G      0.0            0.0           -5.581685E+00   0.0            8.928352E+01   0.0
+                           0.0            0.0           -6.665216E-01   0.0            4.614533E+00   0.0
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    39
+                                                                                                                                    
+0                                                                                                                                   
+      COMPLEX EIGENVALUE = -1.065693E+01,  1.281880E+02
+                                       C O M P L E X   E I G E N V E C T O R   NO.          6
+                                                          (REAL/IMAGINARY)
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+0          700      G      0.0            0.0           -8.982285E-01   0.0            8.928352E+01   0.0
+                           0.0            0.0           -4.244616E-01   0.0            4.614533E+00   0.0
+0        45000      G      0.0            0.0           -3.585989E-01   0.0            1.490111E+00   0.0
+                           0.0            0.0           -3.965714E-01   0.0            2.930903E+00   0.0
+0        54000      S      8.779341E+01                    
+                           1.683630E+00                    
+ *** USER INFORMATION MESSAGE 4110 (OUTPX2)
+                                 END-OF-DATA SIMULATION ON FORTRAN UNIT 12
+                                 (MAXIMUM SIZE OF FORTRAN RECORDS WRITTEN =      1 WORDS.)
+                                       (NUMBER OF FORTRAN RECORDS WRITTEN =      1 RECORDS.)
+                                       (TOTAL DATA WRITTEN FOR EOF MARKER =      1 WORDS.)
+1                                                                           OCTOBER   2, 2021  MSC Nastran 11/27/13   PAGE    40
+                                                                                                                                    
+0                                                                                                                                   
+ * * * *  D B D I C T   P R I N T  * * * *      SUBDMAP = PRTSUM  ,  DMAP STATEMENT NO.     41
+
+
+
+0                                   * * * *  A N A L Y S I S  S U M M A R Y  T A B L E  * * * *
+0 SEID  PEID PROJ VERS APRCH      SEMG SEMR SEKR SELG SELR MODES DYNRED SOLLIN PVALID SOLNL LOOPID DESIGN CYCLE SENSITIVITY
+ --------------------------------------------------------------------------------------------------------------------------
+     0     0    1    1 '        '    T    T    T    F    F     T      F      T      0     F     -1            0           F
+0SEID = SUPERELEMENT ID.
+ PEID = PRIMARY SUPERELEMENT ID OF IMAGE SUPERELEMENT.
+ PROJ = PROJECT ID NUMBER.
+ VERS = VERSION ID.
+ APRCH = BLANK FOR STRUCTURAL ANALYSIS.  HEAT FOR HEAT TRANSFER ANALYSIS.
+ SEMG = STIFFNESS AND MASS MATRIX GENERATION STEP.
+ SEMR = MASS MATRIX REDUCTION STEP (INCLUDES EIGENVALUE SOLUTION FOR MODES).
+ SEKR = STIFFNESS MATRIX REDUCTION STEP.
+ SELG = LOAD MATRIX GENERATION STEP.
+ SELR = LOAD MATRIX REDUCTION STEP. 
+ MODES = T (TRUE) IF NORMAL MODES OR BUCKLING MODES CALCULATED.
+ DYNRED = T (TRUE) MEANS GENERALIZED DYNAMIC AND/OR COMPONENT MODE REDUCTION PERFORMED.
+ SOLLIN = T (TRUE) IF LINEAR SOLUTION EXISTS IN DATABASE.
+ PVALID = P-DISTRIBUTION ID OF P-VALUE FOR P-ELEMENTS
+ LOOPID = THE LAST LOOPID VALUE USED IN THE NONLINEAR ANALYSIS.  USEFUL FOR RESTARTS.
+ SOLNL = T (TRUE) IF NONLINEAR SOLUTION EXISTS IN DATABASE.
+ DESIGN CYCLE = THE LAST DESIGN CYCLE (ONLY VALID IN OPTIMIZATION).
+ SENSITIVITY = SENSITIVITY MATRIX GENERATION FLAG.
+ 
+ No PARAM values were set in the Control File.
+ 
+1                                        * * * END OF JOB * * *
+ 
+ 
+ No Symbolic Replacement variables or values were specified.
+

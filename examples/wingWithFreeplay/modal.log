@@ -1,0 +1,134 @@
+MSC Nastran V2013.1 (Intel Windows 10 Home 6.2 9200) Control File: 
+----------------------------------------------------------------- 
+Nastran BUFFSIZE=8193 $(d:/windows_programs/msc.software/20131/conf/nast20131.rcf[2])
+JID='d:/desktop/phd/neocass/examples/wingwithfreeplay/modal.bdf'
+OUT='./modal'
+MEM=2132672512      $ WORDS
+MACH='Intel'
+OPER='Windows 10 Home'
+OSV='6.2 9200'
+MODEL='P5-4/4479 (LAPTOP-ODE4A4V6)'
+NPROC='8'
+CONFIG=15
+NPROC=8
+symbol=DELDIR='d:/windows_programs/msc.software/20131/msc20131/nast/del' $(program default)
+symbol=DEMODIR='d:/windows_programs/msc.software/20131/msc20131/nast/demo' $(program default)
+symbol=LM_NO_SNMP=1 $(d:/windows_programs/msc.software/20131/conf/nast20131.rcf[5])
+symbol=NASD_PATH=D:\Windows_Programs\MSC.Software\20131\msc20131\dyna\win64 $(d:/windows_programs/msc.software/20131/conf/nast20131.rcf[7])
+symbol=NASM_PATH=D:\Windows_Programs\MSC.Software\20131\msc20131\marc\tools $(d:/windows_programs/msc.software/20131/conf/nast20131.rcf[6])
+symbol=SSSALTERDIR='d:/windows_programs/msc.software/20131/msc20131/nast/sssalter' $(program default)
+symbol=TPLDIR='d:/windows_programs/msc.software/20131/msc20131/nast/tpl' $(program default)
+SDIR='c:/scratch/modal.T24876_58'
+DBS='./modal'
+SCR='no'
+SMEM=100
+BPOOL=533168128w
+NEWDEL='d:/windows_programs/msc.software/20131/msc20131/win64/SSS'
+DEL='MSCDEF'
+DML=MSCDEF
+SDL=MSCDEF
+AUTH='27500@LAPTOP-ODE4A4V6'
+AUTHQUE=20
+MSGCAT='d:/windows_programs/msc.software/20131/msc20131/win64/analysis.msg'
+MSGDEST='f06'
+NEWS='d:/windows_programs/msc.software/20131/msc20131/nast/news.txt'
+----------------------------------------------------------------- 
+MSC_ISHELLPATH=D:\Windows_Programs\MSC.Software\20131\msc20131\actran\win64\Actran_14.1.b.69252\bin; 
+MSC_JIDPATH= 
+PATH=d:\windows_programs\msc.software\20131\msc20131\win64\nCode\bin;d:\windows_programs\msc.software\20131\msc20131\win64\nvidia;d:\windows_programs\msc.software\20131\msc20131\win64\lib;d:\windows_programs\msc.software\20131\msc20131\win64;C:\Program Files\Python37\tcl;C:\Program Files\Python37\Tools;C:\Program Files\Python37\libs;C:\Program Files\Python37\Lib;C:\Program Files\Python37\DLLs;C:\Program Files\Python37\include;C:\Program Files\Python37\Scripts\;C:\Program Files\Python37\;C:\windows\system32;C:\windows;C:\windows\System32\Wbem;C:\windows\System32\WindowsPowerShell\v1.0\;C:\windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\Windows_Programs\MSC.Software\Adams\2019_2\bin;C:\Program Files\MiKTeX 2.9\miktex\bin\x64\;C:\mingw\mingw64\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Webex\Plugins;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin\;C:\Program Files\IVI Foundation\VISA\Win64\Bin\;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin;D:\Windows_Programs\MATLAB\runtime\win64;D:\Windows_Programs\MATLAB\bin;C:\Program Files (x86)\National Instruments\Shared\LabVIEW CLI;C:\Users\Nicola Fonzi\AppData\Local\Microsoft\WindowsApps;C:\Users\Nicola Fonzi\AppData\Local\atom\bin;C:\Users\Nicola Fonzi\AppData\Local\Microsoft\WindowsApps;C:\Users\Nicola Fonzi\AppData\Local\GitHubDesktop\bin 
+SCA_SERVICE_CATALOG=d:\windows_programs\msc.software\20131\msc20131\res\SCAServiceCatalog.xml 
+SCA_RESOURCE_DIR=d:\windows_programs\msc.software\20131\msc20131\res 
+Cmd Line:    D:\Windows_Programs\MSC.Software\20131\msc20131\win64\nastran.exe JID=D:\Desktop\PhD\neocass\Examples\wingWithFreeplay\modal.bdf 
+Current Dir: D:\Desktop\PhD\neocass\Examples\wingWithFreeplay 
+Time Cmd:    d:\windows_programs\msc.software\20131\msc20131\win64\msctime 
+Executable:  d:\windows_programs\msc.software\20131\msc20131\win64\analysis.exe 
+Arch= Kywd:  [Not specified]  
+MSC_MSG:     stderr  
+FPE:         yes  
+----------------------------------------------------------------- 
+Current resource limits:
+ Physical memory:                    16271 MB
+ Physical memory available:           5695 MB
+ Paging file size:                   35488 MB
+ Paging file size available:         15103 MB
+ Virtual memory:                 134217727 MB
+ Virtual memory available:       134213535 MB
+----------------------------------------------------------------- 
+System configuration:
+ Hostname:         LAPTOP-ODE4A4V6
+ Architecture:     win64
+ Platform:         Intel Windows 10 Home 6.2 9200 (Windows Compute Cluster)
+ Model:            P5-4/4900
+ Clock freq.:      4900 MHz
+ Number of CPUs:   8
+ Executable:       standard
+ Raw model ID:     15
+ Config number:    15
+ Physical memory:  16271 MB
+ Virtual memory:   35488 MB
+ Numeric format:   32-bit little-endian IEEE.
+ Bytes per word:   4
+ Disk block size:  512 bytes (128 words)
+ Remote shell cmd: "d:/windows_programs/msc.software/20131/msc20131/win64/mscrmtcmd.exe" (Windows non-CCS nodes, UNIX)
+                   <ccs_cmd> (Windows CCS nodes)
+----------------------------------------------------------------- 
+MSC Nastran started  Sat Oct  2 19:43:58 WEST 2021 
+ 19:44:00  Beginning Analysis
+SCA Kernel 12.0.169560 successfully initialized
+BLAS/LAPACK .dll "d:\windows_programs\msc.software\20131\msc20131\win64\mkl_core.dll" has been loaded.
+BLAS/LAPACK .dll "d:\windows_programs\msc.software\20131\msc20131\win64\mkl_intel_thread.dll" has been loaded.
+BLAS/LAPACK .dll "d:\windows_programs\msc.software\20131\msc20131\win64\mkl_rt.dll" has been loaded.
+BLAS/LAPACK .dll "d:\windows_programs\msc.software\20131\msc20131\win64\MSCblas.dll" has been loaded.
+
+ 19:44:00  MSC Authorization Information - System Attributes (1004, 0)
+ 19:44:00  -----------------------------------------------------------
+  Date:          Sat Oct 02 19:44:00 2021
+  MSC Id:        80e82c28924f (ethernet) (Intel)
+  Hostname:      LAPTOP-ODE4A4V6 (user Nicola Fonzi, display LAPTOP-ODE4A4V6)
+  License files: 27500@LAPTOP-ODE4A4V6
+  CEID:          2C28924F-ECAC753E
+  User:          Nicola Fonzi
+  Display:       LAPTOP-ODE4A4V6
+  LAPI Version:  LAPI 9.5.0-2137 (FLEXlm 11.9.0.0)
+
+  * * * * * * * * * * * * * * * * * * * *
+  * * * * * * * * * * * * * * * * * * * *
+  * *                                 * *
+  * *   MSC Customer Entitlement ID   * *
+  * *        2C28924F-ECAC753E        * *
+  * *                                 * *
+  * * * * * * * * * * * * * * * * * * * *
+  * * * * * * * * * * * * * * * * * * * *
+
+ 19:44:01  MSC Authorization Information - Checkout Successful (1016, 0)
+ 19:44:01  -------------------------------------------------------------
+ 19:44:01  Acquired 1 license for MSC Nastran from license server on host LAPTOP-ODE4A4V6
+
+
+Beginning bulk data processing using the IFPStar component.
+For more information on IFPStar, please see KB article KB8019200
+on our support pages, at http://simcompanion.mscsoftware.com.
+
+ 19:44:01  Reading INCLUDE file "d:\Desktop\PhD\neocass\Examples\wingWithFreeplay\model.bdf"
+ 19:44:01  93 records read from INCLUDE file "d:\Desktop\PhD\neocass\Examples\wingWithFreeplay\model.bdf"
+ 19:44:01  23 records read from JID file "d:/desktop/phd/neocass/examples/wingwithfreeplay/modal.bdf"
+ 19:44:01  A total of 116 records were read from 2 files.
+
+Processing of bulk data entries is complete.
+
+ 19:44:02  Analysis started.
+ 19:44:02  Geometry access/verification to CAD part initiated (if needed).
+ 19:44:02  Geometry access/verification to CAD part successfully completed (if needed).
+ 19:44:02  Finite element model generation started.
+ 19:44:02  Finite element model generated 301 degrees of freedom.
+ 19:44:02  Finite element model generation successfully completed.
+ 19:44:02  Solution of the system equations for normal modes started.
+ 19:44:02  Solution of the system equations for normal modes successfully completed.
+ 19:44:02  Normal modes analysis completed.
+ 19:44:02  13 records read from JID file "d:/desktop/phd/neocass/examples/wingwithfreeplay/modal.bdf"
+ 19:44:02  NSEXIT: EXIT(0)
+ 19:44:02  Analysis complete  0
+Real:        1.955 seconds ( 0:00:01.955)
+User:        0.843 seconds ( 0:00:00.843)
+Sys:         0.937 seconds ( 0:00:00.937)
+MSC Nastran finished Sat Oct  2 19:44:02 WEST 2021 
