@@ -63,7 +63,7 @@ for iSubfolder = 1:length(subfolders)
         chdir(subfolders{iSubfolder})
         files = dir(pwd);
         for iFile = 1:length(files)
-            if ~isfolder(files(iFile).name) && my_isfunction(files(iFile).name)==1
+            if ~isfolder(files(iFile).name) && my_isfunction(files(iFile).name)==1 && ~contains(pwd,".git")
                 content = fileread(files(iFile).name);
                 % Remove previous header
                 contentStripped = extractAfter(content,'function');
