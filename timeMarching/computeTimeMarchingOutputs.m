@@ -41,9 +41,7 @@ function output = switchOnType(type,values)
 if strcmp(type,'maxPeak')
     output = findPeaksMatrix(values);
 elseif strcmp(type,'rms')
-    output(1) = mean(values(values>0),2);
-    output(2) = mean(values(values>=0),2);
-    output(3) = rms(values,2);
+    output = findRmsMatrix(values);
 elseif strcmp(type,'std')
     output(1) = std(values,[],2);
     output(2) = output(1);
@@ -71,4 +69,14 @@ for i=1:size(values,1)
     peaks(i,3) = (meanMax-meanMin)/2;
 end
 
+return
+
+function Rms = findRmsMatrix(values)
+
+Rms=zeros(size(values,1),3);
+for i=1:size(values,1)
+    Rms(i,1) = mean(values(i,:)>0,2);
+    Rms(i,2) = mean(values(i,:)<=0,2);
+    Rms(i,3) = rms(values(i,:),2);
+end
 return

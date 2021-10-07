@@ -86,7 +86,7 @@ chosenModes = [];
 for modeIndex = 1:size(Ha,1)
     plotLinearDispl(model,[],struData,reducedBasis,modeIndex,0.1);
     use = input("Use this mode?");
-    while use~=1 || use~=0
+    while use~=1 && use~=0
       disp("Wrong selection, please use [1] if you want to use the mode, or [0] if not")
       use = input("Use this mode?");
     end

@@ -8,10 +8,11 @@ clc
 filename_sma = 'flutter.dat';
 
 % SOLVER INFO
-ver = get_neocass_version(true);
+ver = get_neolco_version(true);
 
 % ADDITIONAL VALUES FOR THE MODEL ANALYSIS
 hingeScalarPoint = 54000;
+stiffFlutterSpeed = 23.35;
 
 % INPUTS FOR THE DESCRIBING FUNCTION
 kNominal = 2.025;
@@ -32,8 +33,9 @@ preprocessTimeMarchingOptions.trimType = 'grounded';
 preprocessTimeMarchingOptions.selectionTrim = 1;
 preprocessTimeMarchingOptions.gapPoints = {hingeScalarPoint,"s",0,"Aileron hinge"};
 preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''};
-preprocessTimeMarchingOptions.monitorPoints = {100,'g',5,'Pitch'};
-timeMarchingOptions.gap = {[2.3]/180*pi};%{[2.3, 3.66, 4.24]/180*pi};
+preprocessTimeMarchingOptions.monitorPoints = {100,'g',5,'Pitch';...
+                                               100,'g',3,'Plunge'};
+timeMarchingOptions.gap = {2.3/180*pi};
 timeMarchingOptions.speedVector = (1:18);
 timeMarchingOptions.speedInterpolationType = 0;
 timeMarchingOptions.nFFTwindows = length(timeMarchingOptions.speedVector);
@@ -159,7 +161,7 @@ hold on
 index=1;
 for j = 1:length(kNominal)
     for k = 1:length(gapSizes)
-        plot(flutterSpeed,amplitude(:,j,k)./gapSizes(k)*2,'--','LineWidth',1.5)
+        plot(flutterSpeed/stiffFlutterSpeed,amplitude(:,j,k)./gapSizes(k),'--','LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
         index=index+1;
     end
@@ -171,8 +173,8 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             temp = timeMarchingResults.LCOamplitude{i,j,k};
             toPlot(k) = temp(3);
         end
-        plot(timeMarchingOptions.speedVector,toPlot.'./...
-            timeMarchingResults.gapCombinations(:,j)*2,'LineWidth',1.5)
+        plot(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot.'./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -187,7 +189,7 @@ figure
 hold on
 clear legendTitle
 index=1;
-plot(flutterSpeed,flutterFrequency,'--','LineWidth',1.5)
+plot(flutterSpeed/stiffFlutterSpeed,flutterFrequency,'--','LineWidth',1.5)
 legendTitle{index} = 'DF';
 index=index+1;
 
@@ -197,7 +199,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             [dummy , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
             freq(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
         end
-        plot(timeMarchingOptions.speedVector,freq,'LineWidth',1.5)
+        plot(timeMarchingOptions.speedVector/stiffFlutterSpeed,freq,'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -213,12 +215,12 @@ clear legendTitle
 index=1;
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
-        plot(timeMarchingOptions.speedVector,...
-            reshape(subsref(cell2mat(timeMarchingResults.LCOmonitor),...
-            struct('type','()','subs',{{(1+(i-1)*size(timeMarchingOptions.monitorPoints,1)):...
-            (i*size(timeMarchingOptions.monitorPoints,1)),j,':'}})),...
-            size(timeMarchingOptions.monitorPoints,1),...
-            timeMarchingOptions.nFFTwindows),'LineWidth',1.5)
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,3);
+        end
+        plot(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot.'./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -227,5 +229,3 @@ legend(legendTitle)
 ylabel('Monitor')
 xlabel('Speed [m/s]')
 saveas(gcf,"monitor.fig")
-
-% We may want to plot the bifurcation diagrams later on

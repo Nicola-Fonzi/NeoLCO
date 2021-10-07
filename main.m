@@ -8,7 +8,7 @@ clc
 filename_sma = 'D:\Desktop\PhD\X-DIA\ElevatorOnlyLCO\numericalSimulations\Final_DuringGVT_plate\NeoCASS\flutter.dat';
 
 % SOLVER INFO
-ver = get_neocass_version(true);
+ver = get_neolco_version(true);
 
 % ADDITIONAL VALUES FOR THE MODEL ANALYSIS
 tipLE = 40002;
