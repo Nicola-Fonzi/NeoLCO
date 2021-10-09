@@ -1,4 +1,12 @@
 %*******************************************************************************
+%                                                                              *
+%                    _   _            _     ____ ___                           *
+%                   | \ | | ___  ___ | |   / ___/ _ \                          *
+%                   |  \| |/ _ \/ _ \| |  | |  | | | |                         *
+%                   | |\  |  __/ (_) | |__| |__| |_| |                         *
+%                   |_| \_|\___|\___/|_____\____\___/                          *
+%                                                                              *
+%                                                                              *
 % Copyright (C) 2020 - 2021                                                    *
 %                                                                              *
 % Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
@@ -6,15 +14,9 @@
 % Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
-% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
-%                                                                              *
-%*******************************************************************************
-%                                                                              *
-%                                                                              *
-%                                                                              *
-% Version: 2.0.0                                                               *
-%                                                                              *
-%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
+% You are not authorized to use, distribute, or modify this file in any way,   *
+% unless explicitly decleared otherwise by the copyright owner.                *
 %                                                                              *
 %*******************************************************************************
 function set_neolco_version(version)
@@ -70,7 +72,11 @@ for iSubfolder = 1:length(subfolders)
                 fid = fopen(files(iFile).name,'w');
                 if ~isempty(contentStripped)
                     % Write new header
-                    printHeader(fid,version);
+                    if strcmp(files(iFile).name,"get_neolco_version.m")
+                        printHeader(fid,version,true);
+                    else
+                        printHeader(fid,version);
+                    end
                     % Write code
                     fwrite(fid,contentStripped);
                 else
@@ -85,8 +91,16 @@ end
 
 return
 
-function printHeader(fid,version)
+function printHeader(fid,version,longerHeader)
 fprintf(fid,'%%*******************************************************************************\n');
+fprintf(fid,'%%                                                                              *\n');
+fprintf(fid,'%%                    _   _            _     ____ ___                           *\n');
+fprintf(fid,'%%                   | \\ | | ___  ___ | |   / ___/ _ \\                          *\n');
+fprintf(fid,'%%                   |  \\| |/ _ \\/ _ \\| |  | |  | | | |                         *\n');
+fprintf(fid,'%%                   | |\\  |  __/ (_) | |__| |__| |_| |                         *\n');
+fprintf(fid,'%%                   |_| \\_|\\___|\\___/|_____\\____\\___/                          *\n');
+fprintf(fid,'%%                                                                              *\n');
+fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%% Copyright (C) 2020 - 2021                                                    *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *\n');
@@ -94,17 +108,21 @@ fprintf(fid,'%%                                                                 
 fprintf(fid,'%% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *\n');
 fprintf(fid,'%% Via La Masa 34, 20156 Milano - ITALY                                         *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *\n');
+fprintf(fid,'%% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *\n');
+fprintf(fid,'%% You are not authorized to use, distribute, or modify this file in any way,   *\n');
+fprintf(fid,'%% unless explicitly decleared otherwise by the copyright owner.                *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%*******************************************************************************\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% Version: %-68s*\n',version);
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%%*******************************************************************************\n');
+if nargin == 3 && longerHeader
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%% Version: %-68s*\n',version);
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%%                                                                              *\n');
+    fprintf(fid,'%%*******************************************************************************\n');
+end
 fprintf(fid,'function');
 return
 

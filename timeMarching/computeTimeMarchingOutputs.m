@@ -1,4 +1,12 @@
 %*******************************************************************************
+%                                                                              *
+%                    _   _            _     ____ ___                           *
+%                   | \ | | ___  ___ | |   / ___/ _ \                          *
+%                   |  \| |/ _ \/ _ \| |  | |  | | | |                         *
+%                   | |\  |  __/ (_) | |__| |__| |_| |                         *
+%                   |_| \_|\___|\___/|_____\____\___/                          *
+%                                                                              *
+%                                                                              *
 % Copyright (C) 2020 - 2021                                                    *
 %                                                                              *
 % Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
@@ -6,15 +14,9 @@
 % Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
-% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO)        *
-%                                                                              *
-%*******************************************************************************
-%                                                                              *
-%                                                                              *
-%                                                                              *
-% Version: 2.0.0                                                               *
-%                                                                              *
-%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
+% You are not authorized to use, distribute, or modify this file in any way,   *
+% unless explicitly decleared otherwise by the copyright owner.                *
 %                                                                              *
 %*******************************************************************************
 function [outputGap, outputFrequency, outputTorque, outputMonitor] = computeTimeMarchingOutputs(rotation, time, torque, modes, Umonitor, options)
