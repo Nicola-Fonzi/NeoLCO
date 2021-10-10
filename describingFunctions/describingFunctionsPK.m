@@ -63,7 +63,7 @@ while true
     
     if searchFlutterQuenchingPoint
         if any(any(real(resultsFlutter_descrFun.modes.eig)>=0)) || reachedMinKeq
-            resultsFlutter.modes(indexK) = resultsFlutter_descrFun.modes;
+            resultsFlutter(indexK).modes = resultsFlutter_descrFun.modes;
             indexK = indexK+1;
             KeqVect = [KeqVect, Keq];
             Keq_prev = Keq;
@@ -77,7 +77,7 @@ while true
             end
         end
     else
-        resultsFlutter.modes(indexK) = resultsFlutter_descrFun.modes;
+        resultsFlutter(indexK).modes = resultsFlutter_descrFun.modes;
         indexK = indexK+1;
         KeqVect = [KeqVect, Keq];
         Keq_prev = Keq;
@@ -87,15 +87,13 @@ while true
     end
 end
 
-[flutterSpeed, flutterFrequency] = plotVgDiagrams(resultsFlutter, modesToPlotDF, false);
-figure
-plot(KeqVect,flutterSpeed,'LineWidth',2)
-xlabel("Equivalen stiffness [Nm]")
-ylabel("Flutter speed [m/s]")
-figure
-plot(KeqVect,flutterFrequency,'LineWidth',2)
-xlabel("Equivalen stiffness [Nm]")
-ylabel("Flutter frequency [Hz]")
+plotOption.modeRequested = modesToPlotDF;
+plotOption.plotEnvelope = true;
+plotOption.envelopeLabel = "Equivalen stiffness";
+plotOption.envelopeMeasureUnit = "Nm";
+plotOption.envelopeList = KeqVect;
+
+[flutterSpeed, flutterFrequency] = plotVgDiagrams(resultsFlutter, plotOption);
 
 handles=findall(0,'type','figure');
 
