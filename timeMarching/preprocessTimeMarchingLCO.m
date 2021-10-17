@@ -19,11 +19,32 @@
 % unless explicitly decleared otherwise by the copyright owner.                *
 %                                                                              *
 %*******************************************************************************
-function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, model_stiff, struData, struData_stiff, options, reducedBasis, aeroData, globalOpt)
-
+function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, struData, options, reducedBasis, aeroData, globalOptions)
+%
 % This function assumes that a modal base has already
 % been defined, and the aerodynamic database has also been built with
 % previous flutter analysis
+%
+% The points where a nonlinearity must be added, should be in the free
+% condition. That is, no stiffness should be associated with them. Also, if
+% a scalar point is chosen as a nonlinearity point, there should not be
+% associated an AESURFD. That is, a simple rigid motion must be allowed to
+% the grid or scalar point where nonlinearity is present.
+%
+% The function will create the state-space model for the aerodynamic, it
+% will create the simulink model for integration, and it will double check
+% the aerodynamic approximation
+%
+% The resulting model used for integration misses only some parameters,
+% like the nominal stiffness at the nonlinearity points, and the other
+% parameters defining the nonlinearity. Plus, the constant forcing terms,
+% like the flight loads and constant loads. This is because, once the model
+% is prepared, it can be reused changing the above values without
+% rebuilding it. This implies that monitor points and nonlinearity points
+% must be defined here and not changed later. This also include the type of
+% nonlinearity and its behaviour. It is only excluded the behaviour of the
+% wind speed (i.e. if it is constant, increasing, decreasing, ecc...) as
+% that can be defined in the time marching directly.
 
 % Set default options
 iOpt = 0;
@@ -39,15 +60,7 @@ iOpt = iOpt+1; baseOpt.optsLM = [0.1, 1.0e-6, 1.0e-6, 100];         descr{iOpt} 
 iOpt = iOpt+1; baseOpt.opt = {1, 1, 'lmfd', 2, 100};  descr{iOpt} = 'Options for improvedMFDfun. {mfd order, mfd algorithm, r3, numerator order, weight} See that function for details. [{1, 1, "lmfd", 2, 100}].';
 % Options to produce graphical outputs
 iOpt = iOpt+1; baseOpt.checkStateSpaceApproximation = false;        descr{iOpt} = 'This flag generates several plots that can be used to check the aerodynamic approximation. [false].';
-iOpt = iOpt+1; baseOpt.plotLinearFlutterDamping = true;             descr{iOpt} = 'This flag generates two plots, containing the damping as a function of speed of the free and stiff systems. [true].';
-% Options to introduce steady loads
-iOpt = iOpt+1; baseOpt.introduceFlightLoads = false;  descr{iOpt} = 'Flag to introduce flight steady loads in the analysis. [false].';
-iOpt = iOpt+1; baseOpt.trimType = 'meanAxes';         descr{iOpt} = 'Type of trim output to be requested. ["grounded"],';
-iOpt = iOpt+1; baseOpt.selectionTrim = 1;             descr{iOpt} = 'Selected trim ID to be used for the steady load calculation. [1].';
-iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to introduce constant mechanical preloads';
-iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
 % Options to build the time marching model
-iOpt = iOpt+1; baseOpt.rho = 1.225;                   descr{iOpt} = 'Air density. [1.225].';
 iOpt = iOpt+1; baseOpt.simulinkModel = 'model';       descr{iOpt} = 'Name of the simulink model to be generated. [model.slx]';
 % Localise points of interest
 iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points where nonlinearities are present. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),label;point2,...}. If in the same point we have more nonlinearity, the point must be repeated per each dof. {}.';
@@ -108,58 +121,15 @@ Ha = Ha(chosenModes,chosenModes,:);
 
 solution = improvedMFDfun(k,Ha,options.opt,options.optsLM,options.eigsopt,options.algROM,[],[]);
 
-
-%% Perform a TRIM analysis to compute the trim loads
-
-% We perform the trim analysis using the stiff system, as we have free
-% dofs otherwise. This is ok as the displacements of the dof are usually
-% very small. We remain in the region of linearity of trim
-% Otherwise we would need to recompute the AICs in the deformed
-% configuration which is really expensive form the computational point of
-% view (it would be an iterative procedure)
-
-modelForIntegration.constantAeroForce = zeros(length(chosenModes),1);
-if options.introduceFlightLoads
-    if isempty(globalOpt.trim.ID)
-        error('Requested the introduction of flight loads, but no info about trim provided')
-    end
-    if length(options.selectionTrim)>1
-        error("Only one trim condition can be used at a time")
-    end
-
-    trimOptions.selectionList = options.selectionTrim;
-    trimOptions.outputType = options.trimType;
-    [resultsTrim, aeroData] = solve_lin_trim(options.fidScreen, model_stiff, struData_stiff, aeroData, globalOpt.trim, trimOptions);
-    aeroMatrixUsed = aeroData.aeroMatrix_vlm.aeroMatrix;
-    modelForIntegration.constantAeroForce = reducedBasis.V(:,chosenModes)'*aeroMatrixUsed.Kaero([aeroMatrixUsed.outputGroup.d, aeroMatrixUsed.outputGroup.r, ...
-        aeroMatrixUsed.outputGroup.s],[aeroMatrixUsed.inputGroup.f0,aeroMatrixUsed.inputGroup.u])*[1; squeeze(resultsTrim.Vbody(:,resultsTrim.iLoadRec,1))];
-end
-
-if options.introduceFlightLoads
-    if aeroData.dlmData.aero.M(machUsed)~=aeroData.vlmData.Mach
-        error("The requested mach number for the time marching integration is different from the Mach number used to compute the constant forces via trim solution.")
-    end
-end
-
-%% Introduce a possible mechanical preload (like a constant torque on a hinge)
-
-modelForIntegration.constantStruForce = zeros(length(chosenModes),1);
-if options.introduceStruLoads
-    loadDOF = obtainDOF(options.struLoads,model);
-    modelForIntegration.constantStruForce = reducedBasis.V(:,chosenModes)'*struData.Tgz(loadDOF,:)'*cellfun(@(x) x,options.struLoads(:,4));
-end
-
 %% Create the system for the simulink model
 
 % Structural matrices
 modelForIntegration.Mhh = reducedBasis.V(:,chosenModes)'*struData.Mzz*reducedBasis.V(:,chosenModes);
 modelForIntegration.Khh = reducedBasis.V(:,chosenModes)'*struData.Kzz*reducedBasis.V(:,chosenModes);
-modelForIntegration.Khh_stiff = reducedBasis.V(:,chosenModes)'*struData_stiff.Kzz*reducedBasis.V(:,chosenModes);
 modelForIntegration.Chh = reducedBasis.Bmm(chosenModes,chosenModes);
 modelForIntegration.invMC = modelForIntegration.Mhh\modelForIntegration.Chh;
 modelForIntegration.invMK = modelForIntegration.Mhh\modelForIntegration.Khh;
 modelForIntegration.nStru = size(modelForIntegration.invMC,1);
-modelForIntegration.rho = options.rho;
 
 % Obtain the mapping from modes to nonlinearity points
 nonlinearityDOF = obtainDOF(options.gapPoints,model);
@@ -185,6 +155,13 @@ modelForIntegration.A = solution.inoutresid.AA;
 modelForIntegration.nAero = size(solution.inoutresid.AA,1);
 % lref must be the one used for the state-space representiation (i.e. the DLM one)
 modelForIntegration.lref = aeroData.aeroMatrix_dlm.aero.lref;
+
+modelForIntegration.reducedBasis.V = reducedBasis.V(:,chosenModes);
+modelForIntegration.aeroData = aeroData;
+modelForIntegration.machUsed = machUsed;
+modelForIntegration.struData = struData;
+modelForIntegration.model = model;
+modelForIntegration.globalOptions = globalOptions;
 
 %% Now create the simulink model
 
@@ -240,36 +217,6 @@ if options.checkStateSpaceApproximation
 
     compareTransferFunctionWithAeroSS(modelForIntegration,Ha,k)
 
-end
-%% Check linear flutter speed
-
-if options.plotLinearFlutterDamping
-
-    plotMaxRealEigSS(modelForIntegration)
-
-end
-
-return
-
-function DOF = obtainDOF(gridCellArray,model)
-
-[IDtable, gridDOF, spointDOF] = getIDtable(model.Node.ID, model.Spoint.ID);
-% Special treatment in case of middle beam node
-if any(IDtable(:,1)>1e9)
-    scalarPoints = IDtable(find(IDtable(:,1)>1e9,1,'last')+1:end,1);
-else
-    scalarPoints = IDtable((size(IDtable,1)-length(spointDOF)+1):size(IDtable,1));
-end
-
-DOF = zeros(size(gridCellArray,1),1);
-for i = 1:length(DOF)
-    if strcmp(gridCellArray{i,2},'s')
-        Pos = find(scalarPoints == gridCellArray{i,1},1);
-        DOF(i) = spointDOF(Pos);
-    else
-        Pos = find(IDtable(:,1) == gridCellArray{i,1},1);
-        DOF(i) = gridDOF(Pos,gridCellArray{i,3});
-    end
 end
 
 return

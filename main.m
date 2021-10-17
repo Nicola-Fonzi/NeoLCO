@@ -29,18 +29,17 @@ flutterOptions.rho = 1.13;
 modesToPlotDF = 1:8;
 
 % INPUT FOR THE TIME MARCHING
-preprocessTimeMarchingOptions.rho = flutterOptions.rho;
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
-preprocessTimeMarchingOptions.introduceFlightLoads = false;
-preprocessTimeMarchingOptions.trimType = 'grounded';
-preprocessTimeMarchingOptions.selectionTrim = 1;
 preprocessTimeMarchingOptions.gapPoints = {hingeScalarPoint,'s',0,'Elevator hinge'};
 preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''}; % Unfortunately, the simulink model has to be built around the definition of static or dynamic gap, it cannot be decided later on.
 preprocessTimeMarchingOptions.monitorPoints = {tipLE,'g',3,'Accelerometer at the tip LE';...
                                                tipTE,'g',3,'Accelerometer at the tip TE';...
                                                midspanLE,'g',3,'Accelerometer at midpan LE';...
                                                midspanElevator,'g',3,'Accelerometer at midpan elevator'};
+                                           
 timeMarchingOptions.gap = {[0.1, 0.2, 0.4, 0.6, 1, 1.5, 2, 2.5, 3]/180*pi};
+timeMarchingOptions.kNominal = {kNominal};   % In the MIMO case this will be a vector
+timeMarchingOptions.rho = flutterOptions.rho;
 timeMarchingOptions.speedVector = (14:2:50);
 timeMarchingOptions.speedBehaviour = 'both'; % The behaviour of speed can be easily changed without rebuilding the model
 timeMarchingOptions.speedInterpolationType = 0;
@@ -49,7 +48,9 @@ timeMarchingOptions.FFTwindowLength = 20;
 timeMarchingOptions.overlapWindows = -10;
 timeMarchingOptions.initialisationTime = 10;
 timeMarchingoptions.amplitudeDefinition = 'std';
-timeMarchingOptions.kNominal = {kNominal};   % In the MIMO case this will be a vector
+timeMarchingoptions.introduceFlightLoads = false;
+timeMarchingoptions.trimType = 'grounded';
+timeMarchingoptions.selectionTrim = 1;
 
 % FLAGS DEFINING THE BEHAVIOUR OF THE CODE
 recomputeBase = false;
@@ -133,7 +134,7 @@ end
 
 %% Here we try to reproduce the same using a time marching simulation
 
-[modelForIntegration, preprocessTimeMarchingOptions] = preprocessTimeMarchingLCO(model, model_stiff, struData, struData_stiff, preprocessTimeMarchingOptions, reducedBasis, aeroData, options_stiff);
+[modelForIntegration, preprocessTimeMarchingOptions] = preprocessTimeMarchingLCO(model, struData, preprocessTimeMarchingOptions, reducedBasis, aeroData, options);
 
 [timeMarchingResults, timeMarchingOptions]=timeMarchingLCO(modelForIntegration, timeMarchingOptions, preprocessTimeMarchingOptions);
 
@@ -168,7 +169,7 @@ hold on
 index=1;
 for j = 1:length(kNominal)
     for k = 1:length(gapSizes)
-        plot(flutterSpeed,amplitude(:,j,k)./gapSizes(k)*2,'--','LineWidth',1.5)
+        plotHysteresis(flutterSpeed/stiffFlutterSpeed,amplitude(:,j,k).'./gapSizes(k),'--','LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
         index=index+1;
     end
@@ -176,12 +177,12 @@ end
 
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingResults.nFFTwindows
+        for k = 1:timeMarchingOptions.nFFTwindows
             temp = timeMarchingResults.LCOamplitude{i,j,k};
             toPlot(k) = temp(3);
         end
-        plot(timeMarchingOptions.speedVector,toPlot.'./...
-            timeMarchingResults.gapCombinations(:,j)*2,'LineWidth',1.5)
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -196,7 +197,7 @@ figure
 hold on
 clear legendTitle
 index=1;
-plot(flutterSpeed,flutterFrequency,'--','LineWidth',1.5)
+plotHysteresis(flutterSpeed/stiffFlutterSpeed,flutterFrequency,'--','LineWidth',1.5)
 legendTitle{index} = 'DF';
 index=index+1;
 
@@ -206,7 +207,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             [dummy , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
             freq(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
         end
-        plot(timeMarchingOptions.speedVector,freq,'LineWidth',1.5)
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,freq,'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -222,12 +223,12 @@ clear legendTitle
 index=1;
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
-        plot(timeMarchingOptions.speedVector,...
-            reshape(subsref(cell2mat(timeMarchingResults.LCOmonitor),...
-            struct('type','()','subs',{{(1+(i-1)*size(timeMarchingOptions.monitorPoints,1)):...
-            (i*size(timeMarchingOptions.monitorPoints,1)),j,':'}})),...
-            size(timeMarchingOptions.monitorPoints,1),...
-            timeMarchingOptions.nFFTwindows),'LineWidth',1.5)
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,3);
+        end
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -237,4 +238,31 @@ ylabel('Monitor')
 xlabel('Speed [m/s]')
 saveas(gcf,"monitor.fig")
 
-% We may want to plot the bifurcation diagrams later on
+figure
+hold on
+clear legendTitle
+index=1;
+for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
+    for j = 1:size(timeMarchingResults.gapCombinations,2)
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,1);
+        end
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM UpperLimit'] ;
+        index=index+1;
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,2);
+        end
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM LowerLimit'] ;
+        index=index+1;
+    end
+end
+legend(legendTitle)
+ylabel('Monitor')
+xlabel('Speed [m/s]')
+saveas(gcf,"monitor.fig")

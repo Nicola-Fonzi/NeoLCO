@@ -92,3 +92,10 @@ SET1           2     500     501     502     503     504     505     506+
 +            604     605     606     607     608     609     610        
 $ Femap Aero Spline 2 : elevator
 SPLINE1        2    1001    1001    1144       2      0.     TPS    BOTH
+AEROS           0       0.5     0.5     1.      0       0       0       
+$-------2-------3-------4-------5-------6-------7-------8-------9-------10
+NTRIM   1       0       0.1     0.      URDD1   0.      URDD2   0.     
+        URDD3   0.      URDD4   0.      URDD5   0.      URDD6   0.
+        ROLL    0.      PITCH   0.      YAW     0.      THRUST  0.
+        BANK    0.      HEAD    0.      CLIMB   0.      SIDES   0.
+        ANGLEA  0.

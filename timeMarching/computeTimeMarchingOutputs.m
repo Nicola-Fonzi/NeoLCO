@@ -77,8 +77,8 @@ function Rms = findRmsMatrix(values)
 
 Rms=zeros(size(values,1),3);
 for i=1:size(values,1)
-    Rms(i,1) = mean(values(i,:)>0,2);
-    Rms(i,2) = mean(values(i,:)<=0,2);
+    Rms(i,1) = mean(values(values(i,:)>0),2);
+    Rms(i,2) = mean(values(values(i,:)<=0),2);
     Rms(i,3) = rms(values(i,:),2);
 end
 return
