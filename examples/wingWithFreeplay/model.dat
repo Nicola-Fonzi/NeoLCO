@@ -98,4 +98,4 @@ NTRIM   1       0       0.1     0.      URDD1   0.      URDD2   0.
         URDD3   0.      URDD4   0.      URDD5   0.      URDD6   0.
         ROLL    0.      PITCH   0.      YAW     0.      THRUST  0.
         BANK    0.      HEAD    0.      CLIMB   0.      SIDES   0.
-        ANGLEA  0.
+        ANGLEA  5.

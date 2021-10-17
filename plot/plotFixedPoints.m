@@ -20,68 +20,75 @@ function plotFixedPoints(modelForIntegration, stiffness, gapPoints, resultsTrim,
 
 nNonlinearities = length(stiffness);
 
-gapRatios = [0.5 2 6];
+gapRatios = [0.5 2 8];
 nGapRatios = length(gapRatios);
 
 subspaces = repmat({[1,2,3]},nNonlinearities,1);
 subspaces = combvec(subspaces{:});
 nSubspaces = size(subspaces,2);
 
-model = modelForIntegration.model;
-struData = modelForIntegration.struData;
-reducedBasis = modelForIntegration.reducedBasis;
-aeroData = modelForIntegration.aeroData;
+aeroMatrixUsed = modelForIntegration.aeroData.aeroMatrix_vlm.aeroMatrix;
+aeroForce = aeroMatrixUsed.Kaero(aeroMatrixUsed.outputGroup.d,[aeroMatrixUsed.inputGroup.f0,aeroMatrixUsed.inputGroup.u])*[1; squeeze(resultsTrim.Vbody(:,resultsTrim.iLoadRec,1))];
+aeroStiffness = aeroMatrixUsed.Kaero(aeroMatrixUsed.outputGroup.d,aeroMatrixUsed.inputGroup.d);
 
 V_vect = linspace(0.001,max(options.speedVector),300);
 Pdyn = V_vect.^2*options.rho*0.5;
 
+model = modelForIntegration.model;
+struData = modelForIntegration.struData;
 nr = size(struData.suportTable,1);
 ns = length(struData.surfNames);
 nd = size(struData.Tgz,2) - nr - ns;
-
 posd = 1:nd;
 
-% We exclude rigid motion as it will never have a fixed point
-struStiffness = struData.Kzz(posd,posd);
-
-fixPoint = zeros(size(struStiffness,1),length(Pdyn),nSubspaces);
-fixpointAtNonlinearity = zeros(nNonlinearities,length(Pdyn),nSubspaces,nGapRatios);
+fixPoint = zeros(size(struData.Tgz,2),nSubspaces,nGapRatios,length(Pdyn));
+fixpointAtNonlinearity = zeros(nNonlinearities,nSubspaces,nGapRatios,length(Pdyn));
 
 DOF = obtainDOF(gapPoints,model);
 
 for i = 1:nSubspaces
+    
     offsetForce = zeros(size(struData.Tgz,1),1);
     offsetForce(DOF(subspaces(:,i)==1)) = stiffness(subspaces(:,i)==1);
     offsetForce(DOF(subspaces(:,i)==3)) = -stiffness(subspaces(:,i)==3);
     offsetForce = struData.Tgz'*offsetForce;
-    offsetStiffness = zeros(size(struData.Tgz,1),size(struData.Tgz,1));
-    offsetStiffness(DOF(subspaces(:,i)==1 | subspaces(:,i)==3),DOF(subspaces(:,i)==1 | subspaces(:,i)==3)) = stiffness(subspaces(:,i)==1 | subspaces(:,i)==3);
-    offsetStiffness = struData.Tgz'*offsetStiffness*struData.Tgz;
-    for k = 1:nGapRatios
-        for j = 1:length(Pdyn)
-            fixPoint(:,j,i,k) = (struStiffness+offsetStiffness-Pdyn(j)*aeroStiffness)\(Pdyn(j)*aeroForce*gapRatios(k) + offsetForce);
-            fixpointAtNonlinearity(:,j,i,k) = struData.Tgz(DOF,:)*squeeze(fixPoint(:,j,i));
+    
+    tempStiffness = stiffness;
+    tempStiffness(subspaces(:,i)==2)=0;
+    [model_stiff, ~] = addNonlinearityStiffness(model, gapPoints, tempStiffness);
+    struData_stiff = structuralPreprocessor(options.fidScreen, model_stiff, []);
+    struStiffness = struData_stiff.Kzz(posd,posd);
+    
+    for j = 1:nGapRatios
+        for k = 1:length(Pdyn)
+            fixPoint(:,i,j,k) = (struStiffness-Pdyn(k)*aeroStiffness)\(Pdyn(k)*aeroForce*gapRatios(j) + offsetForce);
+            fixpointAtNonlinearity(:,i,j,k) = struData.Tgz(DOF,:)*squeeze(fixPoint(:,i,j,k));
         end
     end
+    
+    clear tempStiffness
+    
 end
 
-for i = 1:nNonlinearities
+for y = 1:nNonlinearities
     figure
     hold on
-    for k = 1:nGapRatios
-        if k == 1
-            plot(V_vect,squeeze(fixpointAtNonlinearity(i,:,:,k)),'bo')
-        elseif k == 2
-            plot(V_vect,squeeze(fixpointAtNonlinearity(i,:,:,k)),'ro')
-        else
-            plot(V_vect,squeeze(fixpointAtNonlinearity(i,:,:,k)),'go')
+    for i = 1:nSubspaces
+        for j = 1:nGapRatios
+            if j == 1
+                plot(V_vect,squeeze(fixpointAtNonlinearity(y,i,j,:)),'bo')
+            elseif j == 2
+                plot(V_vect,squeeze(fixpointAtNonlinearity(y,i,j,:)),'ro')
+            else
+                plot(V_vect,squeeze(fixpointAtNonlinearity(y,i,j,:)),'go')
+            end
         end
     end
     xlabel("Flow speed [m/s]")
     ylabel("Fixed points per unit gap size")
-    title(strcat("Nonlinearity ",gapPoints{i,4}))
+    title(strcat("Nonlinearity ",gapPoints{y,4}))
     h = gcf;
-    saveas(h,strcat("Nonlinearity n°",num2str(i),".fig"))
+    saveas(h,strcat("Nonlinearity ",gapPoints{y,4}))
     close
 end
 

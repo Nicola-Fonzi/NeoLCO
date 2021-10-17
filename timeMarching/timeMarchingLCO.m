@@ -63,14 +63,15 @@ options = setOptions(baseOpt, 'error', options);
 options.gapPoints = preprocessTimeMarchingOptions.gapPoints;
 options.gapBehaviour = preprocessTimeMarchingOptions.gapBehaviour;
 options.monitorPoints = preprocessTimeMarchingOptions.monitorPoints;
+options.simulinkModel = preprocessTimeMarchingOptions.simulinkModel;
 
-if size(options.kNominal,1)~=size(preprocessTimeMarchingOptions.gapPoints,1)
+if size(options.kNominal,1)~=size(options.gapPoints,1)
     error("Nominal stifnesses are compulsory per each point")
-elseif size(options.gap,1)~=size(preprocessTimeMarchingOptions.gapPoints,1)
+elseif size(options.gap,1)~=size(options.gapPoints,1)
     error("Gap dimensions are compulsory per each point")
 else
-    if any(cellfun(@(x) x=="dynamic",preprocessTimeMarchingOptions.gapBehaviour(:,2)))
-        if length(options.gapInterpolationType)~=size(preprocessTimeMarchingOptions.gapPoints,1)
+    if any(cellfun(@(x) x=="dynamic",options.gapBehaviour(:,2)))
+        if length(options.gapInterpolationType)~=size(options.gapPoints,1)
             error("Gap interpolation type must be defined per each nonlinearity if at least one of them is dynamic")
         end
     end
@@ -84,19 +85,19 @@ modelForIntegration.rho = options.rho;
 stiffnessCombinations = combvec(options.kNominal{:});
 nstiffnessCombinations = size(stiffnessCombinations,2);
 
-dynamicNonlinearities = any(cellfun(@(x) strcmp(x,"dynamic"),preprocessTimeMarchingOptions.gapBehaviour(:,2)));
+dynamicNonlinearities = any(cellfun(@(x) strcmp(x,"dynamic"),options.gapBehaviour(:,2)));
 
 % Construct all the possible combinations of gap sizes, only done in case
 % of all static gaps. It makes no sense otherwise
-if dynamicNonlinearities && any(cellfun(@(x) strcmp(x,"static"),preprocessTimeMarchingOptions.gapBehaviour(:,2)))
+if dynamicNonlinearities && any(cellfun(@(x) strcmp(x,"static"),options.gapBehaviour(:,2)))
     error("A combination of static and dynamic gap must be set by requesting all dynamic gaps, but setting only one gap size for the ones we want to remain fixed")
 elseif dynamicNonlinearities
     ngapCombinations = 1;
     for i = 1:length(options.gap)
         sortedGapValues = sort(options.gap{i});
-        if strcmp(preprocessTimeMarchingOptions.gapBehaviour{i,3},"both")
+        if strcmp(options.gapBehaviour{i,3},"both")
             options.gapVector{i} = [sortedGapValues, sortedGapValues(end-1:-1:1)];
-        elseif strcmp(preprocessTimeMarchingOptions.gapBehaviour{i,3},"increasing")
+        elseif strcmp(options.gapBehaviour{i,3},"increasing")
             options.gapVector{i} = sortedGapValues;
         else
             options.gapVector{i} = sortedGapValues(end:-1:1);
@@ -128,10 +129,10 @@ options.simulationTime = options.initialisationTime + (options.nFFTwindows*optio
 LCOfrequency.fVect = [];
 LCOfrequency.pVect = [];
 LCOfrequency = repmat(LCOfrequency, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
-LCOamplitude = repmat({zeros(size(preprocessTimeMarchingOptions.gapPoints,1),3)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
+LCOamplitude = repmat({zeros(size(options.gapPoints,1),3)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
 % These are the peak values
-LCOtorque = repmat({zeros(size(preprocessTimeMarchingOptions.gapPoints,1),3)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
-LCOmonitor = repmat({zeros(size(preprocessTimeMarchingOptions.monitorPoints,3),1)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
+LCOtorque = repmat({zeros(size(options.gapPoints,1),3)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
+LCOmonitor = repmat({zeros(size(options.monitorPoints,3),1)}, nstiffnessCombinations, ngapCombinations, options.nFFTwindows);
 
 home = pwd;
 mkdir(speedFolder)
@@ -160,7 +161,6 @@ end
 % We must perform one analysis per each stiffness combination
 
 modelForIntegration.constantAeroForce = zeros(size(modelForIntegration.reducedBasis.V,2),nstiffnessCombinations);
-resultsTrim = [];
 
 if options.introduceFlightLoads
     for i = 1:nstiffnessCombinations
@@ -174,7 +174,7 @@ if options.introduceFlightLoads
         trimOptions.selectionList = options.selectionTrim;
         trimOptions.outputType = options.trimType;
         
-        [model_stiff, ~] = addNonlinearityStiffness(modelForIntegration.model, preprocessTimeMarchingOptions.gapPoints, stiffnessCombinations(:,i));
+        [model_stiff, ~] = addNonlinearityStiffness(modelForIntegration.model, options.gapPoints, stiffnessCombinations(:,i));
         struData_stiff = structuralPreprocessor(options.fidScreen, model_stiff, []);
         
         [resultsTrim(i), modelForIntegration.aeroData] = solve_lin_trim(options.fidScreen, model_stiff, struData_stiff, modelForIntegration.aeroData, modelForIntegration.globalOptions.trim, trimOptions);
@@ -207,11 +207,11 @@ for i = 1:nstiffnessCombinations
     % Before to perform the integration in time, we can produce some useful
     % output, if requested
     if options.plotMaxRealEigSS
-        plotMaxRealEigSS(modelForIntegration,stiffnessCombinations(:,i),preprocessTimeMarchingOptions.gapPoints,options)
+        plotMaxRealEigSS(modelForIntegration,stiffnessCombinations(:,i),options.gapPoints,options)
     end
     
-    if options.plotFixedPoints && ~isempty(resultsTrim)
-        plotFixedPoints(modelForIntegration,stiffnessCombinations(:,i),preprocessTimeMarchingOptions.gapPoints,resultsTrim(i),options)
+    if options.plotFixedPoints && exist("resultsTrim","var")
+        plotFixedPoints(modelForIntegration,stiffnessCombinations(:,i),options.gapPoints,resultsTrim(i),options)
     end
     
     for j = 1:ngapCombinations
@@ -266,8 +266,8 @@ for i = 1:nstiffnessCombinations
                 outOld.tout = [];
             end
             
-            load_system(strcat(home,filesep,preprocessTimeMarchingOptions.simulinkModel))
-            workSpace = get_param(preprocessTimeMarchingOptions.simulinkModel, 'ModelWorkspace');
+            load_system(strcat(home,filesep,options.simulinkModel))
+            workSpace = get_param(options.simulinkModel, 'ModelWorkspace');
             
             if ~dynamicNonlinearities
                 % The gap is peak to peak, thus we divide by 2
@@ -312,9 +312,9 @@ for i = 1:nstiffnessCombinations
             
             % Run the actual simulation
             if k == 1
-                out = sim(preprocessTimeMarchingOptions.simulinkModel,tmax);
+                out = sim(options.simulinkModel,tmax);
             else
-                out = sim(preprocessTimeMarchingOptions.simulinkModel,[out.tout(end),tmax]);
+                out = sim(options.simulinkModel,[out.tout(end),tmax]);
                 % Remove initial condition as this is already present in the
                 % previous output
                 out.modes.signals.values = out.modes.signals.values(2:end,:);
@@ -348,7 +348,7 @@ for i = 1:nstiffnessCombinations
                 out.unsteadyAerodynamicForces.signals.values.',out.quasisteadyAerodynamicForces.signals.values.',...
                 out.torque.signals.values.',out.rotationInTime.signals.values.',out.dynamicPressure.signals.values.',out.tout.'),
             
-            close_system(preprocessTimeMarchingOptions.simulinkModel,0)
+            close_system(options.simulinkModel,0)
             
             chdir(homeGap)
         end
