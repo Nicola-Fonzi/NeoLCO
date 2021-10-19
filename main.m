@@ -169,7 +169,7 @@ hold on
 index=1;
 for j = 1:length(kNominal)
     for k = 1:length(gapSizes)
-        plotHysteresis(flutterSpeed/stiffFlutterSpeed,amplitude(:,j,k).'./gapSizes(k),'--','LineWidth',1.5)
+        plotHysteresis(flutterSpeed,amplitude(:,j,k).'./gapSizes(k),'--','LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
         index=index+1;
     end
@@ -181,7 +181,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             temp = timeMarchingResults.LCOamplitude{i,j,k};
             toPlot(k) = temp(3);
         end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
             timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
@@ -197,7 +197,7 @@ figure
 hold on
 clear legendTitle
 index=1;
-plotHysteresis(flutterSpeed/stiffFlutterSpeed,flutterFrequency,'--','LineWidth',1.5)
+plotHysteresis(flutterSpeed,flutterFrequency,'--','LineWidth',1.5)
 legendTitle{index} = 'DF';
 index=index+1;
 
@@ -207,7 +207,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             [dummy , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
             freq(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
         end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,freq,'LineWidth',1.5)
+        plotHysteresis(timeMarchingOptions.speedVector,freq,'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -227,7 +227,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             temp = timeMarchingResults.LCOmonitor{i,j,k};
             toPlot(:,k) = temp(:,3);
         end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
             timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
@@ -248,7 +248,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             temp = timeMarchingResults.LCOmonitor{i,j,k};
             toPlot(:,k) = temp(:,1);
         end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
             timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM UpperLimit'] ;
         index=index+1;
@@ -256,7 +256,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             temp = timeMarchingResults.LCOmonitor{i,j,k};
             toPlot(:,k) = temp(:,2);
         end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
             timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM LowerLimit'] ;
         index=index+1;
@@ -265,4 +265,4 @@ end
 legend(legendTitle)
 ylabel('Monitor')
 xlabel('Speed [m/s]')
-saveas(gcf,"monitor.fig")
+saveas(gcf,"monitor2.fig")

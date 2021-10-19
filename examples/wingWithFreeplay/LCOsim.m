@@ -229,3 +229,33 @@ legend(legendTitle)
 ylabel('Monitor')
 xlabel('Speed [m/s]')
 saveas(gcf,"monitor.fig")
+
+figure
+hold on
+clear legendTitle temp
+index=1;
+for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
+    for j = 1:size(timeMarchingResults.gapCombinations,2)
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,1);
+        end
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM UpperLimit'] ;
+        index=index+1;
+        clear temp toPlot
+        for k = 1:timeMarchingOptions.nFFTwindows
+            temp = timeMarchingResults.LCOmonitor{i,j,k};
+            toPlot(:,k) = temp(:,2);
+        end
+        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
+            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM LowerLimit'] ;
+        index=index+1;
+    end
+end
+legend(legendTitle)
+ylabel('Monitor')
+xlabel('Speed [m/s]')
+saveas(gcf,"monitor2.fig")
