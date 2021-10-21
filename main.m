@@ -169,7 +169,7 @@ hold on
 index=1;
 for j = 1:length(kNominal)
     for k = 1:length(gapSizes)
-        plotHysteresis(flutterSpeed,amplitude(:,j,k).'./gapSizes(k),'--','LineWidth',1.5)
+        plotHysteresis(flutterSpeed,amplitude(:,j,k).'./gapSizes(k)*2,'--','LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
         index=index+1;
     end
@@ -182,7 +182,7 @@ for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
             toPlot(k) = temp(3);
         end
         plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+            timeMarchingResults.gapCombinations(:,j)*2,'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
         index=index+1;
     end
@@ -217,53 +217,52 @@ ylabel('Frequency [Hz]')
 xlabel('Speed [m/s]')
 saveas(gcf,"frequency.fig")
 
-figure
-hold on
-clear legendTitle
-index=1;
-for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
-    for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,3);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
-        index=index+1;
-    end
-end
-legend(legendTitle)
-ylabel('Monitor')
-xlabel('Speed [m/s]')
-saveas(gcf,"monitor.fig")
+colorTable = [ ...
+    0    0.4470    0.7410
+    0.8500    0.3250    0.0980
+    0.0000    0.5000    0.0000
+    0.9290    0.6940    0.1250
+    0.4940    0.1840    0.5560
+    0.4660    0.6740    0.1880
+    0.3010    0.7450    0.9330
+    0.6350    0.0780    0.1840
+    0.0000    0.0000    1.0000
+    1.0000    0.0000    0.0000
+    0.0000    1.0000    0.0000
+    0.6000    0.6000    0.6000
+    0.0000    0.0000    0.0000
+    0.5000    0.0000    0.8000
+    0.0000    0.4000    0.4000
+    ];
 
-figure
-hold on
 clear legendTitle temp
 index=1;
+iColor = 1;
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
         for k = 1:timeMarchingOptions.nFFTwindows
             temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,1);
+            toPlotUp(:,k) = temp(:,1);
+            toPlotDown(:,k) = temp(:,2);
         end
-        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
+        for y = 1:size(toPlotUp,1)
+            figure(y+100)
+            hold on
+            plotHysteresis(timeMarchingOptions.speedVector,toPlotUp(y,:)./...
+                timeMarchingResults.gapCombinations(:,j)*2,'LineWidth',1.5,'color',colorTable(iColor,:))
+            plotHysteresis(timeMarchingOptions.speedVector,toPlotDown(y,:)./...
+                timeMarchingResults.gapCombinations(:,j)*2,'LineWidth',1.5,'color',colorTable(iColor,:))
+        end
+        iColor = iColor+1;
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM UpperLimit'] ;
         index=index+1;
-        clear temp toPlot
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,2);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
         legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM LowerLimit'] ;
         index=index+1;
     end
 end
-legend(legendTitle)
-ylabel('Monitor')
-xlabel('Speed [m/s]')
-saveas(gcf,"monitor2.fig")
+for y = 1:size(toPlotUp,1)
+    legend(legendTitle)
+    ylabel(preprocessTimeMarchingOptions.monitorPoints(y,4))
+    xlabel('Speed [m/s]')
+    saveas(figure(y+100),strcat(preprocessTimeMarchingOptions.monitorPoints(y,4),".fig"))
+end
