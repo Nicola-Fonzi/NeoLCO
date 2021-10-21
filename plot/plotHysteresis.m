@@ -26,7 +26,7 @@ function plotHysteresis(x,y,varargin)
 % of x
 
 for i = 1:size(y,1)
-    quiver(x(1:end-1),y(i,1:end-1),diff(x),diff(y(i,:)),0,varargin{:},'MaxHeadSize',0.03);
+    quiver(x(1:end-1),y(i,1:end-1),diff(x),diff(y(i,:)),0,varargin{:},'MaxHeadSize',0.01*max(y(i,:)));
 end
 
 return
