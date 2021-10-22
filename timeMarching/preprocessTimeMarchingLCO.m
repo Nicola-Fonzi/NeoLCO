@@ -187,7 +187,8 @@ for iGap = 1:nNonlinearities
             case "freeplay"
                 add_block("dynamicFreeplay/dynamicGap",strcat(options.simulinkModel,"/nonlinearity/nonlinearity",num2str(iGap)),"position",[centerPosition(1), centerPosition(2)+2*dimensions(2)*(iGap-1), centerPosition(1)+dimensions(1), centerPosition(2)+dimensions(2)*(2*iGap-1)]);
                 set_param(strcat(nonlinearityBlock,"nonlinearity",num2str(iGap),"/stiffness"),"Gain",strcat("-stiffness(",num2str(iGap),")"));
-                set_param(strcat(nonlinearityBlock,"nonlinearity",num2str(iGap),"/nonlinearityIndex"),"Value",num2str(iGap));
+                set_param(strcat(nonlinearityBlock,"nonlinearity",num2str(iGap),"/freeplayVector"),"Value",strcat("freeplayVector{",num2str(iGap),"}"));
+                set_param(strcat(nonlinearityBlock,"nonlinearity",num2str(iGap),"/interpolationType"),"Value",strcat("options.gapInterpolationType(",num2str(iGap),")"));
             otherwise
                 error(strcat(options.gapBehaviour{iGap,1}," nonlinearity not yet supported"))
         end
