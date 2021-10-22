@@ -28,12 +28,13 @@ modesToPlotDF = 1:3;
 % INPUT FOR THE TIME MARCHING
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
 preprocessTimeMarchingOptions.gapPoints = {hingeScalarPoint,"s",0,"Aileron hinge"};
-preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''};
+preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''}; %{'freeplay','dynamic','increasing'};
 preprocessTimeMarchingOptions.monitorPoints = {100,'g',5,'Pitch';...
                                                100,'g',3,'Plunge'};
 
-timeMarchingOptions.gap = {2.3/180*pi};
+timeMarchingOptions.gap = {2.3/180*pi}; %{[1.15, 2.3]/180*pi};
 timeMarchingOptions.kNominal = {kNominal};
+%timeMarchingOptions.gapInterpolationType = 0;
 timeMarchingOptions.rho = flutterOptions.rho;
 timeMarchingOptions.speedVector = (1:18);
 timeMarchingOptions.speedInterpolationType = 0;

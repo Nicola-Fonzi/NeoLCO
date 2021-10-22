@@ -230,9 +230,9 @@ for i = 1:nstiffnessCombinations
             qInitial(modelForIntegration.nStru+1:end) = modelForIntegration.Ugap\gapCombinations(:,j)/2*options.initialAmplitude;
         else
             fileid = fopen('README.txt','a');
-            fprintf(fileid,"A dynamic gap was requested, thus only a single time marching simulation is performed");
-            fprintf(fileid,"If more combinations of static gap are of interest, set all of them to static in the inputs");
-            fprintf(fileid,"In this way the code will compute all the possible combinations and perform a simulation per each of them");
+            fprintf(fileid,"\nA dynamic gap was requested, thus only a single time marching simulation is performed");
+            fprintf(fileid,"\nIf more combinations of static gap are of interest, set all of them to static in the inputs");
+            fprintf(fileid,"\nIn this way the code will compute all the possible combinations and perform a simulation per each of them");
             fclose(fileid);
             % Note that this is a pseudo inverse
             initialGapVector = cellfun(@(x) x(1),options.gapVector);
