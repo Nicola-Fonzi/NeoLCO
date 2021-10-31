@@ -23,7 +23,7 @@ function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, struD
 %
 % This function assumes that a modal base has already
 % been defined, and the aerodynamic database has also been built with
-% previous flutter analysis
+% previous flutter and trim analysis
 %
 % The points where a nonlinearity must be added, should be in the free
 % condition. That is, no stiffness should be associated with them. Also, if
@@ -33,7 +33,7 @@ function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, struD
 %
 % The function will create the state-space model for the aerodynamic, it
 % will create the simulink model for integration, and it will double check
-% the aerodynamic approximation
+% the aerodynamic approximation.
 %
 % The resulting model used for integration misses only some parameters,
 % like the nominal stiffness at the nonlinearity points, and the other
@@ -50,6 +50,9 @@ function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, struD
 iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'fid for screen printing. [1].';
 % Options for the state-space realisation
+iOpt = iOpt+1; baseOpt.DynVLM = false;                descr{iOpt} = 'Request the use of the VLM corrected matrices for unsteady analysis. [false].';
+iOpt = iOpt+1; baseOpt.DynVLMtype = 'unsteady';       descr{iOpt} = 'Type of unsteady VLM correction to be applied';
+iOpt = iOpt+1; baseOpt.selectionTrim = [];            descr{iOpt} = 'Selected trim case to be used when correcting the matrices with VLM results. [].';
 iOpt = iOpt+1; baseOpt.machNumber = [];               descr{iOpt} = 'Mach number to be used for the state-space approximation of the aerodynamics. [].';
 iOpt = iOpt+1; baseOpt.eigsopt.threshold = 0;         descr{iOpt} = 'Options for improvedMFDfun. See that function for details. [0].';
 iOpt = iOpt+1; baseOpt.eigsopt.bound = -1e-4;         descr{iOpt} = 'Options for improvedMFDfun. See that function for details. [-1e-4].';
@@ -79,6 +82,13 @@ if isempty(options.gapPoints) || isempty(options.gapBehaviour)
     error("You probably forgot to set the gapPoints option, identifying where nonlinearities are present, or their behaviour")
 end
 
+if length(options.selectionTrim)>1
+    error("Only one trim condition can be specified to be used for the correction via VLM of the DLM matrices")
+end
+
+if any(cellfun(@(x) strcmp(x,"dynamic"),options.gapBehaviour(:,2))) && any(cellfun(@(x) strcmp(x,"static"),options.gapBehaviour(:,2)))
+    error("A combination of static and dynamic gap must be set by requesting all dynamic gaps, but setting only one gap size for the ones we want to remain fixed")
+end
 
 nonlinearityBlock = strcat(options.simulinkModel,"/nonlinearity/");
 nNonlinearities = size(options.gapPoints,1);
@@ -86,40 +96,19 @@ nNonlinearities = size(options.gapPoints,1);
 mkdir("TimeMarching")
 chdir("TimeMarching")
 
+%% Generate the DLM matrices if not present already
+
+if ~isfield(aeroData, 'aeroMatrix_dlm')
+    aeroOptions.gustShape = [];
+    aeroData.aeroMatrix_dlm = getDLMmatrices(options.fidScreen, aeroData.dlmData, model, aeroData.lattice_dlm, ...
+	                                aeroData.interpData_flat, ...
+	                                aeroData.interpMat_dlm.IcList, struData, ...
+	                                reducedBasis, aeroOptions);
+end
+
 %% State-space approximation of aerodynamics
 
-if isempty(options.machNumber)
-    % If not specified, we use the first Mach number
-    machUsed = 1;
-else
-    machUsed = aeroData.dlmData.aero.M==options.machNumber;
-end
-Ha = aeroData.aeroMatrix_dlm.aeroMatrix.Qhh(:,:,:,machUsed); % NOTE: This is inertial frame, a conversion is needed otherwise
-k = aeroData.aeroMatrix_dlm.aero.k;
-
-chosenModes = [];
-for modeIndex = 1:size(Ha,1)
-    plotLinearDispl(model,[],struData,reducedBasis,modeIndex,0.1);
-    use = input("Use this mode?");
-    while use~=1 && use~=0
-      disp("Wrong selection, please use [1] if you want to use the mode, or [0] if not")
-      use = input("Use this mode?");
-    end
-    if use
-        chosenModes = [chosenModes modeIndex];
-        h = gcf;
-        saveas(h,strcat("Mode",num2str(modeIndex),"--used.fig"));
-        close
-    else
-        h = gcf;
-        saveas(h,strcat("Mode",num2str(modeIndex),".fig"));
-        close
-    end
-end
-
-Ha = Ha(chosenModes,chosenModes,:);
-
-solution = improvedMFDfun(k,Ha,options.opt,options.optsLM,options.eigsopt,options.algROM,[],[]);
+[solution, chosenModes, machUsed, k, Ha, selectedTrim] = convertAeroInSS(aeroData, model, struData, reducedBasis, options);
 
 %% Create the system for the simulink model
 
@@ -159,6 +148,7 @@ modelForIntegration.lref = aeroData.aeroMatrix_dlm.aero.lref;
 modelForIntegration.reducedBasis.V = reducedBasis.V(:,chosenModes);
 modelForIntegration.aeroData = aeroData;
 modelForIntegration.machUsed = machUsed;
+modelForIntegration.selectedTrim = selectedTrim;
 modelForIntegration.struData = struData;
 modelForIntegration.model = model;
 modelForIntegration.globalOptions = globalOptions;
