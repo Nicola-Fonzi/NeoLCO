@@ -45,9 +45,9 @@ if strcmp(type,'maxPeak')
 elseif strcmp(type,'rms')
     output = findRmsMatrix(values);
 elseif strcmp(type,'std')
-    output(1) = std(values,[],2);
-    output(2) = output(1);
-    output(3) = output(1);
+    output(:,1) = std(values,[],2);
+    output(:,2) = output(:,1);
+    output(:,3) = output(:,1);
 else
     error("No type of amplitude definition specified")
 end
