@@ -109,8 +109,8 @@ fprintf(fid,'%% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale  
 fprintf(fid,'%% Via La Masa 34, 20156 Milano - ITALY                                         *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *\n');
-fprintf(fid,'%% You are not authorized to use, distribute, or modify this file in any way,   *\n');
-fprintf(fid,'%% unless explicitly decleared otherwise by the copyright owner.                *\n');
+fprintf(fid,'%% You are not entitled to use, distribute, or modify this file in any way,     *\n');
+fprintf(fid,'%% unless explicitly authorized by the copyright owner.                         *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%*******************************************************************************\n');
 if nargin == 3 && longerHeader
