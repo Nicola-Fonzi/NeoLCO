@@ -39,13 +39,19 @@ for indexinput = 1:size(H,2)
             temp(i) = Ha(indexoutput,indexinput,i);
         end
         figure
+        set(gcf,"name",strcat("Transfer function with input ",num2str(indexinput)," and output ",num2str(indexoutput)))
         plot(imag(s),imag(toPlot))
         hold on
         plot(imag(s),imag(temp))
+        xlabel("Reduced frequency divided by reference length")
+        ylabel("Imaginary part")
         figure
+        set(gcf,"name",strcat("Transfer function with input ",num2str(indexinput)," and output ",num2str(indexoutput)))
         plot(imag(s),real(toPlot))
         hold on
         plot(imag(s),real(temp))
+        xlabel("Reduced frequency divided by reference length")
+        ylabel("Real part")
     end
 end
 
