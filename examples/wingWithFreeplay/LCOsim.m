@@ -31,7 +31,7 @@ aeroDatabaseOptions.DynVLMtype = 'unsteady';
 
 % Input for the time marching
 preprocessTimeMarchingOptions.DynVLM = false;
-preprocessTimeMarchingOptions.DynVLMtype = aeroDatabaseOptions;
+preprocessTimeMarchingOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
 preprocessTimeMarchingOptions.selectionTrim = 1; % This selection is used for the dyn VLM
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
 preprocessTimeMarchingOptions.gapPoints = optimalBaseOptions.gapPoints;
@@ -56,6 +56,7 @@ timeMarchingOptions.selectionTrim = 1; % This selection is used for the flight l
 % Input for the describing function
 describingFunctionsOptions.gapPoints = optimalBaseOptions.gapPoints;
 describingFunctionsOptions.DynVLM = false;
+describingFunctionsOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
 describingFunctionsOptions.selectionTrim = 1; % This selection is used for the dyn VLM
 describingFunctionsOptions.recomputeBase = false;
 describingFunctionsOptions.searchQuenchPoint = true;
