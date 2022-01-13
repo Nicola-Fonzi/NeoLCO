@@ -15,8 +15,8 @@
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 % This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
-% You are not authorized to use, distribute, or modify this file in any way,   *
-% unless explicitly decleared otherwise by the copyright owner.                *
+% You are not entitled to use, distribute, or modify this file in any way,     *
+% unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
 function [reducedBasis, struData, model, struData_stiff, model_stiff, globalOptions] = obtainOptimalBase(inputData, options)
@@ -270,7 +270,7 @@ subplot(4,2,5)
 frf_free_common = computeFRF(w,struData,resultsEig_common,nonlinearityDOF);
 frf_free = computeFRF(w,struData,resultsEig,nonlinearityDOF);
 frfError_free = computeFRFerror(frf_free_common, frf_free, "full");
-semilogy(w/2/pi,frfError_free,'LineWidth',2)
+semilogy(w/2/pi,reshape(frfError_free,size(frfError_free,1)*size(frfError_free,2),length(w)),'LineWidth',2)
 xlabel("Frequency [Hz]")
 ylabel("FRF error [%]")
 title("Free")
@@ -282,7 +282,7 @@ subplot(4,2,6)
 frf_stiff_common = computeFRF(w,struData_stiff,resultsEig_common,nonlinearityDOF);
 frf_stiff = computeFRF(w,struData_stiff,resultsEig_stiff,nonlinearityDOF);
 frfError_stiff = computeFRFerror(frf_stiff_common, frf_stiff, "full");
-semilogy(w/2/pi,frfError_stiff,'LineWidth',2)
+semilogy(w/2/pi,reshape(frfError_stiff,size(frfError_stiff,1)*size(frfError_stiff,2),length(w)),'LineWidth',2)
 xlabel("Frequency [Hz]")
 ylabel("FRF error [%]")
 title("Stiff")
@@ -292,7 +292,7 @@ frequencyResponseErrorStiff(nModes==options.nModes,stiffnessFactor==options.stif
 subplot(4,2,7)
 frf_free_common_RB = computeFRF(w,struData,reducedBasis_common,nonlinearityDOF);
 frfError_free_RB = computeFRFerror(frf_free_common_RB, frf_free, "full");
-semilogy(w/2/pi,frfError_free_RB,'LineWidth',2)
+semilogy(w/2/pi,reshape(frfError_free_RB,size(frfError_free_RB,1)*size(frfError_free_RB,2),length(w)),'LineWidth',2)
 xlabel("Frequency [Hz]")
 ylabel("FRF error [%]")
 title("Free")
@@ -302,7 +302,7 @@ frequencyResponseErrorFree_RB(nModes==options.nModes,stiffnessFactor==options.st
 subplot(4,2,8)
 frf_stiff_common_RB = computeFRF(w, struData_stiff, reducedBasis_common, nonlinearityDOF);
 frfError_stiff_RB = computeFRFerror(frf_stiff_common_RB, frf_stiff, "full");
-semilogy(w/2/pi,frfError_stiff_RB,'LineWidth',2)
+semilogy(w/2/pi,reshape(frfError_stiff_RB,size(frfError_stiff_RB,1)*size(frfError_stiff_RB,2),length(w)),'LineWidth',2)
 xlabel("Frequency [Hz]")
 ylabel("FRF error [%]")
 title("Stiff")
@@ -329,13 +329,13 @@ if size(frf) ~= size(frfReference)
     error("Wrong size for the two frequency response matrices")
 end
 
-err = nan(size(frf,3),1);
+err = nan(size(frf));
 for w = 1:size(frf,3)
-    err(w) = sqrt(sum(sum(((frf(:,:,w)-frfReference(:,:,w))./frfReference(:,:,w)*100).^2/(size(frf,1)*size(frf,2)))));
+    err(:,:,w) = abs((frf(:,:,w)-frfReference(:,:,w))./frfReference(:,:,w))*100;
 end
 
 if strcmp(type,"condensed")
-    err = sum(err)/sqrt(size(frf,3));
+    err = sqrt( sum(sum(sum(err.^2))) / (size(frf,1)*size(frf,2)*size(frf,3)) );
 end
 
 return
@@ -345,29 +345,24 @@ function plotSurfError(data,options,label)
 for imodes = 1:length(options.nModes)
     
     figure
-    surf(log10(options.fictitiousMass),log10(options.stiffnessFactor),log10(squeeze(data(imodes,:,:))),'LineWidth',2)
+    if max(max(data(imodes,:,:)))/min(min(data(imodes,:,:))) > 50
+        surf(log10(options.fictitiousMass),log10(options.stiffnessFactor),log10(squeeze(data(imodes,:,:))),'LineWidth',2)
+    else
+        surf(log10(options.fictitiousMass),log10(options.stiffnessFactor),squeeze(data(imodes,:,:)),'LineWidth',2)
+    end
     xlabel("Fictitious mass")
     ylabel("Stiffness factor")
+    zlabel("Percentage error")
     title(strcat(label,"; Number modes = ",num2str(options.nModes(imodes))));
-    theCurrentAxis = gca;
-    for i = 1:length(theCurrentAxis.XTickLabel)
-        Scaled(i)=str2double(theCurrentAxis.XTickLabel{i});
-        Label{i} = num2str(10^Scaled(i));
+    set(gca,'XTickLabel',options.fictitiousMass);
+    set(gca,'XTick',log10(options.fictitiousMass));
+    set(gca,'YTickLabel',options.stiffnessFactor);
+    set(gca,'YTick',log10(options.stiffnessFactor));
+    if max(max(data(imodes,:,:)))/min(min(data(imodes,:,:))) > 50
+        zvector = logspace(floor(log10(min(min(data(imodes,:,:))))),ceil(log10(max(max(data(imodes,:,:))))),5);
+        set(gca,'ZTickLabel',zvector);
+        set(gca,'ZTick',log10(zvector));
     end
-    set(gca,'XTickLabel',Label);
-    clear Scaled Label
-    for i = 1:length(theCurrentAxis.YTickLabel)
-        Scaled(i)=str2double(theCurrentAxis.YTickLabel{i});
-        Label{i} = num2str(10^Scaled(i));
-    end
-    set(gca,'YTickLabel',Label);
-    clear Scaled Label
-    for i = 1:length(theCurrentAxis.ZTickLabel)
-        Scaled(i)=str2double(theCurrentAxis.ZTickLabel{i});
-        Label{i} = num2str(10^Scaled(i));
-    end
-    set(gca,'ZTickLabel',Label);
-    clear Scaled Label
     
     saveas(gcf,strcat(label,"nModes=",num2str(options.nModes(imodes)),".fig"))
     

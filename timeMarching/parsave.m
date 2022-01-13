@@ -15,8 +15,8 @@
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 % This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
-% You are not authorized to use, distribute, or modify this file in any way,   *
-% unless explicitly decleared otherwise by the copyright owner.                *
+% You are not entitled to use, distribute, or modify this file in any way,     *
+% unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
 function parsave(fname, modes, quasiSteadyAerodynamicForces, unsteadyAerodynamicForces, torque, rotationInTime, dynamicPressure, tout)

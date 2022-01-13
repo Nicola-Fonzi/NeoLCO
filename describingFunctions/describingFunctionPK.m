@@ -1,10 +1,35 @@
+%*******************************************************************************
+%                                                                              *
+%                    _   _            _     ____ ___                           *
+%                   | \ | | ___  ___ | |   / ___/ _ \                          *
+%                   |  \| |/ _ \/ _ \| |  | |  | | | |                         *
+%                   | |\  |  __/ (_) | |__| |__| |_| |                         *
+%                   |_| \_|\___|\___/|_____\____\___/                          *
+%                                                                              *
+%                                                                              *
+% Copyright (C) 2020 - 2021                                                    *
+%                                                                              *
+% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+%                                                                              *
+% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
+% Via La Masa 34, 20156 Milano - ITALY                                         *
+%                                                                              *
+% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
+% You are not entitled to use, distribute, or modify this file in any way,     *
+% unless explicitly authorized by the copyright owner.                         *
+%                                                                              *
+%*******************************************************************************
 function results = describingFunctionPK(model, struData, aeroData, reducedBasis, globalOptions, aeroDatabaseOptions, options)
+
+%% Initialise variables
 
 KeqVect = [];
 indexK = 1;
 deltaK = options.maxKeq/options.maxNKeq;
 Keq_prev = -deltaK;
 reachedMinKeq = false;
+
+%% Loop to solve the flutter equations
 
 while true
     
@@ -72,13 +97,15 @@ while true
     end
 end
 
+%% Plot the quasi-linear flutter results
+
 plotOption.modeRequested = options.modesPlot;
 plotOption.plotEnvelope = true;
 plotOption.envelopeLabel = "Equivalent stiffness";
 plotOption.envelopeMeasureUnit = "Nm";
 plotOption.envelopeList = KeqVect;
 
-[flutterSpeed, flutterFrequency] = plotVgDiagrams(resultsFlutter, plotOption);
+[speedVector, LCOfrequency] = plotVgDiagrams(resultsFlutter, plotOption);
 
 handles=findall(0,'type','figure');
 
@@ -103,8 +130,34 @@ end
 
 clear h handles
 
+%% Reconstruct LCO amplitude
+amplitudeRatioDB = linspace(1/5,1,1000);
+index = 1;
+for i = amplitudeRatioDB
+    kRatioDB(index) = 1/pi*(pi - 2*asin(i) + sin(2*asin(i))) - 4/pi*i*cos(asin(i));
+    index = index + 1;
+end
+
+kNominal = options.kNominal{1};
+gap = options.gap{1};
+
+for i = 1:length(kNominal)
+    for j = 1:length(gap)
+        for k = 1:length(KeqVect)
+            FFF = KeqVect(k)/kNominal(i);
+            amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,FFF,'linear','extrap');
+            if strcmp(options.amplitudeDefinition,'maxPeak')
+                LCOamplitude(i,j,k) = amplitudeRatio*gap(j)/2;
+            else
+                LCOamplitude(i,j,k) = amplitudeRatio/sqrt(2)*gap(j)/2;
+            end
+        end
+    end
+end
+
 results.KeqVect = KeqVect;
-results.speedVector = flutterSpeed;
-results.frequencyVector = flutterFrequency;
+results.amplitude = LCOamplitude;
+results.speedVector = speedVector;
+results.frequencyVector = LCOfrequency;
 
 return

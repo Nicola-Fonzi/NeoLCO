@@ -15,8 +15,8 @@
 % Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 % This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
-% You are not authorized to use, distribute, or modify this file in any way,   *
-% unless explicitly decleared otherwise by the copyright owner.                *
+% You are not entitled to use, distribute, or modify this file in any way,     *
+% unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
 function plotTimeMarchingOutputs(time,rotation,torque,modes,pdyn,processedFrequency,modelIntegration,options)
@@ -57,7 +57,7 @@ end
 figure('name','Main frequency of LCO')
 plot(processedFrequency.fVect,processedFrequency.pVect,'LineWidth',1.5)
 xlabel("Frequency [Hz]","FontSize",24)
-ylabel("Amplitude [deg]","FontSize",24)
+ylabel("Amplitude","FontSize",24)
 saveas(gcf,"FFT.fig")
 close
 

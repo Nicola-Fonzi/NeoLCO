@@ -34,7 +34,7 @@ aeroDatabaseOptions.DynVLMtype = 'unsteady';
 
 % Inputs for the time marching approach
 preprocessTimeMarchingOptions.DynVLM = false;
-preprocessTimeMarchingOptions.DynVLMtype = aeroDatabaseOptions;
+preprocessTimeMarchingOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
 preprocessTimeMarchingOptions.selectionTrim = 1;
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
 preprocessTimeMarchingOptions.gapPoints = optimalBaseOptions.gapPoints;
@@ -59,17 +59,24 @@ timeMarchingOptions.trimType = 'grounded';
 timeMarchingOptions.selectionTrim = 1;
 
 % Inputs for the describing function approach
-recomputeBase = false;
-searchFlutterQuenchingPoint = true;
-maxKeq = 1.8;
-maxNumberKeq = 25;
-flutterOptions.Vmax = 70;
-flutterOptions.Vmin = 5;
-flutterOptions.Vstep = 0.5;
-flutterOptions.method = 'PK0';
-flutterOptions.rho = airDensity;
-modesToPlotDF = 1:8;
-flutterOptions.axesUsed = 'body';
+describingFunctionsOptions.gapPoints = optimalBaseOptions.gapPoints;
+describingFunctionsOptions.gap = timeMarchingOptions.gap;
+describingFunctionsOptions.kNominal = timeMarchingOptions.kNominal;
+describingFunctionsOptions.amplitudeDefinition = timeMarchingOptions.amplitudeDefinition;
+describingFunctionsOptions.DynVLM = false;
+describingFunctionsOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
+describingFunctionsOptions.selectionTrim = 1;
+describingFunctionsOptions.recomputeBase = false;
+describingFunctionsOptions.searchQuenchPoint = true;
+describingFunctionsOptions.maxKeq = kNominal;
+describingFunctionsOptions.maxNKeq = 25;
+describingFunctionsOptions.Vmax = 70;
+describingFunctionsOptions.Vmin = 5;
+describingFunctionsOptions.Vstep = 0.5;
+describingFunctionsOptions.method = 'PK0';
+describingFunctionsOptions.rho = airDensity;
+describingFunctionsOptions.modesPlot = 1:8;
+describingFunctionsOptions.axesUsed = 'body';
 
 %% Loading of the model
 
@@ -77,34 +84,17 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Generate common basis
 
-[reducedBasis, struData, model, struData_stiff, model_stiff, resultsFolder, options] = obtainOptimalBase(inputData, optimalBaseOptions);
-
-reducedBasis.Bmm = modalDamp(model, reducedBasis.V'*struData.Mzz*reducedBasis.V, reducedBasis.V'*struData.Kzz*reducedBasis.V,'Real');
-
-mkdir(resultsFolder)
-chdir(resultsFolder)
+[reducedBasis, struData, model, struData_stiff, model_stiff, options] = obtainOptimalBase(inputData, optimalBaseOptions);
 
 %% Generate aerodynamic database
 
-[aeroData, options] = buildFullAeroData(model, model_stiff, struData_stiff, options, aeroDatabaseOptions);
+[aeroData, aeroDatabaseOptions] = buildFullAeroData(model, model_stiff, struData_stiff, options, aeroDatabaseOptions);
 
 %% Different equivalent stifnesses
 
-flutterOptions.Mlist_dlm = options.aero.Mlist_dlm;
-flutterOptions.klist = options.aero.klist;
+[describingFunctionResults, describingFunctionsOptions] = describingFunctions(model, struData, aeroData, options, reducedBasis, aeroDatabaseOptions, describingFunctionsOptions);
 
-if recomputeBase
-    reducedBasis = [];
-end
-
-[flutterSpeed, flutterFrequency, KeqVect, resultsFlutter, aeroData] = describingFunctionsPK(maxKeq, maxNumberKeq, inputData, HINGE_CELAS_ID, hingeScalarPoint, struOpt, fid, eigOpt, ...
-    recomputeBase, flutterOptions, reducedBasis, searchFlutterQuenchingPoint, modesToPlotDF);
-
-if recomputeBase
-    return
-end
-
-%% Here we try to reproduce the same using a time marching simulation
+%% Time marching simulation
 
 [modelForIntegration, preprocessTimeMarchingOptions] = preprocessTimeMarchingLCO(model, struData, preprocessTimeMarchingOptions, reducedBasis, aeroData, options);
 
@@ -112,40 +102,12 @@ end
 
 %% Now, we plot
 
-% First, at each flutter speed we extract the amplitude from the Keq
-% Create database
-amplitudeRatioDB = linspace(1/5,1,1000);
-index = 1;
-for i = amplitudeRatioDB
-    kRatioDB(index) = 1/pi*(pi - 2*asin(i) + sin(2*asin(i))) - 4/pi*i*cos(asin(i));
-    index = index + 1;
-end
-
-for i = 1:length(KeqVect)
-    for j = 1:length(kNominal)
-        gapSizes = timeMarchingOptions.gap{1};
-        for k = 1:length(gapSizes)
-            FFF = KeqVect(i)/kNominal(j);
-            amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,FFF,'linear','extrap');
-            if strcmp(timeMarchingOptions.amplitudeDefinition,'maxPeak')
-                amplitude(i,j,k) = amplitudeRatio*gapSizes(k)/2;
-            else
-                amplitude(i,j,k) = amplitudeRatio/sqrt(2)*gapSizes(k)/2;
-            end
-        end
-    end
-end
-
 figure
 hold on
 index=1;
-for j = 1:length(kNominal)
-    for k = 1:length(gapSizes)
-        plotHysteresis(flutterSpeed,amplitude(:,j,k).'./gapSizes(k)*2,'--','LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
-        index=index+1;
-    end
-end
+plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.LCOamplitude{1,1,:}.'./describingFunctionsOptions.gap{1}(1)*2,'--','LineWidth',1.5)
+legendTitle{index} = 'DF' ;
+index=index+1;
 
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
@@ -169,7 +131,7 @@ figure
 hold on
 clear legendTitle
 index=1;
-plotHysteresis(flutterSpeed,flutterFrequency,'--','LineWidth',1.5)
+plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.frequencyVector,'--','LineWidth',1.5)
 legendTitle{index} = 'DF';
 index=index+1;
 

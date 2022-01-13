@@ -55,6 +55,8 @@ timeMarchingOptions.selectionTrim = 1; % This selection is used for the flight l
 
 % Input for the describing function
 describingFunctionsOptions.gapPoints = optimalBaseOptions.gapPoints;
+describingFunctionsOptions.gap = timeMarchingOptions.gap;
+describingFunctionsOptions.KNominal = timeMarchingOptions.KNominal;
 describingFunctionsOptions.DynVLM = false;
 describingFunctionsOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
 describingFunctionsOptions.selectionTrim = 1; % This selection is used for the dyn VLM
@@ -94,40 +96,12 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Now, we plot
 
-% First, at each flutter speed we extract the amplitude from the Keq
-% Create database
-amplitudeRatioDB = linspace(1/5,1,1000);
-index = 1;
-for i = amplitudeRatioDB
-    kRatioDB(index) = 1/pi*(pi - 2*asin(i) + sin(2*asin(i))) - 4/pi*i*cos(asin(i));
-    index = index + 1;
-end
-
-for i = 1:length(describingFunctionResults.KeqVect)
-    for j = 1:length(kNominal)
-        gapSizes = timeMarchingOptions.gap{1};
-        for k = 1:length(gapSizes)
-            FFF = describingFunctionResults.KeqVect(i)/kNominal(j);
-            amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,FFF,'linear','extrap');
-            if strcmp(timeMarchingOptions.amplitudeDefinition,'maxPeak')
-                amplitude(i,j,k) = amplitudeRatio*gapSizes(k)/2;
-            else
-                amplitude(i,j,k) = amplitudeRatio/sqrt(2)*gapSizes(k)/2;
-            end
-        end
-    end
-end
-
 figure
 hold on
 index=1;
-for j = 1:length(kNominal)
-    for k = 1:length(gapSizes)
-        plotHysteresis(describingFunctionResults.speedVector/stiffFlutterSpeed,amplitude(:,j,k).'./gapSizes(k),'--','LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(gapSizes(k)),' Kn ',num2str(kNominal(j)),' DF'] ;
-        index=index+1;
-    end
-end
+plotHysteresis(describingFunctionResults.speedVector/stiffFlutterSpeed,describingFunctionResults.LCOamplitude{1,1,:}.'./describingFunctionsOptions.gap{1}(1)*2,'--','LineWidth',1.5)
+legendTitle{index} = 'DF' ;
+index=index+1;
 
 for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
     for j = 1:size(timeMarchingResults.gapCombinations,2)
