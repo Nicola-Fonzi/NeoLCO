@@ -1,8 +1,10 @@
 $ Femap Constraint Set 1 : ground
 SPC1           1  123456       1
+SPC = 1
 $ Femap Constraint Set 1 : ground
 MPC            1     510       5      1.   45000       5     -1.        +       
 +                  54000       0     -1.
+MPC = 1
 GRID           1       0   .0635     .26      0.       0
 GRID         100       0   .0635     .26      0.       0
 GRID         200       0      0.      0.      0.       0

@@ -40,7 +40,7 @@ preprocessTimeMarchingOptions.monitorPoints = {100,'g',5,'Pitch';...
                                                100,'g',3,'Plunge'};
 timeMarchingOptions.gap = {2.3/180*pi}; %{[1.15, 2.3]/180*pi};
 timeMarchingOptions.kNominal = optimalBaseOptions.kNominal;
-%timeMarchingOptions.gapInterpolationType = 0;
+timeMarchingOptions.gapInterpolationType = 0;
 timeMarchingOptions.rho = airDensity;
 timeMarchingOptions.speedVector = (1:18);
 timeMarchingOptions.speedBehaviour = 'both'; % The behaviour of speed can be easily changed without rebuilding the model
@@ -54,23 +54,27 @@ timeMarchingOptions.trimType = 'grounded';
 timeMarchingOptions.selectionTrim = 1; % This selection is used for the flight loads
 
 % Input for the describing function
-describingFunctionsOptions.gapPoints = optimalBaseOptions.gapPoints;
-describingFunctionsOptions.gap = timeMarchingOptions.gap;
-describingFunctionsOptions.KNominal = timeMarchingOptions.KNominal;
-describingFunctionsOptions.DynVLM = false;
-describingFunctionsOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
-describingFunctionsOptions.selectionTrim = 1; % This selection is used for the dyn VLM
-describingFunctionsOptions.recomputeBase = false;
-describingFunctionsOptions.searchQuenchPoint = true;
-describingFunctionsOptions.maxKeq = kNominal;
-describingFunctionsOptions.maxNKeq = 25;
-describingFunctionsOptions.Vmax = 18;
-describingFunctionsOptions.Vmin = 5;
-describingFunctionsOptions.Vstep = 0.25;
-describingFunctionsOptions.method = 'PK0';
-describingFunctionsOptions.rho = airDensity;
-describingFunctionsOptions.modesPlot = 1:3;
-describingFunctionsOptions.axesUsed = 'body';
+describingFunctionOptions.gapPoints = optimalBaseOptions.gapPoints;
+describingFunctionOptions.gap = timeMarchingOptions.gap;
+describingFunctionOptions.kNominal = timeMarchingOptions.kNominal;
+describingFunctionOptions.DynVLM = false;
+describingFunctionOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
+describingFunctionOptions.selectionTrim = 1; % This selection is used for the dyn VLM
+describingFunctionOptions.recomputeBase = false;
+describingFunctionOptions.searchQuenchPoint = true;
+describingFunctionOptions.maxKeq = kNominal;
+describingFunctionOptions.nKeq = 25;
+describingFunctionOptions.Vmax = 18;
+describingFunctionOptions.Vmin = 5;
+describingFunctionOptions.Vstep = 0.25;
+describingFunctionOptions.method = 'PK0';
+describingFunctionOptions.rho = airDensity;
+describingFunctionOptions.modesPlot = 1:3;
+describingFunctionOptions.axesUsed = 'body';
+
+plotOptions.halfGapNormalisation = 0;
+plotOptions.normalisationSpeed = stiffFlutterSpeed;
+plotOptions.monitorNormalisation = 0;
 
 %% Loading of the model
 
@@ -86,7 +90,7 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Different equivalent stifnesses
 
-[describingFunctionResults, describingFunctionsOptions] = describingFunctions(model, struData, aeroData, options, reducedBasis, aeroDatabaseOptions, describingFunctionsOptions);
+[describingFunctionResults, describingFunctionOptions] = describingFunctions(model, struData, aeroData, options, reducedBasis, aeroDatabaseOptions, describingFunctionOptions);
 
 %% Time marching simulation
 
@@ -96,102 +100,5 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Now, we plot
 
-figure
-hold on
-index=1;
-plotHysteresis(describingFunctionResults.speedVector/stiffFlutterSpeed,describingFunctionResults.LCOamplitude{1,1,:}.'./describingFunctionsOptions.gap{1}(1)*2,'--','LineWidth',1.5)
-legendTitle{index} = 'DF' ;
-index=index+1;
-
-for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
-    for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOamplitude{i,j,k};
-            toPlot(k) = temp(3);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
-        index=index+1;
-    end
-end
-toPlot = [];
-legend(legendTitle)
-ylabel('\delta/\delta_{Gap}')
-xlabel('Speed [m/s]')
-saveas(gcf,"amplitude.fig")
-
-figure
-hold on
-clear legendTitle
-index=1;
-plotHysteresis(describingFunctionResults.speedVector/stiffFlutterSpeed,describingFunctionResults.frequencyVector,'--','LineWidth',1.5)
-legendTitle{index} = 'DF';
-index=index+1;
-
-for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
-    for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingOptions.nFFTwindows
-            [dummy , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
-            freq(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,freq,'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
-        index=index+1;
-    end
-end
-legend(legendTitle)
-ylabel('Frequency [Hz]')
-xlabel('Speed [m/s]')
-saveas(gcf,"frequency.fig")
-
-figure
-hold on
-clear legendTitle
-index=1;
-for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
-    for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,3);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'] ;
-        index=index+1;
-    end
-end
-legend(legendTitle)
-ylabel('Monitor')
-xlabel('Speed [m/s]')
-saveas(gcf,"monitor.fig")
-
-figure
-hold on
-clear legendTitle temp
-index=1;
-for i = 1:size(timeMarchingResults.stiffnessCombinations,2)
-    for j = 1:size(timeMarchingResults.gapCombinations,2)
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,1);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM UpperLimit'] ;
-        index=index+1;
-        clear temp toPlot
-        for k = 1:timeMarchingOptions.nFFTwindows
-            temp = timeMarchingResults.LCOmonitor{i,j,k};
-            toPlot(:,k) = temp(:,2);
-        end
-        plotHysteresis(timeMarchingOptions.speedVector/stiffFlutterSpeed,toPlot./...
-            timeMarchingResults.gapCombinations(:,j),'LineWidth',1.5)
-        legendTitle{index} = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM LowerLimit'] ;
-        index=index+1;
-    end
-end
-legend(legendTitle)
-ylabel('Monitor')
-xlabel('Speed [m/s]')
-saveas(gcf,"monitor2.fig")
+mainPlotRoutine(describingFunctionResults, describingFunctionOptions, ...
+    timeMarchingResults, timeMarchingOptions, plotOptions)

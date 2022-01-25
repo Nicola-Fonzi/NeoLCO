@@ -59,24 +59,24 @@ timeMarchingOptions.trimType = 'grounded';
 timeMarchingOptions.selectionTrim = 1;
 
 % Inputs for the describing function approach
-describingFunctionsOptions.gapPoints = optimalBaseOptions.gapPoints;
-describingFunctionsOptions.gap = timeMarchingOptions.gap;
-describingFunctionsOptions.kNominal = timeMarchingOptions.kNominal;
-describingFunctionsOptions.amplitudeDefinition = timeMarchingOptions.amplitudeDefinition;
-describingFunctionsOptions.DynVLM = false;
-describingFunctionsOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
-describingFunctionsOptions.selectionTrim = 1;
-describingFunctionsOptions.recomputeBase = false;
-describingFunctionsOptions.searchQuenchPoint = true;
-describingFunctionsOptions.maxKeq = kNominal;
-describingFunctionsOptions.maxNKeq = 25;
-describingFunctionsOptions.Vmax = 70;
-describingFunctionsOptions.Vmin = 5;
-describingFunctionsOptions.Vstep = 0.5;
-describingFunctionsOptions.method = 'PK0';
-describingFunctionsOptions.rho = airDensity;
-describingFunctionsOptions.modesPlot = 1:8;
-describingFunctionsOptions.axesUsed = 'body';
+describingFunctionOptions.gapPoints = optimalBaseOptions.gapPoints;
+describingFunctionOptions.gap = timeMarchingOptions.gap;
+describingFunctionOptions.kNominal = timeMarchingOptions.kNominal;
+describingFunctionOptions.amplitudeDefinition = timeMarchingOptions.amplitudeDefinition;
+describingFunctionOptions.DynVLM = false;
+describingFunctionOptions.DynVLMtype = aeroDatabaseOptions.DynVLMtype;
+describingFunctionOptions.selectionTrim = 1;
+describingFunctionOptions.recomputeBase = false;
+describingFunctionOptions.searchQuenchPoint = true;
+describingFunctionOptions.maxKeq = kNominal;
+describingFunctionOptions.nKeq = 25;
+describingFunctionOptions.Vmax = 70;
+describingFunctionOptions.Vmin = 5;
+describingFunctionOptions.Vstep = 0.5;
+describingFunctionOptions.method = 'PK0';
+describingFunctionOptions.rho = airDensity;
+describingFunctionOptions.modesPlot = 1:8;
+describingFunctionOptions.axesUsed = 'body';
 
 %% Loading of the model
 
@@ -92,7 +92,7 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Different equivalent stifnesses
 
-[describingFunctionResults, describingFunctionsOptions] = describingFunctions(model, struData, aeroData, options, reducedBasis, aeroDatabaseOptions, describingFunctionsOptions);
+[describingFunctionResults, describingFunctionOptions] = describingFunctions(model, struData, aeroData, options, reducedBasis, aeroDatabaseOptions, describingFunctionOptions);
 
 %% Time marching simulation
 
@@ -105,7 +105,7 @@ inputData = readSmartcadFile(filename_sma);
 figure
 hold on
 index=1;
-plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.LCOamplitude{1,1,:}.'./describingFunctionsOptions.gap{1}(1)*2,'--','LineWidth',1.5)
+plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.LCOamplitude{1,1,:}.'./describingFunctionOptions.gap{1}(1)*2,'--','LineWidth',1.5)
 legendTitle{index} = 'DF' ;
 index=index+1;
 
@@ -131,7 +131,7 @@ figure
 hold on
 clear legendTitle
 index=1;
-plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.frequencyVector,'--','LineWidth',1.5)
+plotHysteresis(describingFunctionResults.speedVector,describingFunctionResults.LCOfrequency,'--','LineWidth',1.5)
 legendTitle{index} = 'DF';
 index=index+1;
 

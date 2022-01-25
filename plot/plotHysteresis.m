@@ -19,7 +19,7 @@
 % unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
-function plotHysteresis(x,y,varargin)
+function plotHysteresis(x,y,initialColor)
 % Very simple function that plots the hysteresis
 % It assumes that, if more that one set of data is to be provided, they are
 % organised so that the columns of y are in the same number as the columns
@@ -43,19 +43,18 @@ colorTable = [ ...
     0.0000    0.4000    0.4000
     ];
 
-for i = 1:size(y,1)
-    %quiver(x(1:end-1),y(i,1:end-1),diff(x),diff(y(i,:)),0,varargin{:},'MaxHeadSize',0.01*max(y(i,:)));
-    for j = 1:size(y,2)-1
-        if isnan(x(j))==0 && isnan(y(i,j))==0 && isnan(x(j+1))==0 && isnan(y(i,j+1))==0
+for j = 1:size(y,2)
+    for i = 1:size(y,1)-1
+        if isnan(x(i))==0 && isnan(y(i,j))==0 && isnan(x(i+1))==0 && isnan(y(i+1,j))==0
             ah = annotation('arrow','headStyle','cback1','HeadLength',8,'HeadWidth',5);
             set(ah,'parent',gca)
-            set(ah,'position',[x(j),y(i,j),x(j+1)-x(j),y(i,j+1)-y(i,j)])
-            set(ah,'color',colorTable(i,:))
+            set(ah,'position',[x(i),y(i,j),x(i+1)-x(i),y(i+1,j)-y(i,j)])
+            set(ah,'color',colorTable(j+(initialColor-1),:))
             set(ah,'LineWidth',1.5)
         end
     end
     hold on
-    plot([0 0],[0 0],'color',colorTable(i,:),'LineWidth',1.5)
+    plot([0 0],[0 0],'color',colorTable(j+(initialColor-1),:),'LineWidth',1.5)
 end
 
 ylim([min(min(y))*0.9,max(max(y))*1.1])

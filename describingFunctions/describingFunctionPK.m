@@ -25,7 +25,7 @@ function results = describingFunctionPK(model, struData, aeroData, reducedBasis,
 
 KeqVect = [];
 indexK = 1;
-deltaK = options.maxKeq/options.maxNKeq;
+deltaK = options.maxKeq/options.nKeq;
 Keq_prev = -deltaK;
 reachedMinKeq = false;
 
@@ -77,13 +77,13 @@ while true
             indexK = indexK+1;
             KeqVect = [KeqVect, Keq];
             Keq_prev = Keq;
-            deltaK = options.maxKeq/options.maxNKeq;
+            deltaK = options.maxKeq/options.nKeq;
             reachedMinKeq = false;
         else
             deltaK = deltaK/2;
-            if deltaK<(options.maxKeq/options.maxNKeq/1000)
+            if deltaK<(options.maxKeq/options.nKeq/1000)
                 reachedMinKeq = true;
-                deltaK = options.maxKeq/options.maxNKeq;
+                deltaK = options.maxKeq/options.nKeq;
             end
         end
     else
@@ -92,7 +92,7 @@ while true
         KeqVect = [KeqVect, Keq];
         Keq_prev = Keq;
     end
-    if indexK>options.maxNKeq
+    if indexK>options.nKeq
         break
     end
 end
@@ -105,7 +105,7 @@ plotOption.envelopeLabel = "Equivalent stiffness";
 plotOption.envelopeMeasureUnit = "Nm";
 plotOption.envelopeList = KeqVect;
 
-[speedVector, LCOfrequency] = plotVgDiagrams(resultsFlutter, plotOption);
+[speedVector, frequency] = plotVgDiagrams(resultsFlutter, plotOption);
 
 handles=findall(0,'type','figure');
 
@@ -147,17 +147,20 @@ for i = 1:length(kNominal)
             FFF = KeqVect(k)/kNominal(i);
             amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,FFF,'linear','extrap');
             if strcmp(options.amplitudeDefinition,'maxPeak')
-                LCOamplitude(i,j,k) = amplitudeRatio*gap(j)/2;
+                LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
             else
-                LCOamplitude(i,j,k) = amplitudeRatio/sqrt(2)*gap(j)/2;
+                LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
             end
+            LCOfrequency(i,j,k)=frequency(k);
         end
     end
 end
 
 results.KeqVect = KeqVect;
-results.amplitude = LCOamplitude;
+results.LCOamplitude = LCOamplitude;
 results.speedVector = speedVector;
-results.frequencyVector = LCOfrequency;
+results.LCOfrequency = LCOfrequency;
+results.stiffnessCombinations = kNominal;
+results.gapCombinations = gap;
 
 return

@@ -37,7 +37,7 @@ iOpt = iOpt+1; baseOpt.amplitudeDefinition = 'rms';   descr{iOpt} = 'Algorithm t
 iOpt = iOpt+1; baseOpt.recomputeBase = false;         descr{iOpt} = 'Request the recomputation of the base per each equivalent sstiffness. [false]';
 iOpt = iOpt+1; baseOpt.searchQuenchPoint = true;      descr{iOpt} = 'Request to dynamically adapt the equivalent stiffness step to search for the quanching point. [true].';
 iOpt = iOpt+1; baseOpt.maxKeq = [];                   descr{iOpt} = 'Maximum equivalent stiffness to be considered. [].';
-iOpt = iOpt+1; baseOpt.maxNKeq = [];                  descr{iOpt} = 'Total number of equaivalent stiffnesses to be considered. [].';
+iOpt = iOpt+1; baseOpt.nKeq = [];                     descr{iOpt} = 'Total number of equaivalent stiffnesses to be considered. [].';
 iOpt = iOpt+1; baseOpt.Vmax = 100;                    descr{iOpt} = 'Maximum speed for the flutter analysis. [100].';
 iOpt = iOpt+1; baseOpt.Vmin = 10;                     descr{iOpt} = 'Minimum speed for the flutter analysis. [10].';
 iOpt = iOpt+1; baseOpt.Vstep = 5;                     descr{iOpt} = 'Delta speed for the flutter analysis. [5].';
