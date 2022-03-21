@@ -20,7 +20,7 @@ airDensity = 2.425;
 optimalBaseOptions.nModes = 3;
 optimalBaseOptions.fictitiousMass = [1e-4 1e-2 1e0 1e2 1e4];
 optimalBaseOptions.stiffnessFactor = [0.00001 0.001 0.1 0.5 1];
-optimalBaseOptions.optimumKnown = true;
+optimalBaseOptions.optimumKnown = false;
 optimalBaseOptions.gapPoints = {hingeScalarPoint,"s",0,"Aileron hinge"};
 optimalBaseOptions.kNominal = {kNominal};
 
@@ -74,7 +74,8 @@ describingFunctionOptions.axesUsed = 'body';
 
 plotOptions.halfGapNormalisation = 0;
 plotOptions.normalisationSpeed = stiffFlutterSpeed;
-plotOptions.monitorNormalisation = 0;
+plotOptions.monitorNormalisation = 1;
+plotOptions.torqueNormalisation = 0;
 
 %% Loading of the model
 
@@ -101,4 +102,4 @@ inputData = readSmartcadFile(filename_sma);
 %% Now, we plot
 
 mainPlotRoutine(describingFunctionResults, describingFunctionOptions, ...
-    timeMarchingResults, timeMarchingOptions, plotOptions)
+    timeMarchingResults, timeMarchingOptions, preprocessTimeMarchingOptions, plotOptions)

@@ -45,6 +45,12 @@ iOpt = iOpt+1; baseOpt.method = 'PK0';                descr{iOpt} = 'Method used
 iOpt = iOpt+1; baseOpt.modesPlot = 1:3;               descr{iOpt} = 'Modes to be plotted in the Vg diagrams. [1:3].';
 iOpt = iOpt+1; baseOpt.axesUsed = 'body';             descr{iOpt} = 'Axes used in the flutter analysis. ["body"].';
 % Options used in case of eigenvalue analysis
+% For the introduction of steady loads
+iOpt = iOpt+1; baseOpt.introduceFlightLoads = false;  descr{iOpt} = 'Flag to introduce flight steady loads in the analysis. [false].';
+iOpt = iOpt+1; baseOpt.trimType = 'meanAxes';         descr{iOpt} = 'Type of trim output to be requested. ["meanAxes"],';
+iOpt = iOpt+1; baseOpt.selectionTrim = 1;             descr{iOpt} = 'Selected trim ID to be used for the steady load calculation. [1].';
+iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to introduce constant mechanical preloads';
+iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);

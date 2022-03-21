@@ -43,6 +43,9 @@ colorTable = [ ...
     0.0000    0.4000    0.4000
     ];
 
+ylim([min(min(y))*0.9,max(max(y))*1.1])
+xlim([min(min(x))*0.9,max(max(x))*1.1])
+
 for j = 1:size(y,2)
     for i = 1:size(y,1)-1
         if isnan(x(i))==0 && isnan(y(i,j))==0 && isnan(x(i+1))==0 && isnan(y(i+1,j))==0
@@ -56,8 +59,5 @@ for j = 1:size(y,2)
     hold on
     plot([0 0],[0 0],'color',colorTable(j+(initialColor-1),:),'LineWidth',1.5)
 end
-
-ylim([min(min(y))*0.9,max(max(y))*1.1])
-xlim([min(min(x))*0.9,max(max(x))*1.1])
 
 return

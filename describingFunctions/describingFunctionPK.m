@@ -72,7 +72,7 @@ while true
     end
         
     if options.searchQuenchPoint
-        if any(any(real(resultsFlutter_descrFun.modes.eig)>=0)) || reachedMinKeq
+        if any(any(real(resultsFlutter_descrFun.modes.eig)>=0)) || reachedMinKeq || Keq==0
             resultsFlutter(indexK).modes = resultsFlutter_descrFun.modes;
             indexK = indexK+1;
             KeqVect = [KeqVect, Keq];

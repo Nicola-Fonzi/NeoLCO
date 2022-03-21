@@ -20,7 +20,7 @@
 %                                                                              *
 %*******************************************************************************
 function mainPlotRoutine(describingFunctionResults, describingFunctionOptions, ...
-    timeMarchingResults, timeMarchingOptions, options)
+    timeMarchingResults, timeMarchingOptions, preprocessTimeMarchingOptions, options)
 
 % Set default options
 iOpt = 0;
@@ -28,8 +28,9 @@ iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'Fid for scr
 iOpt = iOpt+1; baseOpt.halfGapNormalisation = 1;      descr{iOpt} = 'Normalise the LCO amplitude using half gap size, 1=yes, 0=no. [1].';
 iOpt = iOpt+1; baseOpt.singleGapDF = 1;               descr{iOpt} = 'Plot one gap only for the describing functions, 1=yes, 0=no. [1].';
 iOpt = iOpt+1; baseOpt.normalisationSpeed = 1;        descr{iOpt} = 'Normalisation speed to be used in the plots. [1].';
-iOpt = iOpt+1; baseOpt.monitorNormalisation = 1;      descr{iOpt} = 'Normalise also the amplitude at the monitor points, 1=yes, 0=no. [1],';
-iOpt = iOpt+1; baseOpt.plotType = 'std';              descr{iOpt} = 'Quantity to plot, standard deviation ("std") or bifurcation plot ("bfc"). ["std"].';
+iOpt = iOpt+1; baseOpt.monitorNormalisation = 0;      descr{iOpt} = 'Normalise also the amplitude at the monitor points, 1=yes, 0=no. [0],';
+iOpt = iOpt+1; baseOpt.torqueNormalisation = 0;       descr{iOpt} = 'Normalise also the amplitude of the force at the nonlinearity points, 1=yes, 0=no. [0],';
+iOpt = iOpt+1; baseOpt.plotType = 'single';           descr{iOpt} = 'Quantity to plot, standard deviation ("single") or bifurcation plot ("bfc"). ["single"].';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);
@@ -66,30 +67,31 @@ if options.useDF
                 maxj = size(describingFunctionResults.gapCombinations,2);
             end
             for j = 1:maxj  % Per each gap combination, or for one gap combination only
-                gapToPlot = describingFunctionResults.gapCombinations(m,j)*(1+options.halfGapNormalisation);
-                if options.plotType == 'std'
+                gapToPlot = describingFunctionResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
+                if strcmp(options.plotType,'single')
                     for k = 1:describingFunctionOptions.nKeq
-                        ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,3);
+                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 3}}));
                     end
                     xtoPlot = describingFunctionResults.speedVector/options.normalisationSpeed;
                 else
                     for k = 1:describingFunctionOptions.nKeq
-                        ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,1);
+                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 1}}));
                     end
-                    ytoPloy(k+1) = nan;
+                    ytoPlot(k+1) = nan;
                     for k = describingFunctionOptions.nKeq+2:describingFunctionOptions.nKeq*2+1
-                        ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k-describingFunctionOptions.nKeq-1}(m,2);
+                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k-describingFunctionOptions.nKeq-1}, ...
+                            struct('type', '()', 'subs', {{m, 2}}));
                     end
                     xtoPlot = [describingFunctionResults.speedVector, nan, describingFunctionResults.speedVector]/options.normalisationSpeed;
                 end
-                plot(xtoPlot,ytoPlot/gapToPlot,'LineWidth',1.5)
+                plot(xtoPlot(:),ytoPlot(:)/gapToPlot,'LineWidth',1.5)
                 if options.singleGapDF
-                    string = [describingFunctionOptions.gapPoints{m,4},...
-                        ' Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF'];
+                    string = strcat(describingFunctionOptions.gapPoints{m,4},...
+                        ' Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
                 else
-                    string = [describingFunctionOptions.gapPoints{m,4},...
+                    string = strcat(describingFunctionOptions.gapPoints{m,4},...
                         ' Gap ',num2str(describingFunctionResults.gapCombinations(:,j).'),' Stiffness ',...
-                        num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF'];
+                        num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
                 end
                 legendTitle{m,index(m)} =  string;
                 index(m)=index(m)+1;
@@ -98,7 +100,7 @@ if options.useDF
     end
 end
 
-clear toPlot gapToPlot string
+clear xtoPlot ytoPlot gapToPlot string
 
 if options.useTM
     for m = 1:size(preprocessTimeMarchingOptions.gapPoints,1)  % Per each nonlinearity point
@@ -106,26 +108,27 @@ if options.useTM
         hold on
         for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
             for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
-                gapToPlot = timeMarchingResults.gapCombinations(m,j)*(1+options.halfGapNormalisation);
-                if options.plotType == 'std'
+                gapToPlot = timeMarchingResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
+                if strcmp(options.plotType,'single')
                     for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,3);
+                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 3}}));
                     end
-                    xtoPlot = timeMarchingResults.speedVector/options.normalisationSpeed;
+                    xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
                 else
                     for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,1);
+                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 1}}));
                     end
-                    ytoPloy(k+1) = nan;
+                    ytoPlot(k+1) = nan;
                     for k = timeMarchingOptions.nFFTwindows+2:timeMarchingOptions.nFFTwindows*2+1
-                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k-timeMarchingOptions.nFFTwindows-1}(m,2);
+                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k-timeMarchingOptions.nFFTwindows-1}, ...
+                            struct('type', '()', 'subs', {{m, 2}}));
                     end
-                    xtoPlot = [timeMarchingResults.speedVector, nan, timeMarchingResults.speedVector]/options.normalisationSpeed;
+                    xtoPlot = [timeMarchingOptions.speedVector, nan, timeMarchingOptions.speedVector]/options.normalisationSpeed;
                 end
-                plotHysteresis(xtoPlot,ytoPlot/gapToPlot,index(m))
-                string = [timeMarchingOptions.gapPoints{m,4},...
+                plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
+                string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},...
                     ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
-                    num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'];
+                    num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
                 legendTitle{m,index(m)} =  string;
                 index(m)=index(m)+1;
             end
@@ -143,7 +146,7 @@ for m = 1:size(legendTitle,1)
     try
         string = strcat(describingFunctionOptions.gapPoints{m,4},".fig");
     catch
-        string = strcat(timeMarchingOptions.gapPoints{m,4},".fig");
+        string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
     end
     saveas(figure(1000+m),string)
 end
@@ -166,12 +169,13 @@ if options.useDF
         end
         for j = 1:maxj  % Per each gap combination, or for one gap combination only
             ytoPlot = describingFunctionResults.LCOfrequency(i,j,:);
-            plot(describingFunctionResults.speedVector/options.normalisationSpeed,ytoPlot,'LineWidth',1.5)
+            xtoPlot = describingFunctionResults.speedVector/options.normalisationSpeed;
+            plot(xtoPlot(:),ytoPlot(:),'LineWidth',1.5)
             if options.singleGapDF
-                string = ['Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF'];
+                string = strcat('Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
             else
-                string = ['Gap ',num2str(describingFunctionResults.gapCombinations(:,j).'),' Stiffness ',...
-                    num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF'];
+                string = strcat('Gap ',num2str(describingFunctionResults.gapCombinations(:,j).'),' Stiffness ',...
+                    num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
             end
             legendTitle{index} =  string;
             index=index+1;
@@ -190,9 +194,10 @@ if options.useTM
                 [~ , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
                 ytoPlot(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
             end
-            plotHysteresis(timeMarchingResults.speedVector/options.normalisationSpeed,ytoPlot,index)
-            string = ['Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
-                num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'];
+            xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
+            plotHysteresis(xtoPlot(:),ytoPlot(:),index)
+            string = strcat('Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
             legendTitle{index} =  string;
             index=index+1;
         end
@@ -210,59 +215,119 @@ saveas(figure(2000),string)
 
 clear legendTitle
 
-%
-% Monitor
-%
-index(1:100)=1;
-
 if options.useTM
-    for m = 1:size(preprocessTimeMarchingOptions.monitorPoints,1)  % Per each monitor point
-        figure(3000+m)
-        hold on
-        for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
-            for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
-                if options.monitorNormalisation
-                    gapToPlot = timeMarchingResults.gapCombinations(m,j)*(1+options.halfGapNormalisation);
-                else
-                    gapToPlot = 1;
+    %
+    % Monitor
+    %
+    index(1:100)=1;
+
+    if options.useTM
+        for m = 1:size(preprocessTimeMarchingOptions.monitorPoints,1)  % Per each monitor point
+            figure(3000+m)
+            hold on
+            for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
+                for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
+                    if options.monitorNormalisation && size(preprocessTimeMarchingOptions.gapPoints,1)==1
+                        gapToPlot = timeMarchingResults.gapCombinations(1,j)/(1+options.halfGapNormalisation);
+                    elseif optiona.monitorNormalisation && size(preprocessTimeMarchingOptions.gapPoints,1)>1
+                        error("The normalisation of the monitor points can only be done if a single nonlinearity is present")
+                    else
+                        gapToPlot = 1;
+                    end
+                    if strcmp(options.plotType,'single')
+                        for k = 1:timeMarchingOptions.nFFTwindows
+                            ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,3);
+                        end
+                        xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
+                    else
+                        for k = 1:timeMarchingOptions.nFFTwindows
+                            ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,1);
+                        end
+                        ytoPlot(k+1) = nan;
+                        for k = timeMarchingOptions.nFFTwindows+2:timeMarchingOptions.nFFTwindows*2+1
+                            ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k-timeMarchingOptions.nFFTwindows-1}(m,2);
+                        end
+                        xtoPlot = [timeMarchingOptions.speedVector, nan, timeMarchingOptions.speedVector]/options.normalisationSpeed;
+                    end
+                    plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
+                    string = strcat(preprocessTimeMarchingOptions.monitorPoints{m,4},...
+                        ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                        num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
+                    legendTitle{m,index(m)} =  string;
+                    index(m)=index(m)+1;
                 end
-                if options.plotType == 'std'
-                    for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,3);
-                    end
-                    xtoPlot = timeMarchingResults.speedVector/options.normalisationSpeed;
-                else
-                    for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,1);
-                    end
-                    ytoPloy(k+1) = nan;
-                    for k = timeMarchingOptions.nFFTwindows+2:timeMarchingOptions.nFFTwindows*2+1
-                        ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k-timeMarchingOptions.nFFTwindows-1}(m,2);
-                    end
-                    xtoPlot = [timeMarchingResults.speedVector, nan, timeMarchingResults.speedVector]/options.normalisationSpeed;
-                end
-                plotHysteresis(timeMarchingResults.speedVector/options.normalisationSpeed,ytoPlot/gapToPlot,index(m))
-                string = [timeMarchingOptions.monitorPoints{m,4},...
-                    ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
-                    num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM'];
-                legendTitle{m,index(m)} =  string;
-                index(m)=index(m)+1;
             end
         end
     end
+
+    clear toPlot gapToPlot string
+
+    for m = 1:size(legendTitle,1)
+        figure(3000+m)
+        legend(legendTitle(m,:))
+        ylabel(preprocessTimeMarchingOptions.monitorPoints{m,4})
+        xlabel('Speed [m/s]')
+        string = strcat(preprocessTimeMarchingOptions.monitorPoints{m,4},".fig");
+        saveas(figure(3000+m),string)
+    end
+
+    clear legendTitle
+
+    %
+    % Torque
+    %
+    index(1:100)=1;
+
+    if options.useTM
+        for m = 1:size(preprocessTimeMarchingOptions.gapPoints,1)  % Per each monitor point
+            figure(4000+m)
+            hold on
+            for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
+                for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
+                    if options.torqueNormalisation
+                        gapToPlot = timeMarchingResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
+                    else
+                        gapToPlot = 1;
+                    end
+                    if strcmp(options.plotType,'single')
+                        for k = 1:timeMarchingOptions.nFFTwindows
+                            ytoPlot(k) = squeeze(timeMarchingResults.LCOtorque{i,j,k}(m,3));
+                        end
+                        xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
+                    else
+                        for k = 1:timeMarchingOptions.nFFTwindows
+                            ytoPlot(k) = timeMarchingResults.LCOtorque{i,j,k}(m,1);
+                        end
+                        ytoPlot(k+1) = nan;
+                        for k = timeMarchingOptions.nFFTwindows+2:timeMarchingOptions.nFFTwindows*2+1
+                            ytoPlot(k) = timeMarchingResults.LCOtorque{i,j,k-timeMarchingOptions.nFFTwindows-1}(m,2);
+                        end
+                        xtoPlot = [timeMarchingOptions.speedVector, nan, timeMarchingOptions.speedVector]/options.normalisationSpeed;
+                    end
+                    plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
+                    string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},...
+                        ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                        num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
+                    legendTitle{m,index(m)} =  string;
+                    index(m)=index(m)+1;
+                end
+            end
+        end
+    end
+
+    clear toPlot gapToPlot string
+
+    for m = 1:size(legendTitle,1)
+        figure(4000+m)
+        legend(legendTitle(m,:))
+        ylabel(strcat("Force at ",preprocessTimeMarchingOptions.gapPoints{m,4}))
+        xlabel('Speed [m/s]')
+        string = strcat("Force at ",preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
+        saveas(figure(4000+m),string)
+    end
+
+    clear legendTitle
+
 end
-
-clear toPlot gapToPlot string
-
-for m = 1:size(legendTitle,1)
-    figure(3000+m)
-    legend(legendTitle(m,:))
-    ylabel(timeMarchingOptions.monitorPoints{m,4})
-    xlabel('Speed [m/s]')
-    string = strcat(timeMarchingOptions.monitorPoints{m,4},".fig");
-    saveas(figure(3000+m),string)
-end
-
-clear legendTitle
 
 return
