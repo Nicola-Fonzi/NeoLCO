@@ -207,8 +207,8 @@ return
 function [D_free, V_free, D_stiff, V_stiff] = recomputeEigResults(struData, struData_stiff, resultsEig_common, stiffnessFactor)
 
 warning off;
-[V, D] = eig(resultsEig_common.V'*full(struData_stiff.Kzz)*resultsEig_common.V,...
-    resultsEig_common.V'*full(struData.Mzz)*resultsEig_common.V);
+[V, D] = eig(resultsEig_common.V'*struData_stiff.Kzz*resultsEig_common.V,...
+    resultsEig_common.V'*struData.Mzz*resultsEig_common.V);
 warning on;
 eigenvalue = diag(D);
 [eigenvalue, indexROTT] = sort(eigenvalue);
@@ -217,8 +217,8 @@ D_stiff = sqrt(abs(eigenvalue))/2/pi;
 V_stiff = resultsEig_common.V*V;
 
 if stiffnessFactor
-    [V, D] = eig(resultsEig_common.V'*full(struData.Kzz)*resultsEig_common.V,...
-        resultsEig_common.V'*full(struData.Mzz)*resultsEig_common.V);
+    [V, D] = eig(resultsEig_common.V'*struData.Kzz*resultsEig_common.V,...
+        resultsEig_common.V'*struData.Mzz*resultsEig_common.V);
     warning on;
     eigenvalue = diag(D);
     [eigenvalue, indexROTT] = sort(eigenvalue);
@@ -331,11 +331,16 @@ end
 
 err = nan(size(frf));
 for w = 1:size(frf,3)
-    err(:,:,w) = abs((frf(:,:,w)-frfReference(:,:,w))./frfReference(:,:,w))*100;
+    err(:,:,w) = abs(frf(:,:,w)-frfReference(:,:,w));
 end
 
 if strcmp(type,"condensed")
-    err = sqrt( sum(sum(sum(err.^2))) / (size(frf,1)*size(frf,2)*size(frf,3)) );
+    for i = 1:size(err,1)
+        for j = 1:size(err,2)
+            cond_err(i,j) = norm(squeeze(err(i,j,:)))/norm(squeeze(frfReference(i,j,:)))*100;
+            err = sum(sum(cond_err)) / (size(frf,1)*size(frf,2));
+        end
+    end
 end
 
 return

@@ -6,7 +6,7 @@ clc
 
 % Input file
 %filename_sma = 'D:\Desktop\PhD\X-DIA\ElevatorOnlyLCO\numericalSimulations\Final_DuringGVT_plate\correlated\steelWeightSteelConnection\NeoCASS\flutter.dat';
-filename_sma = 'D:\Desktop\PhD\X-DIA\3-CompleteTTail\numericalSimulations\2b-condensedHorizontalReal\NeoCASS\flutter.dat';
+filename_sma = 'flutter.dat';
 
 % Solver info
 ver = get_neolco_version(true);
@@ -25,7 +25,7 @@ optimalBaseOptions.nModes = [8 12 16 20];
 optimalBaseOptions.fictitiousMass = [1e-4 1e-2 1e0 1e2 1e4];
 optimalBaseOptions.stiffnessFactor = [0.00001 0.001 0.1 0.5 1];
 %optimalBaseOptions.optimumKnown = false;
-optimalBaseOptions.optimumKnown = true;
+optimalBaseOptions.optimumKnown = false;
 %optimalBaseOptions.gapPoints = {hingeScalarPoint,'s',0,'Elevator hinge'};
 optimalBaseOptions.gapPoints = {hingeScalarPoint,'s',0,'Rudder hinge'};
 optimalBaseOptions.kNominal = {kNominal};
@@ -42,6 +42,7 @@ preprocessTimeMarchingOptions.selectionTrim = 1;
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
 preprocessTimeMarchingOptions.gapPoints = optimalBaseOptions.gapPoints;
 preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''};
+preprocessTimeMarchingOptions.checkStateSpaceApproximation = true; %
 %preprocessTimeMarchingOptions.monitorPoints = {tipLE,'g',3,'Accelerometer at the tip LE';...
  %                                              tipTE,'g',3,'Accelerometer at the tip TE';...
   %                                             midspanLE,'g',3,'Accelerometer at midpan LE';...
@@ -73,7 +74,7 @@ describingFunctionOptions.selectionTrim = 1;
 describingFunctionOptions.recomputeBase = false;
 describingFunctionOptions.searchQuenchPoint = true;
 %describingFunctionOptions.maxKeq = kNominal;
-describingFunctionOptions.maxKeq = kNominal/5;
+describingFunctionOptions.maxKeq = kNominal;
 describingFunctionOptions.nKeq = 25;
 describingFunctionOptions.Vmax = 70;
 describingFunctionOptions.Vmin = 5;
