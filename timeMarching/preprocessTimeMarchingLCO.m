@@ -130,6 +130,8 @@ if ~isempty(options.monitorPoints)
     fprintf(options.fidScreen, "WARNING: As of today, the monitor points are output in the global reference system\n")
     monitorDOF = obtainDOF(options.monitorPoints,model);
     modelForIntegration.Umonitor = struData.Tgz(monitorDOF,:)*reducedBasis.V(:,chosenModes);
+else
+    modelForIntegration.Umonitor = [];
 end
 
 % Aerodynamic matrices

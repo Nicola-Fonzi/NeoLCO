@@ -42,7 +42,7 @@ preprocessTimeMarchingOptions.selectionTrim = 1;
 preprocessTimeMarchingOptions.simulinkModel = 'SISO';
 preprocessTimeMarchingOptions.gapPoints = optimalBaseOptions.gapPoints;
 preprocessTimeMarchingOptions.gapBehaviour = {'freeplay','static',''};
-preprocessTimeMarchingOptions.checkStateSpaceApproximation = true; %
+preprocessTimeMarchingOptions.checkStateSpaceApproximation = false; %%%%%%%%%%%
 %preprocessTimeMarchingOptions.monitorPoints = {tipLE,'g',3,'Accelerometer at the tip LE';...
  %                                              tipTE,'g',3,'Accelerometer at the tip TE';...
   %                                             midspanLE,'g',3,'Accelerometer at midpan LE';...
@@ -74,7 +74,7 @@ describingFunctionOptions.selectionTrim = 1;
 describingFunctionOptions.recomputeBase = false;
 describingFunctionOptions.searchQuenchPoint = true;
 %describingFunctionOptions.maxKeq = kNominal;
-describingFunctionOptions.maxKeq = kNominal;
+describingFunctionOptions.maxKeq = kNominal/20;
 describingFunctionOptions.nKeq = 25;
 describingFunctionOptions.Vmax = 70;
 describingFunctionOptions.Vmin = 5;

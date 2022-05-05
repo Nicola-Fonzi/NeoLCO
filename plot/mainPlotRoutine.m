@@ -215,7 +215,7 @@ saveas(figure(2000),string)
 
 clear legendTitle
 
-if options.useTM
+if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
     %
     % Monitor
     %

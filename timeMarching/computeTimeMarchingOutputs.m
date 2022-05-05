@@ -33,8 +33,11 @@ outputTorque = switchOnType(type,torque.');
 outputFrequency.fVect = outputFrequency.fVect.';
 outputFrequency.pVect = outputFrequency.pVect.';
 
-
-outputMonitor = switchOnType(type,Umonitor*modes.');
+if isempty(Umonitor)
+    outputMonitor = [];
+else
+    outputMonitor = switchOnType(type,Umonitor*modes.');
+end
 
 return
 
