@@ -19,11 +19,18 @@
 % unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
-function plotHysteresis(x,y,initialColor)
+function plotHysteresis(x,y,initialColor,dashed)
 % Very simple function that plots the hysteresis
 % It assumes that, if more that one set of data is to be provided, they are
 % organised so that the columns of y are in the same number as the columns
 % of x
+
+if nargin==2
+    initialColor = 1;
+    dashed = 0;
+elseif nargin==3
+    dashed = 0;
+end
 
 colorTable = [ ...
     0    0.4470    0.7410
@@ -43,6 +50,14 @@ colorTable = [ ...
     0.0000    0.4000    0.4000
     ];
 
+% Treat row vectors
+if size(x,1)==1
+    x = x.';
+end
+if size(y,1)==1
+    y = y.';
+end
+
 ylim([min(min(y))*0.9,max(max(y))*1.1])
 xlim([min(min(x))*0.9,max(max(x))*1.1])
 
@@ -54,6 +69,9 @@ for j = 1:size(y,2)
             set(ah,'position',[x(i),y(i,j),x(i+1)-x(i),y(i+1,j)-y(i,j)])
             set(ah,'color',colorTable(j+(initialColor-1),:))
             set(ah,'LineWidth',1.5)
+            if dashed
+                set(ah,'LineStyle','--')
+            end
         end
     end
     hold on

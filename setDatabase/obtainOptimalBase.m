@@ -74,7 +74,7 @@ struData_stiff = structuralPreprocessor(fid, model_stiff, struOpt);
 nonlinearityDOF = obtainDOF(options.gapPoints, model);
 
 
-%% Create the nominal bases
+%% Create the nominal base
 
 eigOpt.NROOTS = options.referenceNModes;
 
@@ -87,9 +87,6 @@ rigidModes.V = resultsEig.V(:,resultsEig.Omega<1);
 rigidModes.suportTable = resultsEig.suportTable;
 rigidModes.surfNames = resultsEig.surfNames;
 
-eigOpt.UseFictmass = false;
-resultsEig_stiff = solve_eig_fun(fid, model_stiff, struData_stiff, eigOpt);
-
 
 %% Loop over all the possibilities and test them one by one
 
@@ -97,6 +94,10 @@ home = pwd;
 
 if ~options.optimumKnown
     
+    % In this case we also need the stiff nominal base
+    eigOpt.UseFictmass = false;
+    resultsEig_stiff = solve_eig_fun(fid, model_stiff, struData_stiff, eigOpt);
+
     mkdir("comparisonDifferentBases")
     chdir("comparisonDifferentBases")
     homeDir = pwd;

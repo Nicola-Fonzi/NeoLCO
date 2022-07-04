@@ -30,7 +30,7 @@ iOpt = iOpt+1; baseOpt.singleGapDF = 1;               descr{iOpt} = 'Plot one ga
 iOpt = iOpt+1; baseOpt.normalisationSpeed = 1;        descr{iOpt} = 'Normalisation speed to be used in the plots. [1].';
 iOpt = iOpt+1; baseOpt.monitorNormalisation = 0;      descr{iOpt} = 'Normalise also the amplitude at the monitor points, 1=yes, 0=no. [0],';
 iOpt = iOpt+1; baseOpt.torqueNormalisation = 0;       descr{iOpt} = 'Normalise also the amplitude of the force at the nonlinearity points, 1=yes, 0=no. [0],';
-iOpt = iOpt+1; baseOpt.plotType = 'single';           descr{iOpt} = 'Quantity to plot, standard deviation ("single") or bifurcation plot ("bfc"). ["single"].';
+iOpt = iOpt+1; baseOpt.plotType = 'single';           descr{iOpt} = 'Quantity to plot, single value ("single") or bifurcation plot ("bfc"). ["single"].';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);

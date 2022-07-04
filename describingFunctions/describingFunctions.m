@@ -32,6 +32,7 @@ iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points wher
 iOpt = iOpt+1; baseOpt.gap = {};                      descr{iOpt} = 'Cells array containing the peak-to-peak possible gaps at the nonlinearity points. The cells are in the same order as gapPoint IDs. The columns contain possible different values for the same point. The format is the same that we use for the kNominal. {}.';
 iOpt = iOpt+1; baseOpt.kNominal = {};                 descr{iOpt} = 'Cells array containing the nominal stiffnesses at the nonlinearity points. The rows are in the same order as gapPoint IDs. The columns contain possible different values for the same point. The format is {[k1_point1,k2_point1];[k1_point2,k2_point2,k3_point2]}. {}.';
 iOpt = iOpt+1; baseOpt.rho = 1.225;                   descr{iOpt} = 'Density used for the flutter analysis. [1.225].';
+iOpt = iOpt+1; baseOpt.machNumber = [];               descr{iOpt} = 'Mach number to be used for the state-space approximation of the aerodynamics. [].';
 iOpt = iOpt+1; baseOpt.amplitudeDefinition = 'rms';   descr{iOpt} = 'Algorithm to compute the LCO amplitude. "std", "rms" or "maxPeak". ["rms"].';
 % Options used in case of PK flutter analysis
 iOpt = iOpt+1; baseOpt.recomputeBase = false;         descr{iOpt} = 'Request the recomputation of the base per each equivalent sstiffness. [false]';
@@ -49,8 +50,6 @@ iOpt = iOpt+1; baseOpt.axesUsed = 'body';             descr{iOpt} = 'Axes used i
 iOpt = iOpt+1; baseOpt.introduceFlightLoads = false;  descr{iOpt} = 'Flag to introduce flight steady loads in the analysis. [false].';
 iOpt = iOpt+1; baseOpt.trimType = 'meanAxes';         descr{iOpt} = 'Type of trim output to be requested. ["meanAxes"],';
 iOpt = iOpt+1; baseOpt.selectionTrim = 1;             descr{iOpt} = 'Selected trim ID to be used for the steady load calculation. [1].';
-iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to introduce constant mechanical preloads';
-iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);
@@ -59,6 +58,13 @@ end
 
 % Process input options
 options = setOptions(baseOpt, 'error', options);
+
+if isempty(options.machNumber)
+    % If not specified we use the first Mach number
+    options.machUsed = 1;
+else
+    options.machUsed = aeroData.dlmData.aero.M==options.machNumber;
+end
 
 % Derived options
 options.Mlist_dlm = globalOptions.aero.Mlist_dlm;

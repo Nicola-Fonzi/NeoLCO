@@ -62,7 +62,7 @@ function peaks = findPeaksMatrix(values)
 % The matlab function findPeaks is not able to work with matrices, this is
 % just a workaround. The matrix will have the format:
 % matrix = nonlinearity1 [value1 value2 value3;
-%          nonlinearity2 [value1 value2 value3];
+%          nonlinearity2  value1 value2 value3];
 peaks=zeros(size(values,1),3);
 for i=1:size(values,1)
     [maxPeaks, ~] = findpeaks(values(i,:));

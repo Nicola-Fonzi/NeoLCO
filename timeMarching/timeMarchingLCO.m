@@ -194,7 +194,7 @@ if options.introduceFlightLoads
         struData_stiff = structuralPreprocessor(options.fidScreen, model_stiff, []);
 
         [resultsTrim(i), modelForIntegration.aeroData] = solve_lin_trim(options.fidScreen, model_stiff, struData_stiff, modelForIntegration.aeroData, modelForIntegration.globalOptions.trim, trimOptions);
-        modelForIntegration.constantAeroForce(:,i) = modelForIntegration.reducedBasis.V'*[resultsTrim(i).FdTotal; resultsTrim(i).hingeMomStru; zeros(size(struData_stiff.Tgz,2)-length(resultsTrim(i).FdTotal)-length(resultsTrim(i).hingeMomStru),1)];
+        modelForIntegration.constantAeroForce(:,i) = modelForIntegration.reducedBasis.V'*[resultsTrim(i).FdaeroTotal; resultsTrim(i).hingeMomStru; zeros(size(struData_stiff.Tgz,2)-length(resultsTrim(i).FdTotal)-length(resultsTrim(i).hingeMomStru),1)];
     end
 
     % Check if the Mach used to compute flight loads is the same used for the
@@ -206,14 +206,9 @@ if options.introduceFlightLoads
 		qinf = 0.5*rho*Vinf^2;
     else
         qinf = trimData.Q;
-        rho = 2*qinf;
     end
     if modelForIntegration.aeroData.dlmData.aero.M(modelForIntegration.machUsed)~=trimData.Mach
         error("The requested mach number for the time marching integration is different from the Mach number used to compute the constant forces via trim solution.")
-    end
-    if options.rho~=rho
-        fprintf(2,"\nRequested air density is different from the one used to compute the trim solution for the introduction of loads\n")
-        fprintf(2,"In the time marching LCO while introducing flight loads\n")
     end
 
     % Forces are to be used per unit dynamic pressure
@@ -283,7 +278,7 @@ for i = 1:nstiffnessCombinations
             tmax = tmin + options.FFTwindowLength;
 
             if k ~= 1
-                % Indeces to use of the old simulation
+                % Indices to use of the old simulation
                 indexes = out.tout>= tmin;
                 outOld.modes = out.modes.signals.values(indexes,:);
                 outOld.torque = out.torque.signals.values(indexes,:);

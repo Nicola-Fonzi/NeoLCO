@@ -29,7 +29,11 @@ deltaK = options.maxKeq/options.nKeq;
 Keq_prev = -deltaK;
 reachedMinKeq = false;
 
-%% Loop to solve the flutter equations
+if length(options.selectionTrim)>1
+    error("Only one trim condition can be specified to be used for the correction via VLM of the DLM matrices")
+end
+
+%% Loop to solve the flutter equations for the harmonic part
 
 while true
     
@@ -63,10 +67,7 @@ while true
     
     % Flutter computation
     if options.DynVLM
-        selectedTrim = aeroData.vlmData.DynVLM.trimRes.data.ID == options.selectionTrim;
-        aeroData.vlmData.DynVLM.DynMatrices.Qa = aeroData.vlmData.DynVLM.DynMatrices.Qa(:,:,:,:,selectedTrim);
-        trimData = selectTrimCondition(globalOptions.trim, options.selectionTrim);
-        [resultsFlutter_descrFun, aeroData] = solve_linflutt_fun(model_descrFun, struData_descrFun, reducedBasis, aeroData, options, trimData, aeroDatabaseOptions);
+        [resultsFlutter_descrFun, aeroData] = solve_linflutt_fun(model_descrFun, struData_descrFun, reducedBasis, aeroData, options, globalOptions.trim, aeroDatabaseOptions);
     else
         [resultsFlutter_descrFun, aeroData] = solve_linflutt_fun(model_descrFun, struData_descrFun, reducedBasis, aeroData, options);
     end
@@ -97,7 +98,7 @@ while true
     end
 end
 
-%% Plot the quasi-linear flutter results
+%% Plot the quasi-linear harmonic results
 
 plotOption.modeRequested = options.modesPlot;
 plotOption.plotEnvelope = true;
@@ -105,12 +106,12 @@ plotOption.envelopeLabel = "Equivalent stiffness";
 plotOption.envelopeMeasureUnit = "Nm";
 plotOption.envelopeList = KeqVect;
 
-[speedVector, frequency] = plotVgDiagrams(resultsFlutter, plotOption);
+[speedVectorLCO, frequencyLCO] = plotVgDiagrams(resultsFlutter, plotOption);
 
 handles=findall(0,'type','figure');
 
 h = figure(handles(1).Number);
-saveas(h,"Envelope.fig")
+saveas(h,"EnvelopeHarmonicLCO.fig")
 close(h)
 
 indexK = 1;
@@ -121,7 +122,7 @@ for i = 1:handles(2).Number
         figIndex=3;
     end
     string = num2str(figIndex);
-    saveas(h,strcat("Keq",num2str(KeqVect(indexK)),"_",string,".fig"))
+    saveas(h,strcat("Keq",num2str(KeqVect(indexK)),"_",string,"_harmonic.fig"))
     close(h)
     if figIndex==3
         indexK = indexK+1;
@@ -130,36 +131,138 @@ end
 
 clear h handles
 
-%% Reconstruct LCO amplitude
-amplitudeRatioDB = linspace(1/5,1,1000);
-index = 1;
-for i = amplitudeRatioDB
-    kRatioDB(index) = 1/pi*(pi - 2*asin(i) + sin(2*asin(i))) - 4/pi*i*cos(asin(i));
-    index = index + 1;
+%% Loop to solve the constant part, if required
+% We exploit the fact that the KeqVect is already computed from the loop
+% before. A mechanical preload is included here automatically
+
+if options.introduceFlightLoads
+    % Check if the Mach used to compute flight loads is the same used for the
+    % DLM matrices. Check also if the density is the same
+    if isempty(globalOptions.trim.ID)
+        error('Requested the introduction of flight loads, but no info about trim provided')
+    end
+    trimDataDF = selectTrimCondition(globalOptions.trim, options.selectionTrim);
+    if aeroData.dlmData.aero.M(options.machUsed)~=trimDataDF.Mach
+        error("The requested mach number for the time marching integration is different from the Mach number used to compute the constant forces via trim solution.")
+    end
+    trimDataDF.z = nan;
+
+    speedVectorBias = options.Vmin:options.Vstep:options.Vmax;
+    for i = 1:length(speedVectorBias)
+        % Loop on the speed vector and on the values of equivalent stiffness
+        trimDataDF.Q = 0.5*options.rho*speedVectorBias(i)^2;
+
+        for j = 1:length(KeqVect)
+
+            trimOptions.selectionList = options.selectionTrim;
+            trimOptions.outputType = options.trimType;
+            trimOptions.hmomSet = 'full';
+
+            [model_stiff, ~] = addNonlinearityStiffness(model, options.gapPoints, KeqVect(j));
+            struData_stiff = structuralPreprocessor(options.fidScreen, model_stiff, []);
+
+            [resultsTrim, ~] = solve_lin_trim(options.fidScreen, model_stiff, struData_stiff, aeroData, trimDataDF, trimOptions);
+            [~, Pos] = obtainDOF(options.gapPoints, model);
+            biasVect(j,i) = resultsTrim.SDispl(Pos, 1);
+        end
+    end
+    clear trimDataDF
 end
 
+%% Plot the quasi-linear bias results
+for j = 1:length(KeqVect)
+    plot(speedVectorBias,biasVect(:,j),'LineWidth',2)
+    h = gcf;
+    saveas(h,strcat("Keq",num2str(KeqVect(j)),"_bias.fig"))
+    close(h)
+end
+
+%% Reconstruct LCO amplitude
 kNominal = options.kNominal{1};
 gap = options.gap{1};
 
 for i = 1:length(kNominal)
     for j = 1:length(gap)
-        for k = 1:length(KeqVect)
-            FFF = KeqVect(k)/kNominal(i);
-            amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,FFF,'linear','extrap');
-            if strcmp(options.amplitudeDefinition,'maxPeak')
-                LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
-            else
-                LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
+        if options.introduceFlightLoads
+            % Range of values for A and B
+            AmplitudeDB = gap(j)*linspace(1,5,1000);
+            BiasDB = AmplitudeDB;
+            % Static stiffness as a function of A and B. Matrices that have
+            % a different A per each column, and B changing row-wise.
+            beta = (gap(j)/2 - BiasDB.')./AmplitudeDB;
+            gamma = (-gap(j)/2 - BiasDB.')./AmplitudeDB;
+            BoverA = BiasDB.'./AmplitudeDB;
+            Ks = kNominal(i)*( 1 + 1/pi./BoverA*( beta.*asin(beta) + sqrt(1-beta.^2) -gamma.*asin(gamma) - sqrt(1-gamma.^2) ) );
+            % Dynamic stiffness as a function of A and B. Matrices that have
+            % a different A per each column, and B changing row-wise.
+            Kd = kNominal(i)*( 1 - 1/pi*( asin(beta) + beta.*sqrt(1-beta.^2) - asin(gamma) - gamma.*sqrt(1-gamma.^2) ) );
+            for k = 1:length(speedVectorLCO)
+                % First, we find the combinations A1,B1 that provides an
+                % equivalent stiffness equal to the one that provokes
+                % flutter at our speed
+                A1 = [];
+                B1 = [];
+                K1 = [];
+                for m = 1:length(BiasDB)
+                    [a1, k1] = polyxpoly(AmplitudeDB, ones(1,length(KeqVect))*KeqVect(k), AmplitudeDB, Kd(m,:));
+                    K1 = [K1; k1];
+                    A1 = [A1; a1];
+                    B1 = [B1; BiasDB(m)*ones(length(a1),1)];
+                end
+                % Then, we can plot the SR at that speed
+                slicedBias = interp2(speedVectorBias, KeqVect, biasVect, speedVectorLCO(k), KeqVect);
+                figure
+                plot(KeqVect, slicedBias, "LineWidth", 2)
+                hold on
+                % The intersection of this curve with all the possible Ks
+                % provides A2 and B2
+                plot(Ks(:,1:100:end), BiasDB, "LineWidth", 2)
+                legend([{"SR"}, string(num2cell(AmplitudeDB(1:100:end)))])
+                A2 = [];
+                B2 = [];
+                K2 = [];
+                for m = 1:length(AmplitudeDB)
+                    [b2, k2] = polyxpoly(slicedBias, KeqVect, BiasDB, Ks(:,m));
+                    K2 = [K2; k2];
+                    A2 = [A2; AmplitudeDB(m)*ones(length(b2),1)];
+                    B2 = [B2: b2];
+                end
+                % We can now plot A2,B2 to double check
+                figure
+                plot(A1,B1,'LineWidth',2)
+                hold on
+                plot(A2,B2,'LineWidth',2)
+                % The intersection of this curve with the curve A1,B1
+                % gives the possible solutions
+                [A3,B3]=polyxpoly(A1,B1,A2,B2);
             end
-            LCOfrequency(i,j,k)=frequency(k);
+        else
+            amplitudeRatioDB = linspace(1/5,1,1000);
+            for m = 1:length(amplitudeRatioDB)
+                kRatioDB(m) = 1/pi*(pi - 2*asin(amplitudeRatioDB(m)) + sin(2*asin(amplitudeRatioDB(m)))) - ...
+                    4/pi*i*cos(asin(amplitudeRatioDB(m)));
+            end
+            for k = 1:length(speedVectorLCO)
+                Kd = KeqVect(k)/kNominal(i);
+                % We intersect the describing function with the value of Kd
+                % for which we have flutter
+                amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,Kd,'linear','extrap');
+                if strcmp(options.amplitudeDefinition,'maxPeak')
+                    LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
+                else
+                    LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
+                end
+                LCOfrequency(i,j,k)=frequencyLCO(k);
+            end
         end
     end
 end
 
 results.KeqVect = KeqVect;
+results.speedVector = speedVectorLCO;
 results.LCOamplitude = LCOamplitude;
-results.speedVector = speedVector;
 results.LCOfrequency = LCOfrequency;
+results.bias = nan;
 results.stiffnessCombinations = kNominal;
 results.gapCombinations = gap;
 

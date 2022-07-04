@@ -71,6 +71,9 @@ describingFunctionOptions.method = 'PK0';
 describingFunctionOptions.rho = airDensity;
 describingFunctionOptions.modesPlot = 1:3;
 describingFunctionOptions.axesUsed = 'body';
+describingFunctionOptions.introduceFlightLoads = false;
+describingFunctionOptions.trimType = 'grounded';
+describingFunctionOptions.selectionTrim = 1; % This selection is used for the flight loads
 
 plotOptions.halfGapNormalisation = 0;
 plotOptions.normalisationSpeed = stiffFlutterSpeed;
