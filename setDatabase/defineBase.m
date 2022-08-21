@@ -31,7 +31,6 @@ function reducedBasis = defineBase(model, struData, rigidModes, globalOptions, o
 struOpt = [];
 eigOpt = globalOptions.eig;
 fid = options.fidScreen;
-eigOpt.NROOTS = nModes;
 
 maximumStiffnesses = cellfun(@(x) max(x), options.kNominal);
 
@@ -58,6 +57,7 @@ end
 struData_common = structuralPreprocessor(fid, model_common, struOpt);
 
 eigOpt.UseFictmass = true;
+eigOpt.NROOTS = nModes;
 resultsEig_common = solve_eig_fun(fid, model_common, struData_common, eigOpt);
 
 reducedBasis = defineReducedBasis(struData, rigidModes, 'all', resultsEig_common, 'all');

@@ -110,7 +110,32 @@ if isempty(options.chosenModes)
             cla(h.Children)
         end
     end
+else
+    for modeIndex = 1:size(aeroSystem.Qhh,1)
+        if any(modeIndex==options.chosenModes)
+            if options.useInApp
+                dummyfig = figure;
+                dummyax = axes;
+                copyobj(h.Children,dummyax)
+                saveas(dummyfig,strcat("Mode",num2str(modeIndex),"--used.fig"));
+                close(dummyfig)
+            else
+                saveas(h,strcat("Mode",num2str(modeIndex),"--used.fig"));
+            end
+        else
+            if options.useInApp
+                dummyfig = figure;
+                dummyax = axes;
+                copyobj(h.Children,dummyax)
+                saveas(dummyfig,strcat("Mode",num2str(modeIndex),".fig"));
+                close(dummyfig)
+            else
+                saveas(h,strcat("Mode",num2str(modeIndex),".fig"));
+            end
+        end
+    end
 end
+
 
 Ha = aeroSystem.Qhh(options.chosenModes,options.chosenModes,:);
 

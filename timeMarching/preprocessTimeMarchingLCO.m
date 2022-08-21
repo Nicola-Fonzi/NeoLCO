@@ -62,7 +62,7 @@ iOpt = iOpt+1; baseOpt.eigsopt.method = 'eigshift';   descr{iOpt} = 'Options for
 iOpt = iOpt+1; baseOpt.algROM = 'balance';            descr{iOpt} = 'Options for improvedMFDfun. See that function for details. ["balance"].';
 iOpt = iOpt+1; baseOpt.optsLM = [0.1, 1.0e-6, 1.0e-6, 100];         descr{iOpt} = 'Options for improvedMFDfun. [tau tolg tolx maxIter] See that function for details. [0.1, 1.0e-6, 1.0e-6, 100].';
 iOpt = iOpt+1; baseOpt.opt = {1, 1, 'lmfd', 2, 100};  descr{iOpt} = 'Options for improvedMFDfun. {mfd order, mfd algorithm, r3, numerator order, weight} See that function for details. [{1, 1, "lmfd", 2, 100}].';
-iOpt = iOpt+1; baseOpt.orderROM = [];                 descr{iOpt} = 'ROM order for aerodynamics. If not specified is interactively asked to the user [].';
+iOpt = iOpt+1; baseOpt.orderROM = [];                 descr{iOpt} = 'ROM order for aerodynamics. If not specified is interactively asked to the user. [].';
 iOpt = iOpt+1; baseOpt.chosenModes = [];              descr{iOpt} = 'Modes to be used when creating the aerodynamic ROM';
 % Options to produce graphical outputs
 iOpt = iOpt+1; baseOpt.checkStateSpaceApproximation = false;        descr{iOpt} = 'This flag generates several plots that can be used to check the aerodynamic approximation. [false].';

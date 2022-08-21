@@ -159,10 +159,10 @@ if ~options.optimumKnown
     plotSurfError(frequencyResponseErrorStiff_RB,options,"StiffRB")
     
     chdir(home)
+
+    fprintf(fid, "Please review the graphical output and choose the parameters for the base\n");
     
 end
-
-fprintf(fid, "Please review the graphical output and choose the parameters for the base");
 
 return
 
