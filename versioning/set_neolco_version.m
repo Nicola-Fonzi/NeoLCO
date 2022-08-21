@@ -127,6 +127,11 @@ fprintf(fid,'function');
 return
 
 function ID = my_isfunction(FUNNAME)
+[filepath,name,ext] = fileparts(FUNNAME);
+if strcmp(ext, '.mlapp')
+    ID = 0;
+    return
+end
 try    
     nargin(FUNNAME) ; % nargin errors when FUNNAME is not a function
     ID = 1  + isa(FUNNAME, 'function_handle') ; % 1 for m-file, 2 for handle
