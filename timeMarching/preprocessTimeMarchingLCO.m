@@ -49,6 +49,7 @@ function [modelForIntegration, options] = preprocessTimeMarchingLCO(model, struD
 % Set default options
 iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'fid for screen printing. [1].';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
 % Options for the state-space realisation
 iOpt = iOpt+1; baseOpt.DynVLM = false;                descr{iOpt} = 'Request the use of the VLM corrected matrices for unsteady analysis. [false].';
 iOpt = iOpt+1; baseOpt.DynVLMtype = 'unsteady';       descr{iOpt} = 'Type of unsteady VLM correction to be applied';
@@ -61,6 +62,8 @@ iOpt = iOpt+1; baseOpt.eigsopt.method = 'eigshift';   descr{iOpt} = 'Options for
 iOpt = iOpt+1; baseOpt.algROM = 'balance';            descr{iOpt} = 'Options for improvedMFDfun. See that function for details. ["balance"].';
 iOpt = iOpt+1; baseOpt.optsLM = [0.1, 1.0e-6, 1.0e-6, 100];         descr{iOpt} = 'Options for improvedMFDfun. [tau tolg tolx maxIter] See that function for details. [0.1, 1.0e-6, 1.0e-6, 100].';
 iOpt = iOpt+1; baseOpt.opt = {1, 1, 'lmfd', 2, 100};  descr{iOpt} = 'Options for improvedMFDfun. {mfd order, mfd algorithm, r3, numerator order, weight} See that function for details. [{1, 1, "lmfd", 2, 100}].';
+iOpt = iOpt+1; baseOpt.orderROM = [];                 descr{iOpt} = 'ROM order for aerodynamics. If not specified is interactively asked to the user [].';
+iOpt = iOpt+1; baseOpt.chosenModes = [];              descr{iOpt} = 'Modes to be used when creating the aerodynamic ROM';
 % Options to produce graphical outputs
 iOpt = iOpt+1; baseOpt.checkStateSpaceApproximation = false;        descr{iOpt} = 'This flag generates several plots that can be used to check the aerodynamic approximation. [false].';
 % Options to build the time marching model
@@ -108,28 +111,28 @@ end
 
 %% State-space approximation of aerodynamics
 
-[solution, chosenModes, machUsed, k, Ha, selectedTrim] = convertAeroInSS(aeroData, model, struData, reducedBasis, options);
+[solution, machUsed, k, Ha, selectedTrim, options] = convertAeroInSS(aeroData, model, struData, reducedBasis, options);
 
 %% Create the system for the simulink model
 
 % Structural matrices
-modelForIntegration.Mhh = reducedBasis.V(:,chosenModes)'*struData.Mzz*reducedBasis.V(:,chosenModes);
-modelForIntegration.Khh = reducedBasis.V(:,chosenModes)'*struData.Kzz*reducedBasis.V(:,chosenModes);
-modelForIntegration.Chh = reducedBasis.Bmm(chosenModes,chosenModes);
+modelForIntegration.Mhh = reducedBasis.V(:,options.chosenModes)'*struData.Mzz*reducedBasis.V(:,options.chosenModes);
+modelForIntegration.Khh = reducedBasis.V(:,options.chosenModes)'*struData.Kzz*reducedBasis.V(:,options.chosenModes);
+modelForIntegration.Chh = reducedBasis.Bmm(options.chosenModes,options.chosenModes);
 modelForIntegration.invMC = modelForIntegration.Mhh\modelForIntegration.Chh;
 modelForIntegration.invMK = modelForIntegration.Mhh\modelForIntegration.Khh;
 modelForIntegration.nStru = size(modelForIntegration.invMC,1);
 
 % Obtain the mapping from modes to nonlinearity points
 nonlinearityDOF = obtainDOF(options.gapPoints,model);
-modelForIntegration.Ugap = struData.Tgz(nonlinearityDOF,:)*reducedBasis.V(:,chosenModes);
+modelForIntegration.Ugap = struData.Tgz(nonlinearityDOF,:)*reducedBasis.V(:,options.chosenModes);
 
 
 % Obtain mapping from modes to monitor points
 if ~isempty(options.monitorPoints)
     fprintf(options.fidScreen, "WARNING: As of today, the monitor points are output in the global reference system\n")
     monitorDOF = obtainDOF(options.monitorPoints,model);
-    modelForIntegration.Umonitor = struData.Tgz(monitorDOF,:)*reducedBasis.V(:,chosenModes);
+    modelForIntegration.Umonitor = struData.Tgz(monitorDOF,:)*reducedBasis.V(:,options.chosenModes);
 else
     modelForIntegration.Umonitor = [];
 end
@@ -147,7 +150,7 @@ modelForIntegration.nAero = size(solution.inoutresid.AA,1);
 % lref must be the one used for the state-space representiation (i.e. the DLM one)
 modelForIntegration.lref = aeroData.aeroMatrix_dlm.aero.lref;
 
-modelForIntegration.reducedBasis.V = reducedBasis.V(:,chosenModes);
+modelForIntegration.reducedBasis.V = reducedBasis.V(:,options.chosenModes);
 modelForIntegration.aeroData = aeroData;
 modelForIntegration.machUsed = machUsed;
 modelForIntegration.selectedTrim = selectedTrim;

@@ -31,6 +31,7 @@ function [results, options] = timeMarchingLCO(modelForIntegration, options, prep
 iOpt = 0;
 % For screen output
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'fid for screen printing. [1]';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
 % For parameters of the problem
 iOpt = iOpt+1; baseOpt.rho = 1.225;                   descr{iOpt} = 'Air density to be used for the different simulations. [1.225].';
 iOpt = iOpt+1; baseOpt.speedVector = (10:2:56);       descr{iOpt} = 'Vector of speeds to analyse. [(10:2:56) m/s].';

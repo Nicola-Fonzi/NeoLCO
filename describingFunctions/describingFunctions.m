@@ -24,9 +24,10 @@ function [results, options] = describingFunctions(model, struData, aeroData, glo
 % Set default options
 iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'Fid for screen printing. [1].';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
 % General options
 iOpt = iOpt+1; baseOpt.DynVLM = false;                descr{iOpt} = 'Request the use of the dynamic VLM. [false].';
-iOpt = iOpt+1; baseOpt.selectionTrim = [];            descr{iOpt} = 'Selected trim case to be used when correcting the matrices with VLM results. [].';
+iOpt = iOpt+1; baseOpt.selectionTrimDynVLM = [];      descr{iOpt} = 'Selected trim case to be used when correcting the matrices with VLM results. [].';
 iOpt = iOpt+1; baseOpt.DynVLMtype = 'unsteady';       descr{iOpt} = 'Type of dyn VLM. ["unsteady"].';
 iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points where nonlinearities are present. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),label;point2,...}. If in the same point we have more nonlinearity, the point must be repeated per each dof. {}.';
 iOpt = iOpt+1; baseOpt.gap = {};                      descr{iOpt} = 'Cells array containing the peak-to-peak possible gaps at the nonlinearity points. The cells are in the same order as gapPoint IDs. The columns contain possible different values for the same point. The format is the same that we use for the kNominal. {}.';
@@ -75,10 +76,19 @@ options.struOpt = [];
 mkdir("DescribingFunctions")
 chdir("DescribingFunctions")
 
+if isempty(options.gapPoints)
+    error("You probably forgot to set the gapPoints option, identifying where nonlinearities are present")
+end
+
 if size(options.gapPoints,1)==1
     results = describingFunctionPK(model, struData, aeroData, reducedBasis, globalOptions, aeroDatabaseOptions, options);
 else
     error("Multiple nonlinearities not yet implemented");
+end
+
+if length(options.selectionTrim)>1 || length(options.selectionTrimDynVLM)>1
+    error(strcat("Only one trim condition can be specified to be used for the correction via VLM of the DLM "...
+        ,"matrices or for the introduction of flight loads"))
 end
 
 cd("..")

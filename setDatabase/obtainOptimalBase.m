@@ -19,7 +19,7 @@
 % unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
-function [reducedBasis, struData, model, struData_stiff, model_stiff, globalOptions] = obtainOptimalBase(inputData, options)
+function [rigidModes, struData, model, struData_stiff, model_stiff, globalOptions, options] = obtainOptimalBase(inputData, options)
 % This function always assume that the model is provided to NeoLCO so that
 % the stiffness at the nonlinearity points is NULL. It will be later added.
 % Also, no other options should be specified for the nonlinearity points,
@@ -32,7 +32,8 @@ function [reducedBasis, struData, model, struData_stiff, model_stiff, globalOpti
 
 % Set default options
 iOpt = 0;
-iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'fid for screen printing. [1].';
+iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'File where to print the output. [1]';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
 iOpt = iOpt+1; baseOpt.kNominal = {};                 descr{iOpt} = 'Cells array containing the nominal stiffnesses at the nonlinearity points. The rows are in the same order as gapPoint IDs. The columns contain possible different values for the same point. The format is {[k1_point1,k2_point1];[k1_point2,k2_point2,k3_point2]}. {}.';
 iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points where nonlinearities are present. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),label;point2,...}. If in the same point we have more nonlinearity, the point must be repeated per each dof. {}.';
 iOpt = iOpt+1; baseOpt.referenceNModes = 100;         descr{iOpt} = 'Number of modes to be retained and used as a reference for the "correct" system. [100].';
@@ -61,7 +62,7 @@ struOpt = [];
 
 eigOpt = globalOptions.eig;
 
-fid = globalOptions.FID;
+fid = options.fidScreen;
 
 %% Preprocessing
 
@@ -161,47 +162,7 @@ if ~options.optimumKnown
     
 end
 
-SetValues = true;
-
-while SetValues
-    
-    fictitiousMassRequired = input("Chosen value for the fictitious mass: ");
-    stiffnessFactorRequired = input("Chosen value for the stiffness factor value: ");
-    nModesRequired = input("Chosen number of modes: ");
-    
-    SetValues = input(strcat("You requested fictitious mass = ",num2str(fictitiousMassRequired),"; stiffness factor = ",num2str(stiffnessFactorRequired),"; number modes = ",num2str(nModesRequired),"... Ok? [0=no, 1=yes]")) == 0;
-    
-end
-
-eigOpt.NROOTS = nModesRequired;
-
-[model_common, ~] = addNonlinearityStiffness(model, options.gapPoints, maximumStiffnesses*stiffnessFactorRequired);
-[model_common, ~] = addFictitiousMass(model_common, options.gapPoints, repmat(fictitiousMassRequired,size(options.gapPoints,1),1));
-
-struData_common = structuralPreprocessor(fid, model_common, struOpt);
-
-eigOpt.UseFictmass = true;
-resultsEig_common = solve_eig_fun(fid, model_common, struData_common, eigOpt);
-
-reducedBasis = defineReducedBasis(struData, rigidModes, 'all', resultsEig_common, 'all');
-
-if ~isempty(model.Tabdmp1.ID(model.Tabdmp1.ID==model.Tabdmp1.caseControl))
-    KDAMP = model.Tabdmp1.KDAMP;
-    if KDAMP < 0
-        error("Only real damping is supported in this context, please use KDAMP>0")
-    else
-        fprintf(fid,' - Building real damping matrix for viscous damping...');
-        reducedBasis.Bmm = modalDamp(model, reducedBasis.V'*struData.Mzz*reducedBasis.V, reducedBasis.V'*struData.Kzz*reducedBasis.V,'Real');
-    end
-    fprintf(fid, 'done.\n');
-end
-
-resultsFolder = strcat("FM",num2str(fictitiousMassRequired),"KF",num2str(stiffnessFactorRequired),"NMODES",num2str(nModesRequired));
-
-mkdir(resultsFolder)
-chdir(resultsFolder)
-
-close all
+fprintf(fid, "Please review the graphical output and choose the parameters for the base");
 
 return
 

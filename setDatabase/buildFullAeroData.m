@@ -47,6 +47,7 @@ function [aeroData, options] = buildFullAeroData(model, model_stiff, struData_st
 % Set default options
 iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;               descr{iOpt} = 'fid for screen printing. [1].';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                descr{iOpt} = 'Utility flag to be used when called from App';
 iOpt = iOpt+1; baseOpt.meshType = 'flat';           descr{iOpt}=  'Mesh type "fullflat" or "flat". ["flat"].';
 iOpt = iOpt+1; baseOpt.noLinCurvature = false;      descr{iOpt} = 'Avoid the use of the linearized mesh curvature';
 iOpt = iOpt+1; baseOpt.DynVLM = false;              descr{iOpt} = 'Use VLM correction to DLM matrices';
@@ -64,7 +65,7 @@ options = setOptions(baseOpt, 'error', options);
 options.Mlist_dlm = globalOptions.aero.Mlist_dlm;
 options.klist = globalOptions.aero.klist;
 
-aeroData = setAeroDatabase(globalOptions.FID, model, options);
+aeroData = setAeroDatabase(options.fidScreen, model, options);
 
 if options.DynVLM
     % In this case we have to perform a trim solution so that we can

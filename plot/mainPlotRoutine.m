@@ -25,6 +25,8 @@ function mainPlotRoutine(describingFunctionResults, describingFunctionOptions, .
 % Set default options
 iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'Fid for screen printing. [1].';
+iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
+iOpt = iOpt+1; baseOpt.plotForApp = 1;                descr{iOpt} = 'Index of the nonlinearity to be plotted also on App';
 iOpt = iOpt+1; baseOpt.halfGapNormalisation = 1;      descr{iOpt} = 'Normalise the LCO amplitude using half gap size, 1=yes, 0=no. [1].';
 iOpt = iOpt+1; baseOpt.singleGapDF = 1;               descr{iOpt} = 'Plot one gap only for the describing functions, 1=yes, 0=no. [1].';
 iOpt = iOpt+1; baseOpt.normalisationSpeed = 1;        descr{iOpt} = 'Normalisation speed to be used in the plots. [1].';
@@ -39,6 +41,11 @@ end
 
 % Process input options
 options = setOptions(baseOpt, 'error', options);
+
+if options.useInApp
+    allfigs = findall(0,'Type', 'figure');
+    appHandle = findall(allfigs, 'Name', 'NeoLCO');
+end
 
 if isempty(describingFunctionResults) || isempty(describingFunctionOptions)
     options.useDF = 0;
@@ -149,6 +156,12 @@ for m = 1:size(legendTitle,1)
         string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
     end
     saveas(figure(1000+m),string)
+    if options.useInApp
+        if m==options.plotInApp
+            fig = gcf;
+            copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(19))
+        end
+    end
 end
 
 clear legendTitle
@@ -211,6 +224,10 @@ legend(legendTitle)
 ylabel('Frequency [Hz]')
 xlabel('Speed [m/s]')
 string = "frequency.fig";
+if options.useInApp
+    fig = gcf;
+    copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(20))
+end
 saveas(figure(2000),string)
 
 clear legendTitle
@@ -268,6 +285,12 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         ylabel(preprocessTimeMarchingOptions.monitorPoints{m,4})
         xlabel('Speed [m/s]')
         string = strcat(preprocessTimeMarchingOptions.monitorPoints{m,4},".fig");
+        if options.useInApp
+            if m==options.plotInApp
+                fig = gcf;
+                copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(21))
+            end
+        end
         saveas(figure(3000+m),string)
     end
 
@@ -323,6 +346,12 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         ylabel(strcat("Force at ",preprocessTimeMarchingOptions.gapPoints{m,4}))
         xlabel('Speed [m/s]')
         string = strcat("Force at ",preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
+        if options.useInApp
+            if m==options.plotInApp
+                fig = gcf;
+                copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(22))
+            end
+        end
         saveas(figure(4000+m),string)
     end
 
