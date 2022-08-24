@@ -143,7 +143,7 @@ if options.useTM
     end
 end
 
-clear toPlot gapToPlot string
+clear ytoPlot xtoPlot gapToPlot string
 
 for m = 1:size(legendTitle,1)
     figure(1000+m)
@@ -157,7 +157,7 @@ for m = 1:size(legendTitle,1)
     end
     saveas(figure(1000+m),string)
     if options.useInApp
-        if m==options.plotInApp
+        if m==options.plotForApp
             fig = gcf;
             copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(19))
         end
@@ -196,7 +196,7 @@ if options.useDF
     end
 end
 
-clear toPlot string
+clear ytoPlot xtoPlot string
 
 if options.useTM
     figure(2000)
@@ -217,7 +217,7 @@ if options.useTM
     end
 end
 
-clear toPlot string
+clear ytoPlot xtoPlot string
 
 figure(2000)
 legend(legendTitle)
@@ -277,7 +277,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         end
     end
 
-    clear toPlot gapToPlot string
+    clear ytoPlot xtoPlot gapToPlot string
 
     for m = 1:size(legendTitle,1)
         figure(3000+m)
@@ -286,7 +286,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         xlabel('Speed [m/s]')
         string = strcat(preprocessTimeMarchingOptions.monitorPoints{m,4},".fig");
         if options.useInApp
-            if m==options.plotInApp
+            if m==options.plotForApp
                 fig = gcf;
                 copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(21))
             end
@@ -338,7 +338,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         end
     end
 
-    clear toPlot gapToPlot string
+    clear ytoPlot xtoPlot gapToPlot string
 
     for m = 1:size(legendTitle,1)
         figure(4000+m)
@@ -347,7 +347,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
         xlabel('Speed [m/s]')
         string = strcat("Force at ",preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
         if options.useInApp
-            if m==options.plotInApp
+            if m==options.plotForApp
                 fig = gcf;
                 copyobj(fig.Children.Children,appHandle.Children(4).Children(6).Children(22))
             end
