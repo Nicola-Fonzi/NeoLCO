@@ -39,14 +39,14 @@ end
 %% Loop to solve the flutter equations for the harmonic part
 
 while true
-    
+
     Keq = Keq_prev+deltaK;
-    
+
     [model_descrFun, ~] = addNonlinearityStiffness(model, options.gapPoints, Keq);
-    
+
     % We need to rebuild the matrices as we changed the stiffness
     struData_descrFun = structuralPreprocessor(options.fidScreen, model_descrFun, options.struOpt);
-    
+
     % recompute the basis
     if options.recomputeBase
         options.eigOpt.UseFictmass = false;
@@ -67,14 +67,14 @@ while true
             aeroData = rmfield(aeroData,"aeroMatrix_dlm");
         end
     end
-    
+
     % Flutter computation
     if options.DynVLM
         [resultsFlutter_descrFun, aeroData] = solve_linflutt_fun(model_descrFun, struData_descrFun, reducedBasis, aeroData, options, globalOptions.trim, aeroDatabaseOptions);
     else
         [resultsFlutter_descrFun, aeroData] = solve_linflutt_fun(model_descrFun, struData_descrFun, reducedBasis, aeroData, options);
     end
-        
+
     if options.searchQuenchPoint
         if any(any(real(resultsFlutter_descrFun.modes.eig)>=0)) || reachedMinKeq || Keq==0
             resultsFlutter(indexK).modes = resultsFlutter_descrFun.modes;
@@ -170,17 +170,17 @@ if options.introduceFlightLoads
         end
     end
     clear trimDataDF
-end
 
 %% Plot the quasi-linear bias results
-for j = 1:length(KeqVect)
-    plot(speedVectorBias,biasVect(j,:),'LineWidth',2)
-    xlabel("V [m/s]","FontSize",12)
-    ylabel("Bias","FontSize",12)
-    grid minor
-    h = gcf;
-    saveas(h,strcat("Keq",num2str(KeqVect(j)),"_bias.fig"))
-    close(h)
+    for j = 1:length(KeqVect)
+        plot(speedVectorBias,biasVect(j,:),'LineWidth',2)
+        xlabel("V [m/s]","FontSize",12)
+        ylabel("Bias","FontSize",12)
+        grid minor
+        h = gcf;
+        saveas(h,strcat("Keq",num2str(KeqVect(j)),"_bias.fig"))
+        close(h)
+    end
 end
 
 %% Reconstruct LCO amplitude
@@ -198,7 +198,7 @@ for i = 1:length(kNominal)
             beta = (gap(j)/2 - BiasDB.')./AmplitudeDB;
             gamma = (-gap(j)/2 - BiasDB.')./AmplitudeDB;
             BoverA = BiasDB.'./AmplitudeDB;
-            
+
             Ks = kNominal(i)./BoverA.*( -(gamma+beta)/2 - g(gamma) + g(beta));
             % Dynamic stiffness as a function of A and B. Matrices that have
             % a different A per each column, and B changing row-wise.
@@ -291,7 +291,7 @@ for i = 1:length(kNominal)
             amplitudeRatioDB = linspace(1/5,1,1000);
             for m = 1:length(amplitudeRatioDB)
                 kRatioDB(m) = 1/pi*(pi - 2*asin(amplitudeRatioDB(m)) + sin(2*asin(amplitudeRatioDB(m)))) - ...
-                    4/pi*i*cos(asin(amplitudeRatioDB(m)));
+                    4/pi*amplitudeRatioDB(m)*cos(asin(amplitudeRatioDB(m)));
             end
             for k = 1:length(speedVectorLCO)
                 Kd = KeqVect(k)/kNominal(i);
