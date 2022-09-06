@@ -32,6 +32,10 @@ elseif nargin==3
     dashed = 0;
 end
 
+while initialColor>15
+    initialColor = initialColor - 15;
+end
+
 colorTable = [ ...
     0    0.4470    0.7410
     0.8500    0.3250    0.0980
