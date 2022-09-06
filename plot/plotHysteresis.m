@@ -62,8 +62,12 @@ if size(y,1)==1
     y = y.';
 end
 
-ylim([min(min(y))*0.9,max(max(y))*1.1])
-xlim([min(min(x))*0.9,max(max(x))*1.1])
+if any(y)
+    ylim([min(min(y))*0.9,max(max(y))*1.1])
+end
+if any(x)
+    xlim([min(min(x))*0.9,max(max(x))*1.1])
+end
 
 for j = 1:size(y,2)
     for i = 1:size(y,1)-1
