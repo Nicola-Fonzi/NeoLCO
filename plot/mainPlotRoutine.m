@@ -47,6 +47,14 @@ if options.useInApp
     appHandle = findall(allfigs, 'Name', 'NeoLCO');
 end
 
+% It was not possible to copy annotation in app axes, thus we need to check
+% if the release is new enough for that
+if options.useInApp
+    if isMATLABReleaseOlderThan("R2022b","release",1)
+        options.useInApp = 0;
+    end
+end
+
 if isempty(describingFunctionResults) || isempty(describingFunctionOptions)
     options.useDF = 0;
 else
