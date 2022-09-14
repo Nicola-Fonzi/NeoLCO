@@ -83,23 +83,50 @@ if options.useDF
             end
             for j = 1:maxj  % Per each gap combination, or for one gap combination only
                 gapToPlot = describingFunctionResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
-                if strcmp(options.plotType,'single')
-                    for k = 1:describingFunctionOptions.nKeq
-                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 3}}));
+                if any(cellfun(@(x) size(x,3)>1, describingFunctionResults.LCOamplitude))  % In this case, per each speed, we have more than one result -> switch to a scatter plot
+                    ytoPlot = [];
+                    if strcmp(options.plotType,'single')
+                        for k = 1:describingFunctionOptions.nKeq
+                            for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
+                                ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m,3,n)];
+                                xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
+                            end
+                        end
+                    else
+                        for k = 1:describingFunctionOptions.nKeq
+                            for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
+                                ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m, 1, n)];
+                                xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
+                            end
+                        end
+                        for k = 1:describingFunctionOptions.nKeq
+                            for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
+                                ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m, 2, n)];
+                                xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
+                            end
+                        end
                     end
-                    xtoPlot = describingFunctionResults.speedVector/options.normalisationSpeed;
+                    plot(xtoPlot,ytoPlot/gapToPlot,'o','LineWidth',1.5)
                 else
-                    for k = 1:describingFunctionOptions.nKeq
-                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 1}}));
+                    if strcmp(options.plotType,'single')
+                        for k = 1:describingFunctionOptions.nKeq
+                            for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
+                                ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,3);
+                            end
+                        end
+                        xtoPlot = describingFunctionResults.speedVector/options.normalisationSpeed;
+                    else
+                        for k = 1:describingFunctionOptions.nKeq
+                            ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m, 1);
+                        end
+                        ytoPlot(k+1) = nan;
+                        for k = describingFunctionOptions.nKeq+2:describingFunctionOptions.nKeq*2+1
+                            ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k-describingFunctionOptions.nKeq-1}(m, 2);
+                        end
+                        xtoPlot = [describingFunctionResults.speedVector, nan, describingFunctionResults.speedVector]/options.normalisationSpeed;
                     end
-                    ytoPlot(k+1) = nan;
-                    for k = describingFunctionOptions.nKeq+2:describingFunctionOptions.nKeq*2+1
-                        ytoPlot(k) = subsref(describingFunctionResults.LCOamplitude{i,j,k-describingFunctionOptions.nKeq-1}, ...
-                            struct('type', '()', 'subs', {{m, 2}}));
-                    end
-                    xtoPlot = [describingFunctionResults.speedVector, nan, describingFunctionResults.speedVector]/options.normalisationSpeed;
+                    plot(xtoPlot(:),ytoPlot(:)/gapToPlot,'LineWidth',1.5)
                 end
-                plot(xtoPlot(:),ytoPlot(:)/gapToPlot,'LineWidth',1.5)
                 if options.singleGapDF
                     string = strcat(describingFunctionOptions.gapPoints{m,4},...
                         ' Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
@@ -126,17 +153,16 @@ if options.useTM
                 gapToPlot = timeMarchingResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
                 if strcmp(options.plotType,'single')
                     for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 3}}));
+                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,3);
                     end
                     xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
                 else
                     for k = 1:timeMarchingOptions.nFFTwindows
-                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k}, struct('type', '()', 'subs', {{m, 1}}));
+                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,1);
                     end
                     ytoPlot(k+1) = nan;
                     for k = timeMarchingOptions.nFFTwindows+2:timeMarchingOptions.nFFTwindows*2+1
-                        ytoPlot(k) = subsref(timeMarchingResults.LCOamplitude{i,j,k-timeMarchingOptions.nFFTwindows-1}, ...
-                            struct('type', '()', 'subs', {{m, 2}}));
+                        ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k-timeMarchingOptions.nFFTwindows-1}(m,2);
                     end
                     xtoPlot = [timeMarchingOptions.speedVector, nan, timeMarchingOptions.speedVector]/options.normalisationSpeed;
                 end

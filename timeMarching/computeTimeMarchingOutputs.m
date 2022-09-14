@@ -49,7 +49,7 @@ elseif strcmp(type,'rms')
     output = findRmsMatrix(values);
 elseif strcmp(type,'std')
     output(:,1) = std(values,[],2);
-    output(:,2) = output(:,1);
+    output(:,2) = -output(:,1);
     output(:,3) = output(:,1);
 else
     error("No type of amplitude definition specified")
@@ -80,8 +80,9 @@ function Rms = findRmsMatrix(values)
 
 Rms=zeros(size(values,1),3);
 for i=1:size(values,1)
-    Rms(i,1) = mean(values(i,values(i,:)>0),2);
-    Rms(i,2) = mean(values(i,values(i,:)<=0),2);
+    bias = mean(values(i,:),2);
+    Rms(i,1) = bias + std(values(i,:),[],2);
+    Rms(i,2) = bias - std(values(i,:),[],2);
     Rms(i,3) = rms(values(i,:),2);
 end
 return

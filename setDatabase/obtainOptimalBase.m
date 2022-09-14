@@ -274,6 +274,7 @@ frequencyResponseErrorStiff_RB(nModes==options.nModes,stiffnessFactor==options.s
 sgtitle(strcat("Fictitious mass = ",num2str(fictitiousMass),"; Number modes = ",num2str(nModes),"; stiffness Factor = ",num2str(stiffnessFactor)))
 
 saveas(gcf,"MAC.fig")
+close(gcf)
 
 return
 

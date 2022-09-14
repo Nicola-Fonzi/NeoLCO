@@ -274,12 +274,21 @@ for i = 1:length(kNominal)
                     saveas(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
                         "Gap",num2str(gap(j)),"Keq",num2str(KeqVect(k)),".fig"))
                     close(h)
+                    LCOamplitude{i,j,k} = zeros(1,3, length(A3));
                     if strcmp(options.amplitudeDefinition,'maxPeak')
-                        LCOamplitude{i,j,k} = repmat(A3(end),1,3);
+                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3;
+                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3;
+                        LCOamplitude{i,j,k}(1,3,:) = A3;
+                    elseif strcmp(options.amplitudeDefinition,'rms')
+                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,3,:) = sqrt(B3.^2 + (A3/sqrt(2)).^2);
                     else
-                        LCOamplitude{i,j,k} = repmat(A3(end)/sqrt(2),1,3);
+                        LCOamplitude{i,j,k}(1,1,:) = A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,2,:) = -A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,3,:) = A3/sqrt(2);
                     end
-                    LCObias{i,j,k} = B3(end);
+                    LCObias{i,j,k} = B3;
                     LCOfrequency(i,j,k) = frequencyLCO(k);
                 else
                     LCOamplitude{i,j,k} = nan(1,3);
@@ -300,8 +309,10 @@ for i = 1:length(kNominal)
                 amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,Kd,'linear','extrap');
                 if strcmp(options.amplitudeDefinition,'maxPeak')
                     LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
+                    LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
                 else
                     LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
+                    LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
                 end
                 LCOfrequency(i,j,k)=frequencyLCO(k);
                 LCObias{i,j,k} = nan;
