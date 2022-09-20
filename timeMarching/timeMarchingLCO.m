@@ -57,6 +57,8 @@ iOpt = iOpt+1; baseOpt.trimType = 'meanAxes';         descr{iOpt} = 'Type of tri
 iOpt = iOpt+1; baseOpt.selectionTrim = 1;             descr{iOpt} = 'Selected trim ID to be used for the steady load calculation. [1].';
 iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to introduce constant mechanical preloads';
 iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
+iOpt = iOpt+1; baseOpt.introduceGravityLoads = false; descr{iOpt} = 'Flag to introduce gravity loads in the analysis. [false].';
+iOpt = iOpt+1; baseOpt.gravDirection = [0,0,-1];      descr{iOpt} = 'Direction of the gravity loads, when applied. [0,0,-1].';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);
@@ -168,6 +170,18 @@ if options.introduceStruLoads
     modelForIntegration.constantStruForce = modelForIntegration.reducedBasis.V'*modelForIntegration.struData.Tgz(loadDOF,:)'*cellfun(@(x) x,options.struLoads(:,4));
 end
 
+%% Introduce the gravity loads, if required
+
+if options.introduceGravityLoads
+    grav.SID = 1;
+    grav.direction = reshape(options.gravDirection,[3,1]);
+    grav.amplitude = 9.8;
+    [~, gridDOF, spointDOF] = getIDtable(modelForIntegration.model.Node.ID, modelForIntegration.model.Spoint.ID);
+    Fg_grav = setGravForces(grav, gridDOF, spointDOF, modelForIntegration.struData);
+    Fz_grav = modelForIntegration.struData.Tgz'*Fg_grav;
+    modelForIntegration.constantStruForce = modelForIntegration.constantStruForce + modelForIntegration.reducedBasis.V'*Fz_grav;
+end
+
 %% Perform a TRIM analysis to compute the trim loads
 
 % We perform the trim analysis using the stiff system, as we have free
@@ -195,7 +209,8 @@ if options.introduceFlightLoads
         struData_stiff = structuralPreprocessor(options.fidScreen, model_stiff, []);
 
         [resultsTrim(i), modelForIntegration.aeroData] = solve_lin_trim(options.fidScreen, model_stiff, struData_stiff, modelForIntegration.aeroData, modelForIntegration.globalOptions.trim, trimOptions);
-        modelForIntegration.constantAeroForce(:,i) = modelForIntegration.reducedBasis.V'*[resultsTrim(i).FdaeroTotal; resultsTrim(i).hingeMomStru; zeros(size(struData_stiff.Tgz,2)-length(resultsTrim(i).FdTotal)-length(resultsTrim(i).hingeMomStru),1)];
+        modelForIntegration.constantAeroForce(:,i) = modelForIntegration.reducedBasis.V'*[resultsTrim(i).FdaeroTotal; ...
+            resultsTrim(i).hingeMomStru; zeros(size(struData_stiff.Tgz,2)-length(resultsTrim(i).FdTotal)-length(resultsTrim(i).hingeMomStru),1)];
     end
 
     % Check if the Mach used to compute flight loads is the same used for the
