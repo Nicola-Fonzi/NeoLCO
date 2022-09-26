@@ -51,6 +51,10 @@ iOpt = iOpt+1; baseOpt.axesUsed = 'body';             descr{iOpt} = 'Axes used i
 iOpt = iOpt+1; baseOpt.introduceFlightLoads = false;  descr{iOpt} = 'Flag to introduce flight steady loads in the analysis. [false].';
 iOpt = iOpt+1; baseOpt.trimType = 'meanAxes';         descr{iOpt} = 'Type of trim output to be requested. ["meanAxes"],';
 iOpt = iOpt+1; baseOpt.selectionTrim = 1;             descr{iOpt} = 'Selected trim ID to be used for the steady load calculation. [1].';
+iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to introduce constant mechanical preloads';
+iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
+iOpt = iOpt+1; baseOpt.introduceGravityLoads = false; descr{iOpt} = 'Flag to introduce gravity loads in the analysis. [false].';
+iOpt = iOpt+1; baseOpt.gravDirection = [0,0,-1];      descr{iOpt} = 'Direction of the gravity loads, when applied. [0,0,-1].';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);

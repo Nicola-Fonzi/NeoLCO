@@ -99,14 +99,6 @@ nNonlinearities = size(options.gapPoints,1);
 mkdir("TimeMarching")
 chdir("TimeMarching")
 
-%% Remove gravity card, as it is introduced later in the time marching solution
-if ~isempty(model.grav.SID)
-    fprintf(options.fidScreen, "WARNING: Gravity can only be introduced using the dedicated input option in the time marching solution. Gravity cards are ignored.")
-    model.grav.SID = [];
-    model.grav.amplitude = [];
-    model.grav.direction = zeros(3,0);
-end
-
 %% Generate the DLM matrices if not present already
 
 if ~isfield(aeroData, 'aeroMatrix_dlm')

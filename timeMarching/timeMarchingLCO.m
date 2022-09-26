@@ -197,6 +197,10 @@ modelForIntegration.constantAeroForce = zeros(size(modelForIntegration.reducedBa
 
 if options.introduceFlightLoads
     for i = 1:nstiffnessCombinations
+        % TODO In theory, we should also loop on the speed, as the deflection of the control surfaces and the rigid body
+        % movements scale with qinf for the elastic part, but not for the inertial part. Thus, per each speed we actually
+        % have a nonscaled rigid motions, that cannot be inluded in the aerodynamic forces only multiplying by q.
+        % if no rigid body motions are present, the result is correct.
         if isempty(modelForIntegration.globalOptions.trim.ID)
             error('Requested the introduction of flight loads, but no info about trim provided')
         end
@@ -224,7 +228,7 @@ if options.introduceFlightLoads
         qinf = trimData.Q;
     end
     if modelForIntegration.aeroData.dlmData.aero.M(modelForIntegration.machUsed)~=trimData.Mach
-        error("The requested mach number for the time marching integration is different from the Mach number used to compute the constant forces via trim solution.")
+        error("The requested mach number for the time marching integration is different from the Mach number used to compute the aerodynamic matrices.")
     end
 
     % Forces are to be used per unit dynamic pressure

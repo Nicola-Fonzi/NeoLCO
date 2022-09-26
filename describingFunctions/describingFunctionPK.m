@@ -134,18 +134,63 @@ end
 clear h handles
 
 %% Loop to solve the constant part, if required
-% We exploit the fact that the KeqVect is already computed from the loop
-% before. A mechanical preload is included here automatically
 
-if options.introduceFlightLoads
+if options.introduceFlightLoads || options.introduceStruLoads || options.introduceGravityLoads
+
+    % First, we introduce GRAV or LOAD cards
+    if options.introduceGravityLoads
+        model.grav.SID = 1;
+        model.grav.direction = reshape(options.gravDirection,[3,1]);
+        model.grav.amplitude = 9.8;
+        trimOptions.gravSet = 1;
+    end
+    if options.introduceStruLoads
+        model.load.SID = 1;
+        nPointsLoaded = size(options.struLoads,1);
+        model.load.amplitude = cellfun(@(x) x, options.struLoads(:,4));
+        model.load.directionType = zeros(1, nPointsLoaded);
+        model.load.directionType(cellfun(@(x) x=='s', options.struLoads(:,2))) = -1;
+        model.load.directionData = zeros(4, nPointsLoaded);
+        for loadedPoint = 1:nPointsLoaded
+            if any(options.struLoads{loadedPoint,3} == [1,4])
+                model.load.directionData(1,loadedPoint) = 1;
+            elseif any(options.struLoads{loadedPoint,3} == [2,5])
+                model.load.directionData(2,loadedPoint) = 1;
+            else
+                model.load.directionData(3,loadedPoint) = 1;
+            end
+        end
+        model.load.isMoment = zeros(1, nPointsLoaded);
+        model.load.isMoment(cellfun(@(x) x==4 || x==5 || x==6, options.struLoads(:,3))) = 1;
+        model.load.node = cellfun(@(x) x, options.struLoads(:,1));
+        model.load.followerType = zeros(1, nPointsLoaded);
+        trimOptions.loadSet = 1;
+    end
+
     % Check if the Mach used to compute flight loads is the same used for the
     % DLM matrices. Check also if the density is the same
-    if isempty(globalOptions.trim.ID)
-        error('Requested the introduction of flight loads, but no info about trim provided')
+    if options.introduceFlightLoads
+        if isempty(globalOptions.trim.ID)
+            error('Requested the introduction of flight loads, but no info about trim provided')
+        end
+    else
+        fprintf(options.fidScreen, "In order to introduce the structural loads and/or gravity loads, a trim card\n");
+        fprintf(options.fidScreen, "is added with no angle of attack, no side-slip angle, no rotations.");
+        globalOptions.trim.ID = 1;
+        globalOptions.trim.name = 'noAero';
+        globalOptions.trim.type = 0;
+        globalOptions.trim.Mach = aeroData.dlmData.aero.M(options.machUsed);
+        globalOptions.trim.z = nan;
+        globalOptions.trim.Q = 1; % It is overwritten next
+        globalOptions.trim.aelinkIDlist = 'all'; % All the surface links are used
+        % If the model is free with gravity or loads it may have acceleration, it is thus taken into account
+        globalOptions.trim.data(1).labelList = {'SIDES','ANGLEA','ROLL','PITCH','YAW'};
+        globalOptions.trim.data(1).valueList = [0,0,0,0,0];
+        options.selectionTrim = 1;
     end
     trimDataDF = selectTrimCondition(globalOptions.trim, options.selectionTrim);
     if aeroData.dlmData.aero.M(options.machUsed)~=trimDataDF.Mach
-        error("The requested mach number for the time marching integration is different from the Mach number used to compute the constant forces via trim solution.")
+        error("The requested mach number for the descrbing function analysis is different from the Mach number used to compute the aerodynamic matrices.")
     end
     trimDataDF.z = nan;
 
@@ -182,6 +227,22 @@ if options.introduceFlightLoads
         saveas(h,strcat("Keq",num2str(KeqVectBias(j)),"_bias.fig"))
         close(h)
     end
+
+    if options.introduceGravityLoads
+        model.grav.SID = [];
+        model.grav.amplitude = [];
+        model.grav.direction = zeros(3,0);
+    end
+    if options.introduceStruLoads
+        model.load.SID = [];
+        model.load.node = [];
+        model.load.ismoment = [];
+        model.load.followerType = [];
+        model.load.amplitude = [];
+        model.load.directionData = zeros(4,0);
+        model.load.directionType = [];
+    end
+
 end
 
 %% Reconstruct LCO amplitude

@@ -53,6 +53,26 @@ options = setOptions(baseOpt, 'error', options);
 
 [model, globalOptions] = processInputData(inputData);
 
+%% Remove gravity card, as it is introduced later in the solution functions
+if ~isempty(model.grav.SID)
+    fprintf(options.fidScreen, "WARNING: Gravity can only be introduced using the dedicated input option in the solution functions. Gravity cards are ignored.")
+    model.grav.SID = [];
+    model.grav.amplitude = [];
+    model.grav.direction = zeros(3,0);
+end
+
+%% Remove load card, as it is introduced later in the solution functions
+if ~isempty(model.load.SID)
+    fprintf(options.fidScreen, "WARNING: Loads can only be introduced using the dedicated input option in the solution functions. Load cards are ignored.")
+    model.load.SID = [];
+    model.load.node = [];
+    model.load.ismoment = [];
+    model.load.followerType = [];
+    model.load.amplitude = [];
+    model.load.directionData = zeros(4,0);
+    model.load.directionType = [];
+end
+
 maximumStiffnesses = cellfun(@(x) max(x), options.kNominal);
 
 [model_stiff, ~] = addNonlinearityStiffness(model, options.gapPoints, maximumStiffnesses);
