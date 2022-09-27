@@ -63,10 +63,14 @@ if size(y,1)==1
 end
 
 if any(y)
-    ylim([min(min(y))*0.9,max(max(y))*1.1])
+    minimum = min(min(y));
+    maximum = max(max(y));
+    ylim([minimum - 0.1*abs(minimum),maximum + 0.1*abs(maximum)])
 end
 if any(x)
-    xlim([min(min(x))*0.9,max(max(x))*1.1])
+    minimum = min(min(x));
+    maximum = max(max(x));
+    xlim([minimum - 0.1*abs(minimum),maximum + 0.1*abs(maximum)])
 end
 
 for j = 1:size(y,2)

@@ -83,23 +83,24 @@ if options.useDF
             end
             for j = 1:maxj  % Per each gap combination, or for one gap combination only
                 gapToPlot = describingFunctionResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
-                if any(cellfun(@(x) size(x,3)>1, describingFunctionResults.LCOamplitude))  % In this case, per each speed, we have more than one result -> switch to a scatter plot
-                    ytoPlot = [];
+                ytoPlot = [];
+                xtoPlot = [];
+                if sum(squeeze(cellfun(@(x) size(x,3)>1, describingFunctionResults.LCOamplitude(i,j,:))))  % In this case, per each speed, we have more than one result -> switch to a scatter plot
                     if strcmp(options.plotType,'single')
-                        for k = 1:describingFunctionOptions.nKeq
+                        for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
                                 ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m,3,n)];
                                 xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
                             end
                         end
                     else
-                        for k = 1:describingFunctionOptions.nKeq
+                        for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
                                 ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m, 1, n)];
                                 xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
                             end
                         end
-                        for k = 1:describingFunctionOptions.nKeq
+                        for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
                                 ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m, 2, n)];
                                 xtoPlot = [xtoPlot, describingFunctionResults.speedVector(k)/options.normalisationSpeed];
@@ -109,19 +110,17 @@ if options.useDF
                     plot(xtoPlot,ytoPlot/gapToPlot,'o','LineWidth',1.5)
                 else
                     if strcmp(options.plotType,'single')
-                        for k = 1:describingFunctionOptions.nKeq
-                            for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
-                                ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,3);
-                            end
+                        for k = 1:size(describingFunctionResults.LCOamplitude,3)
+                            ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,3);
                         end
                         xtoPlot = describingFunctionResults.speedVector/options.normalisationSpeed;
                     else
-                        for k = 1:describingFunctionOptions.nKeq
+                        for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m, 1);
                         end
                         ytoPlot(k+1) = nan;
-                        for k = describingFunctionOptions.nKeq+2:describingFunctionOptions.nKeq*2+1
-                            ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k-describingFunctionOptions.nKeq-1}(m, 2);
+                        for k = size(describingFunctionResults.LCOamplitude,3)+2:size(describingFunctionResults.LCOamplitude,3)*2+1
+                            ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k-size(describingFunctionResults.LCOamplitude,3)-1}(m, 2);
                         end
                         xtoPlot = [describingFunctionResults.speedVector, nan, describingFunctionResults.speedVector]/options.normalisationSpeed;
                     end
@@ -151,6 +150,8 @@ if options.useTM
         for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
             for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
                 gapToPlot = timeMarchingResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
+                ytoPlot = [];
+                xtoPlot = [];
                 if strcmp(options.plotType,'single')
                     for k = 1:timeMarchingOptions.nFFTwindows
                         ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,3);
@@ -237,6 +238,8 @@ if options.useTM
     hold on
     for i = 1:size(timeMarchingResults.stiffnessCombinations,2)  % Per each stiffness combination
         for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
+            ytoPlot = [];
+            xtoPlot = [];
             for k = 1:timeMarchingOptions.nFFTwindows
                 [~ , freq_index] = max(timeMarchingResults.LCOfrequency(i,j,k).pVect);
                 ytoPlot(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
@@ -285,6 +288,8 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     else
                         gapToPlot = 1;
                     end
+                    ytoPlot = [];
+                    xtoPlot = [];
                     if strcmp(options.plotType,'single')
                         for k = 1:timeMarchingOptions.nFFTwindows
                             ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,3);
@@ -346,6 +351,8 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     else
                         gapToPlot = 1;
                     end
+                    ytoPlot = [];
+                    xtoPlot = [];
                     if strcmp(options.plotType,'single')
                         for k = 1:timeMarchingOptions.nFFTwindows
                             ytoPlot(k) = squeeze(timeMarchingResults.LCOtorque{i,j,k}(m,3));
