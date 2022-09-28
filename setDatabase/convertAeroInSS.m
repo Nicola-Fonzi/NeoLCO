@@ -48,7 +48,10 @@ else
 end
 k = aeroData.aeroMatrix_dlm.aero.k;
 
-if options.useInApp
+plotInApp = options.useInApp && isempty(options.chosenModes);
+askModes = isempty(options.chosenModes);
+
+if plotInApp
     allfigs = findall(0,'Type', 'figure');
     appHandle = findall(allfigs, 'Name', 'NeoLCO');
     h = appHandle.Children(4).Children(5).Children.Children(1).Children(25);
@@ -56,28 +59,23 @@ if options.useInApp
     appHandle.Children(4).Children(5).Children.Children(1).Children(13).Visible = 'on';
     appHandle.Children(4).Children(5).Children.Children(1).Children(7).Visible = 'on';
 else
-    figure
-    h = gcf;
+    h = figure();
 end
 
-if isempty(options.chosenModes)
-    for modeIndex = 1:size(aeroSystem.Qhh,1)
-        plotLinearDispl(model,[],struData,reducedBasis,modeIndex,0.1,h);
-        if options.useInApp
+for modeIndex = 1:size(aeroSystem.Qhh,1)
+    plotLinearDispl(model,[],struData,reducedBasis,modeIndex,0.1,h);
+    if askModes
+        if plotInApp
             while(appHandle.Children(4).Children(5).Children.Children(1).Children(13).Value ~=1) && ...
                     (appHandle.Children(4).Children(5).Children.Children(1).Children(7).Value ~=1)
-                pause(1);
+                pause(0.1);
             end
             use = appHandle.Children(4).Children(5).Children.Children(1).Children(13).Value;
             appHandle.Children(4).Children(5).Children.Children(1).Children(13).Value = 0;
             appHandle.Children(4).Children(5).Children.Children(1).Children(7).Value = 0;
         else
             use = input("Use this mode?");
-            while isempty(use)
-                disp("Wrong selection, please use [1] if you want to use the mode, or [0] if not")
-                use = input("Use this mode?");
-            end
-            while use~=1 && use~=0
+            while isempty(use) || (use~=1 && use~=0)
                 disp("Wrong selection, please use [1] if you want to use the mode, or [0] if not")
                 use = input("Use this mode?");
             end
@@ -104,35 +102,18 @@ if isempty(options.chosenModes)
                 saveas(h,strcat("Mode",num2str(modeIndex),".fig"));
             end
         end
-        if options.useInApp
+        if plotInApp
             cla(h)
         else
             cla(h.Children)
         end
-    end
-else
-    for modeIndex = 1:size(aeroSystem.Qhh,1)
+    else
         if any(modeIndex==options.chosenModes)
-            if options.useInApp
-                dummyfig = figure;
-                dummyax = axes;
-                copyobj(h.Children,dummyax)
-                saveas(dummyfig,strcat("Mode",num2str(modeIndex),"--used.fig"));
-                close(dummyfig)
-            else
-                saveas(h,strcat("Mode",num2str(modeIndex),"--used.fig"));
-            end
+            saveas(h,strcat("Mode",num2str(modeIndex),"--used.fig"));
         else
-            if options.useInApp
-                dummyfig = figure;
-                dummyax = axes;
-                copyobj(h.Children,dummyax)
-                saveas(dummyfig,strcat("Mode",num2str(modeIndex),".fig"));
-                close(dummyfig)
-            else
-                saveas(h,strcat("Mode",num2str(modeIndex),".fig"));
-            end
+            saveas(h,strcat("Mode",num2str(modeIndex),".fig"));
         end
+        cla(h.Children)
     end
 end
 
@@ -143,9 +124,12 @@ if options.useInApp
     appHandle.Children(4).Children(5).Children.Children(1).Children(25).Visible = 'off';
     appHandle.Children(4).Children(5).Children.Children(1).Children(13).Visible = 'off';
     appHandle.Children(4).Children(5).Children.Children(1).Children(7).Visible = 'off';
-    solution = improvedMFDfun(k,Ha,options.opt,options.optsLM,options.eigsopt,options.algROM,options.orderROM,[]);
-else
-    solution = improvedMFDfun(k,Ha,options.opt,options.optsLM,options.eigsopt,options.algROM,options.orderROM,[]);
 end
+
+if ~plotInApp
+    close(h)
+end
+
+solution = improvedMFDfun(k,Ha,options.opt,options.optsLM,options.eigsopt,options.algROM,options.orderROM,[]);
 
 return
