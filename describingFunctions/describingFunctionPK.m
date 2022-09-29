@@ -265,7 +265,7 @@ for i = 1:length(kNominal)
             % Dynamic stiffness as a function of A and B. Matrices that have
             % a different A per each column, and B changing row-wise.
             Kd = kNominal(i)*( 1 + (f(gamma) - f(beta)));
-            for k = 1:length(speedVectorLCO)
+            for k = 1:length(KeqVect)
                 if ~isnan(speedVectorLCO(k))
 
                     % First, we find the combinations A1,B1 that provides an
@@ -320,10 +320,6 @@ for i = 1:length(kNominal)
 
                     % We can now find the intersection
                     [A3,B3]=polyxpoly(A1,B1,A2,B2);
-                    if isempty(A3)
-                        A3 = nan;
-                        B3 = nan;
-                    end
                     figure
                     plot(A1,B1,'LineWidth',2)
                     hold on
@@ -336,22 +332,28 @@ for i = 1:length(kNominal)
                     saveas(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
                         "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
                     close(h)
-                    LCOamplitude{i,j,k} = zeros(1,3, length(A3));
-                    if strcmp(options.amplitudeDefinition,'maxPeak')
-                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3;
-                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3;
-                        LCOamplitude{i,j,k}(1,3,:) = A3;
-                    elseif strcmp(options.amplitudeDefinition,'rms')
-                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3/sqrt(2);
-                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3/sqrt(2);
-                        LCOamplitude{i,j,k}(1,3,:) = sqrt(B3.^2 + (A3/sqrt(2)).^2);
+                    if isempty(A3)
+                        LCOamplitude{i,j,k} = nan(1,3);
+                        LCObias{i,j,k} = nan;
+                        LCOfrequency(i,j,k) = nan;
                     else
-                        LCOamplitude{i,j,k}(1,1,:) = A3/sqrt(2);
-                        LCOamplitude{i,j,k}(1,2,:) = -A3/sqrt(2);
-                        LCOamplitude{i,j,k}(1,3,:) = A3/sqrt(2);
+                        LCOamplitude{i,j,k} = zeros(1,3, length(A3));
+                        if strcmp(options.amplitudeDefinition,'maxPeak')
+                            LCOamplitude{i,j,k}(1,1,:) = B3 + A3;
+                            LCOamplitude{i,j,k}(1,2,:) = B3 - A3;
+                            LCOamplitude{i,j,k}(1,3,:) = A3;
+                        elseif strcmp(options.amplitudeDefinition,'rms')
+                            LCOamplitude{i,j,k}(1,1,:) = B3 + A3/sqrt(2);
+                            LCOamplitude{i,j,k}(1,2,:) = B3 - A3/sqrt(2);
+                            LCOamplitude{i,j,k}(1,3,:) = sqrt(B3.^2 + (A3/sqrt(2)).^2);
+                        else
+                            LCOamplitude{i,j,k}(1,1,:) = A3/sqrt(2);
+                            LCOamplitude{i,j,k}(1,2,:) = -A3/sqrt(2);
+                            LCOamplitude{i,j,k}(1,3,:) = A3/sqrt(2);
+                        end
+                        LCObias{i,j,k} = B3;
+                        LCOfrequency(i,j,k) = frequencyLCO(k);
                     end
-                    LCObias{i,j,k} = B3;
-                    LCOfrequency(i,j,k) = frequencyLCO(k);
                 else
                     LCOamplitude{i,j,k} = nan(1,3);
                     LCObias{i,j,k} = nan;
@@ -364,7 +366,7 @@ for i = 1:length(kNominal)
                 kRatioDB(m) = 1/pi*(pi - 2*asin(amplitudeRatioDB(m)) + sin(2*asin(amplitudeRatioDB(m)))) - ...
                     4/pi*amplitudeRatioDB(m)*cos(asin(amplitudeRatioDB(m)));
             end
-            for k = 1:length(speedVectorLCO)
+            for k = 1:length(KeqVect)
                 if ~isnan(speedVectorLCO(k))
                     Kd = KeqVect(k)/kNominal(i);
                     % We intersect the describing function with the value of Kd
