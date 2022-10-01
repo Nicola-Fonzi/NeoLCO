@@ -86,7 +86,7 @@ if options.useDF
                 ytoPlot = [];
                 xtoPlot = [];
                 if sum(squeeze(cellfun(@(x) size(x,3)>1, describingFunctionResults.LCOamplitude(i,j,:))))  % In this case, per each speed, we have more than one result -> switch to a scatter plot
-                    if strcmp(options.plotType,'single')
+                    if strcmpi(options.plotType,'single')
                         for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             for n = 1:size(describingFunctionResults.LCOamplitude{i,j,k},3)
                                 ytoPlot = [ytoPlot, describingFunctionResults.LCOamplitude{i,j,k}(m,3,n)];
@@ -109,7 +109,7 @@ if options.useDF
                     end
                     plot(xtoPlot,ytoPlot/gapToPlot,'o','LineWidth',1.5)
                 else
-                    if strcmp(options.plotType,'single')
+                    if strcmpi(options.plotType,'single')
                         for k = 1:size(describingFunctionResults.LCOamplitude,3)
                             ytoPlot(k) = describingFunctionResults.LCOamplitude{i,j,k}(m,3);
                         end
@@ -152,7 +152,7 @@ if options.useTM
                 gapToPlot = timeMarchingResults.gapCombinations(m,j)/(1+options.halfGapNormalisation);
                 ytoPlot = [];
                 xtoPlot = [];
-                if strcmp(options.plotType,'single')
+                if strcmpi(options.plotType,'single')
                     for k = 1:timeMarchingOptions.nFFTwindows
                         ytoPlot(k) = timeMarchingResults.LCOamplitude{i,j,k}(m,3);
                     end
@@ -290,7 +290,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     end
                     ytoPlot = [];
                     xtoPlot = [];
-                    if strcmp(options.plotType,'single')
+                    if strcmpi(options.plotType,'single')
                         for k = 1:timeMarchingOptions.nFFTwindows
                             ytoPlot(k) = timeMarchingResults.LCOmonitor{i,j,k}(m,3);
                         end
@@ -353,7 +353,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     end
                     ytoPlot = [];
                     xtoPlot = [];
-                    if strcmp(options.plotType,'single')
+                    if strcmpi(options.plotType,'single')
                         for k = 1:timeMarchingOptions.nFFTwindows
                             ytoPlot(k) = squeeze(timeMarchingResults.LCOtorque{i,j,k}(m,3));
                         end
