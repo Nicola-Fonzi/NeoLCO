@@ -251,7 +251,7 @@ gap = options.gap{1};
 
 for i = 1:length(kNominal)
     for j = 1:length(gap)
-        if options.introduceFlightLoads
+        if options.introduceFlightLoads || options.introduceStruLoads || options.introduceGravityLoads
             % Range of values for A and B
             AmplitudeDB = gap(j)/2*linspace(1e-12,5,1000);
             BiasDB = gap(j)/2*linspace(-5,5,1000);
