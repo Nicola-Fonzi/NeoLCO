@@ -29,6 +29,9 @@ deltaK = options.maxKeq/options.nKeq;
 Keq_prev = -deltaK;
 reachedMinKeq = false;
 
+kNominal = options.kNominal{1};
+gap = options.gap{1};
+
 if length(options.selectionTrim)>1
     error("Only one trim condition can be specified to be used for the introduction of flight loads")
 end
@@ -195,7 +198,7 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
     trimDataDF.z = nan;
 
     speedVectorBias = options.Vmin:options.Vstep:options.Vmax;
-    KeqVectBias = 0:(options.maxKeq/options.nKeq):options.maxKeq;
+    KeqVectBias = linspace(0,kNominal,options.maxKeq);
     for i = 1:length(speedVectorBias)
         % Loop on the speed vector and on the values of equivalent stiffness
         trimDataDF.Q = 0.5*options.rho*speedVectorBias(i)^2;
@@ -246,8 +249,6 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
 end
 
 %% Reconstruct LCO amplitude
-kNominal = options.kNominal{1};
-gap = options.gap{1};
 
 for i = 1:length(kNominal)
     for j = 1:length(gap)
