@@ -39,6 +39,10 @@ if length(options.selectionTrimDynVLM)>1
     error("Only one trim condition can be specified to be used for the correction via VLM of the DLM matrices")
 end
 
+if options.searchQuenchPoint && (options.introduceFlightLoads || options.introduceStruLoads || options.introduceGravityLoads)
+    warning("on","It is suggested not to use the search for the quenching point when constant loads are applied")
+end
+
 %% Loop to solve the flutter equations for the harmonic part
 
 while true
@@ -112,7 +116,7 @@ plotOption.envelopeLabel = "Equivalent stiffness";
 plotOption.envelopeMeasureUnit = "Nm";
 plotOption.envelopeList = KeqVect;
 
-[speedVectorLCO, frequencyLCO] = plotVgDiagrams(resultsFlutter, plotOption);
+[speedVectorLCO, frequencyLCO, speedVectorEndLCO] = plotVgDiagrams(resultsFlutter, plotOption);
 
 handles=findall(0,'type','figure');
 
@@ -249,6 +253,12 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
 end
 
 %% Reconstruct LCO amplitude
+
+% First reorganize the harmonic results
+KeqVect = [KeqVect, KeqVect];
+speedVectorLCO = [speedVectorLCO, speedVectorEndLCO];
+[speedVectorLCO, sortIndex] = sort(speedVectorLCO);
+KeqVect = KeqVect(sortIndex);
 
 for i = 1:length(kNominal)
     for j = 1:length(gap)
