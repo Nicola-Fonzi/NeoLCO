@@ -429,10 +429,10 @@ function saveNoOverwrite(handle, name)
 
 nameModified = name;
 index = 1;
-while exist(strcat(nameModified,".fig"), 'file') == 2
+while isfile(strcat(nameModified,".fig"))
     nameModified = strcat(name,"_",num2str(index));
     index = index+1;
 end
-saveas(handle,nameModified)
+saveas(handle,nameModified,'fig')
 
 end
