@@ -430,7 +430,7 @@ function saveNoOverwrite(handle, name)
 nameModified = name;
 index = 1;
 while isfile(strcat(nameModified,".fig"))
-    nameModified = strcat(name,"_",num2str(index));
+    nameModified = strcat(name,"_",num2str(index),".fig");
     index = index+1;
 end
 saveas(handle,nameModified,'fig')
