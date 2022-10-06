@@ -39,10 +39,6 @@ if length(options.selectionTrimDynVLM)>1
     error("Only one trim condition can be specified to be used for the correction via VLM of the DLM matrices")
 end
 
-if options.searchQuenchPoint && (options.introduceFlightLoads || options.introduceStruLoads || options.introduceGravityLoads)
-    warning("on","It is suggested not to use the search for the quenching point when constant loads are applied")
-end
-
 %% Loop to solve the flutter equations for the harmonic part
 
 while true
@@ -224,7 +220,7 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
     end
     clear trimDataDF
 
-%% Plot the quasi-linear bias results
+    %% Plot the quasi-linear bias results
     for j = 1:length(KeqVectBias)
         plot(speedVectorBias,biasVect(j,:),'LineWidth',2)
         xlabel("V [m/s]","FontSize",12)
@@ -255,10 +251,10 @@ end
 %% Reconstruct LCO amplitude
 
 % First reorganize the harmonic results
-KeqVect = [KeqVect, KeqVect];
-speedVectorLCO = [speedVectorLCO, speedVectorEndLCO];
-[speedVectorLCO, sortIndex] = sort(speedVectorLCO);
-KeqVect = KeqVect(sortIndex);
+KeqVect = [KeqVect, KeqVect(end:-1:1)];
+speedVectorLCO = [speedVectorLCO, speedVectorEndLCO(end:-1:1)];
+KeqVect(isnan(speedVectorLCO)) = [];
+speedVectorLCO(isnan(speedVectorLCO)) = [];
 
 for i = 1:length(kNominal)
     for j = 1:length(gap)
@@ -277,98 +273,92 @@ for i = 1:length(kNominal)
             % a different A per each column, and B changing row-wise.
             Kd = kNominal(i)*( 1 + (f(gamma) - f(beta)));
             for k = 1:length(KeqVect)
-                if ~isnan(speedVectorLCO(k))
 
-                    % First, we find the combinations A1,B1 that provides an
-                    % equivalent stiffness equal to the one that provokes
-                    % flutter at our speed
-                    figure
-                    plot(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k))
-                    hold on
-                    plot(AmplitudeDB, Kd(1:100:end,:))
-                    xlabel("LCO amplitude [rad]","FontSize",12)
-                    ylabel("Dynamic stiffness","FontSize",12)
-                    legend([{"Equivalent stiffness for flutter"},...
-                        strcat("B=",string(num2cell(BiasDB(1:100:end))))],"FontSize",12)
-                    h = gcf;
-                    saveas(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
-                        "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
-                    close(h)
-                    A1 = [];
-                    B1 = [];
-                    K1 = [];
-                    for m = 1:length(BiasDB)
-                        [a1, k1] = polyxpoly(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k), AmplitudeDB, Kd(m,:));
-                        K1 = [K1; k1];
-                        A1 = [A1; a1];
-                        B1 = [B1; BiasDB(m)*ones(length(a1),1)];
-                    end
+                % First, we find the combinations A1,B1 that provides an
+                % equivalent stiffness equal to the one that provokes
+                % flutter at our speed
+                figure
+                plot(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k))
+                hold on
+                plot(AmplitudeDB, Kd(1:100:end,:))
+                xlabel("LCO amplitude [rad]","FontSize",12)
+                ylabel("Dynamic stiffness","FontSize",12)
+                legend([{"Equivalent stiffness for flutter"},...
+                    strcat("B=",string(num2cell(BiasDB(1:100:end))))],"FontSize",12)
+                h = gcf;
+                saveas(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                close(h)
+                A1 = [];
+                B1 = [];
+                K1 = [];
+                for m = 1:length(BiasDB)
+                    [a1, k1] = polyxpoly(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k), AmplitudeDB, Kd(m,:));
+                    K1 = [K1; k1];
+                    A1 = [A1; a1];
+                    B1 = [B1; BiasDB(m)*ones(length(a1),1)];
+                end
 
-                    % Then, we can plot the SR at that speed
-                    slicedBias = interp2(speedVectorBias, KeqVectBias, biasVect, speedVectorLCO(k), KeqVectBias);
-                    figure
-                    plot(KeqVectBias, slicedBias, "LineWidth", 2)
-                    hold on
-                    % The intersection of this curve with all the possible Ks
-                    % provides A2 and B2
-                    plot(Ks(:,1:100:end), BiasDB, "LineWidth", 2)
-                    ylabel("LCO bias [rad]","FontSize",12)
-                    xlabel("Static stiffness","FontSize",12)
-                    legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:100:end))))],"FontSize",12)
-                    h = gcf;
-                    saveas(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
-                        "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
-                    close(h)
-                    A2 = [];
-                    B2 = [];
-                    K2 = [];
-                    for m = 1:length(AmplitudeDB)
-                        [b2, k2] = polyxpoly(slicedBias, KeqVectBias , BiasDB, Ks(:,m));
-                        K2 = [K2; k2];
-                        A2 = [A2; AmplitudeDB(m)*ones(length(b2),1)];
-                        B2 = [B2; b2];
-                    end
+                % Then, we can plot the SR at that speed
+                slicedBias = interp2(speedVectorBias, KeqVectBias, biasVect, speedVectorLCO(k), KeqVectBias);
+                figure
+                plot(KeqVectBias, slicedBias, "LineWidth", 2)
+                hold on
+                % The intersection of this curve with all the possible Ks
+                % provides A2 and B2
+                plot(Ks(:,1:100:end), BiasDB, "LineWidth", 2)
+                ylabel("LCO bias [rad]","FontSize",12)
+                xlabel("Static stiffness","FontSize",12)
+                legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:100:end))))],"FontSize",12)
+                h = gcf;
+                saveas(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                close(h)
+                A2 = [];
+                B2 = [];
+                K2 = [];
+                for m = 1:length(AmplitudeDB)
+                    [b2, k2] = polyxpoly(slicedBias, KeqVectBias , BiasDB, Ks(:,m));
+                    K2 = [K2; k2];
+                    A2 = [A2; AmplitudeDB(m)*ones(length(b2),1)];
+                    B2 = [B2; b2];
+                end
 
-                    % We can now find the intersection
-                    [A3,B3]=polyxpoly(A1,B1,A2,B2);
-                    figure
-                    plot(A1,B1,'LineWidth',2)
-                    hold on
-                    plot(A2,B2,'LineWidth',2)
-                    plot(A3,B3,'ro','LineWidth',2)
-                    xlabel("A","FontSize",12)
-                    ylabel("B","FontSize",12)
-                    legend("Dynamic solutions","Static solutions")
-                    h = gcf;
-                    saveas(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
-                        "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
-                    close(h)
-                    if isempty(A3)
-                        LCOamplitude{i,j,k} = nan(1,3);
-                        LCObias{i,j,k} = nan;
-                        LCOfrequency(i,j,k) = nan;
-                    else
-                        LCOamplitude{i,j,k} = zeros(1,3, length(A3));
-                        if strcmp(options.amplitudeDefinition,'maxPeak')
-                            LCOamplitude{i,j,k}(1,1,:) = B3 + A3;
-                            LCOamplitude{i,j,k}(1,2,:) = B3 - A3;
-                            LCOamplitude{i,j,k}(1,3,:) = A3;
-                        elseif strcmp(options.amplitudeDefinition,'rms')
-                            LCOamplitude{i,j,k}(1,1,:) = B3 + A3/sqrt(2);
-                            LCOamplitude{i,j,k}(1,2,:) = B3 - A3/sqrt(2);
-                            LCOamplitude{i,j,k}(1,3,:) = sqrt(B3.^2 + (A3/sqrt(2)).^2);
-                        else
-                            LCOamplitude{i,j,k}(1,1,:) = A3/sqrt(2);
-                            LCOamplitude{i,j,k}(1,2,:) = -A3/sqrt(2);
-                            LCOamplitude{i,j,k}(1,3,:) = A3/sqrt(2);
-                        end
-                        LCObias{i,j,k} = B3;
-                        LCOfrequency(i,j,k) = frequencyLCO(k);
-                    end
-                else
+                % We can now find the intersection
+                [A3,B3]=polyxpoly(A1,B1,A2,B2);
+                figure
+                plot(A1,B1,'LineWidth',2)
+                hold on
+                plot(A2,B2,'LineWidth',2)
+                plot(A3,B3,'ro','LineWidth',2)
+                xlabel("A","FontSize",12)
+                ylabel("B","FontSize",12)
+                legend("Dynamic solutions","Static solutions")
+                h = gcf;
+                saveas(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                close(h)
+                if isempty(A3)
                     LCOamplitude{i,j,k} = nan(1,3);
                     LCObias{i,j,k} = nan;
                     LCOfrequency(i,j,k) = nan;
+                else
+                    LCOamplitude{i,j,k} = zeros(1,3, length(A3));
+                    if strcmp(options.amplitudeDefinition,'maxPeak')
+                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3;
+                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3;
+                        LCOamplitude{i,j,k}(1,3,:) = A3;
+                    elseif strcmp(options.amplitudeDefinition,'rms')
+                        LCOamplitude{i,j,k}(1,1,:) = B3 + A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,2,:) = B3 - A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,3,:) = sqrt(B3.^2 + (A3/sqrt(2)).^2);
+                    else
+                        LCOamplitude{i,j,k}(1,1,:) = A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,2,:) = -A3/sqrt(2);
+                        LCOamplitude{i,j,k}(1,3,:) = A3/sqrt(2);
+                    end
+                    LCObias{i,j,k} = B3;
+                    LCOfrequency(i,j,k) = frequencyLCO(k);
                 end
             end
         else
@@ -378,25 +368,19 @@ for i = 1:length(kNominal)
                     4/pi*amplitudeRatioDB(m)*cos(asin(amplitudeRatioDB(m)));
             end
             for k = 1:length(KeqVect)
-                if ~isnan(speedVectorLCO(k))
-                    Kd = KeqVect(k)/kNominal(i);
-                    % We intersect the describing function with the value of Kd
-                    % for which we have flutter
-                    amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,Kd,'linear','extrap');
-                    if strcmp(options.amplitudeDefinition,'maxPeak')
-                        LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
-                        LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
-                    else
-                        LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
-                        LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
-                   end
-                    LCOfrequency(i,j,k)=frequencyLCO(k);
-                    LCObias{i,j,k} = nan;
+                Kd = KeqVect(k)/kNominal(i);
+                % We intersect the describing function with the value of Kd
+                % for which we have flutter
+                amplitudeRatio = 1./interp1(kRatioDB,amplitudeRatioDB,Kd,'linear','extrap');
+                if strcmp(options.amplitudeDefinition,'maxPeak')
+                    LCOamplitude{i,j,k} = repmat(amplitudeRatio*gap(j)/2,1,3);
+                    LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
                 else
-                    LCOamplitude{i,j,k} = nan(1,3);
-                    LCObias{i,j,k} = nan;
-                    LCOfrequency(i,j,k) = nan;
+                    LCOamplitude{i,j,k} = repmat(amplitudeRatio/sqrt(2)*gap(j)/2,1,3);
+                    LCOamplitude{i,j,k}(2) = -LCOamplitude{i,j,k}(2);
                 end
+                LCOfrequency(i,j,k)=frequencyLCO(k);
+                LCObias{i,j,k} = nan;
             end
         end
     end
