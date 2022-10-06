@@ -120,6 +120,7 @@ h = figure(handles(1).Number);
 saveas(h,"EnvelopeHarmonicLCO.fig")
 close(h)
 
+harmonicLabels = {'imagPlane', 'Vg', 'VgZoom'};
 indexK = 1;
 for i = 1:handles(2).Number
     h = figure(i);
@@ -127,7 +128,7 @@ for i = 1:handles(2).Number
     if figIndex==0
         figIndex=3;
     end
-    saveas(h,strcat("Keq",num2str(KeqVect(indexK)),"_",num2str(figIndex),"_harmonic.fig"))
+    saveNoOverwrite(h,strcat("Keq",num2str(KeqVect(indexK)),"_",harmonicLabels{figIndex},"_harmonic"))
     close(h)
     if figIndex==3
         indexK = indexK+1;
@@ -253,7 +254,9 @@ end
 % First reorganize the harmonic results
 KeqVect = [KeqVect, KeqVect(end:-1:1)];
 speedVectorLCO = [speedVectorLCO, speedVectorEndLCO(end:-1:1)];
+frequencyLCO = [frequencyLCO, frequencyLCO(end:-1:1)];
 KeqVect(isnan(speedVectorLCO)) = [];
+frequencyLCO(isnan(speedVectorLCO)) = [];
 speedVectorLCO(isnan(speedVectorLCO)) = [];
 
 for i = 1:length(kNominal)
@@ -286,8 +289,8 @@ for i = 1:length(kNominal)
                 legend([{"Equivalent stiffness for flutter"},...
                     strcat("B=",string(num2cell(BiasDB(1:100:end))))],"FontSize",12)
                 h = gcf;
-                saveas(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
-                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                saveNoOverwrite(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)
                 A1 = [];
                 B1 = [];
@@ -311,8 +314,8 @@ for i = 1:length(kNominal)
                 xlabel("Static stiffness","FontSize",12)
                 legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:100:end))))],"FontSize",12)
                 h = gcf;
-                saveas(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
-                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                saveNoOverwrite(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)
                 A2 = [];
                 B2 = [];
@@ -335,8 +338,8 @@ for i = 1:length(kNominal)
                 ylabel("B","FontSize",12)
                 legend("Dynamic solutions","Static solutions")
                 h = gcf;
-                saveas(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
-                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k)),".fig"))
+                saveNoOverwrite(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
+                    "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)
                 if isempty(A3)
                     LCOamplitude{i,j,k} = nan(1,3);
@@ -419,5 +422,17 @@ value = nan(size(gamma));
 value(i) = abs(gamma(i))/2;
 value(j) = abs(gamma(j))/2;
 value(k) = 1/pi*(gamma(k).*real(asin(gamma(k))) + sqrt(1-gamma(k).^2));
+
+end
+
+function saveNoOverwrite(handle, name)
+
+nameModified = name;
+index = 1;
+while exist(strcat(nameModified,".fig"), 'file') == 2
+    nameModified = strcat(name,"_",num2str(index));
+    index = index+1;
+end
+saveas(handle,nameModified)
 
 end
