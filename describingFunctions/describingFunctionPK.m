@@ -427,9 +427,9 @@ end
 
 function saveNoOverwrite(handle, name)
 
-nameModified = name;
+nameModified = strcat(name,".fig");
 index = 1;
-while isfile(strcat(nameModified,".fig"))
+while isfile(nameModified)
     nameModified = strcat(name,"_",num2str(index),".fig");
     index = index+1;
 end

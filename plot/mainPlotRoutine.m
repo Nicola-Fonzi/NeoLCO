@@ -283,7 +283,7 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                 for j = 1:size(timeMarchingResults.gapCombinations,2)  % Per each gap combination
                     if options.monitorNormalisation && size(preprocessTimeMarchingOptions.gapPoints,1)==1
                         gapToPlot = timeMarchingResults.gapCombinations(1,j)/(1+options.halfGapNormalisation);
-                    elseif optiona.monitorNormalisation && size(preprocessTimeMarchingOptions.gapPoints,1)>1
+                    elseif options.monitorNormalisation && size(preprocessTimeMarchingOptions.gapPoints,1)>1
                         error("The normalisation of the monitor points can only be done if a single nonlinearity is present")
                     else
                         gapToPlot = 1;
