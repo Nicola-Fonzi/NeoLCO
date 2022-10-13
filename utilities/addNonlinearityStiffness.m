@@ -28,10 +28,10 @@ function [model_stiff, celasIndex] = addNonlinearityStiffness(model, gapPoints, 
 % ;ID2,"s" or "g", component2 ...}. Other columns can be present, and
 % create no issues.
 %
-% Please note that at the moment the code can only add a stiffness for a
-% single dof. This implies that it can be either applied to a relative
+% Please note that the code can only add a stiffness for a single dof.
+% This implies that it can be either applied to a relative
 % motion via a scalar point, or to an absolute motion via a single grid
-% point. A relative motion between two grid points is not yet supported.
+% point.
 
 [~, pointIndex] = obtainDOF(gapPoints, model);
 
@@ -50,4 +50,4 @@ for i = 1:size(gapPoints,1)
     model_stiff.Celas.value = [model_stiff.Celas.value, stiffnesses(i)];
 end
 
-return
+end

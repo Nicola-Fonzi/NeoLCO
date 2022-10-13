@@ -35,7 +35,7 @@ iOpt = 0;
 iOpt = iOpt+1; baseOpt.fidScreen = 1;                 descr{iOpt} = 'File where to print the output. [1]';
 iOpt = iOpt+1; baseOpt.useInApp = 0;                  descr{iOpt} = 'Utility flag to be used when called from App';
 iOpt = iOpt+1; baseOpt.kNominal = {};                 descr{iOpt} = 'Cells array containing the nominal stiffnesses at the nonlinearity points. The rows are in the same order as gapPoint IDs. The columns contain possible different values for the same point. The format is {[k1_point1,k2_point1];[k1_point2,k2_point2,k3_point2]}. {}.';
-iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points where nonlinearities are present. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),label;point2,...}. If in the same point we have more nonlinearity, the point must be repeated per each dof. {}.';
+iOpt = iOpt+1; baseOpt.gapPoints = {};                descr{iOpt} = 'Points where nonlinearities are present. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),label;point2,...}. If in the same point we have more nonlinearity, the point must be repeated per each dof. If a nonlinearity relative to two grid points is sought, the two grid points must be introduced separately, but the same label used. {}.';
 iOpt = iOpt+1; baseOpt.referenceNModes = 100;         descr{iOpt} = 'Number of modes to be retained and used as a reference for the "correct" system. [100].';
 iOpt = iOpt+1; baseOpt.optimumKnown = 0;              descr{iOpt} = 'Option that can be used in case the optimum base is known. 0 for false, 1 for true. [0]';
 iOpt = iOpt+1; baseOpt.nModes = [];                   descr{iOpt} = 'Vector of modes to be tested. []';
@@ -72,6 +72,9 @@ if ~isempty(model.load.SID)
     model.load.directionData = zeros(4,0);
     model.load.directionType = [];
 end
+
+%% Introduce scalar points for nonlinearities between grid points
+[options.gapPoints, model] = supportGridNonlinearities(options.gapPoints, model);
 
 maximumStiffnesses = cellfun(@(x) max(x), options.kNominal);
 

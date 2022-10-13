@@ -83,7 +83,10 @@ inputData = readSmartcadFile(filename_sma);
 
 %% Generate common basis
 
-[reducedBasis, struData, model, struData_stiff, model_stiff, options] = obtainOptimalBase(inputData, optimalBaseOptions);
+[rigidModes, struData, model, struData_stiff, model_stiff, options, optimalBaseOptions] = ...
+    obtainOptimalBase(inputData, optimalBaseOptions);
+
+reducedBasis = defineBase(model, struData, rigidModes, options, optimalBaseOptions);
 
 %% Generate aerodynamic database
 
