@@ -19,7 +19,7 @@
 % unless explicitly authorized by the copyright owner.                         *
 %                                                                              *
 %*******************************************************************************
-function gapPoints = supportGridNonlinearities(model, gapPoints)
+function [gapPoints, model] = supportGridNonlinearities(gapPoints, model)
 
 % This function is used to support the definition of nonlinearities between grid points
 % In practise, we do what we would do in the linear FEM: we add a scalar point and a MPC between the two nodes
