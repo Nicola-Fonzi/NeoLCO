@@ -31,7 +31,6 @@ maxg = max(model.Node.ID);
 maxID = max([maxs, maxg])+1;
 
 % Extract the nonlinearities at grid points
-labels = [];
 labels = cellfun(@(x) x, gapPoints(:, 4));
 
 duplicateLabel = [];
@@ -52,7 +51,7 @@ end
 
 while ~isempty(duplicateLabel)
     % Find connected grid nodes in array
-    indices =  find(cellfun(@(x) strcmp(x, duplicateLabel(1)), gapPoints(:,4)))
+    indices =  find(cellfun(@(x) strcmp(x, duplicateLabel(1)), gapPoints(:,4)));
 
     % Add a new scalar point
     model.Spoint.ID = [model.Spoint.ID, maxID];
@@ -69,7 +68,7 @@ while ~isempty(duplicateLabel)
     gapPoints(indices,:) = [];
 
     % Add newly created scalar point
-    gapPoints = {gapPoints{:,:}; maxID, "s", 0, duplicateLabel(1)}
+    gapPoints = {gapPoints{:,:}; maxID, "s", 0, duplicateLabel(1)};
 
     % Prepare for next iteration
     duplicateLabel(1) = [];

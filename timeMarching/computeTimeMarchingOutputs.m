@@ -83,6 +83,6 @@ for i=1:size(values,1)
     bias = mean(values(i,:),2);
     Rms(i,1) = bias + std(values(i,:),[],2);
     Rms(i,2) = bias - std(values(i,:),[],2);
-    Rms(i,3) = std(values(i,:),2);
+    Rms(i,3) = std(values(i,:),[],2);
 end
 return
