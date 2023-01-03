@@ -41,7 +41,11 @@ CmassIndex = 4e9+(1:size(gapPoints,1));
 cFictmassIndex = 5e9;
 
 % Check that the components for the scalar points are 0
-gapPoints{cellfun(@(x) x=="s",gapPoints(:,2)),3}=0;
+for i = 1:size(gapPoints,1)
+    if gapPoints{i,2}=='s'
+        gapPoints{i,3} = 0;
+    end
+end
 
 model_loaded = model;
 

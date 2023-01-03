@@ -45,7 +45,7 @@ for i = 1:length(DOF)
         DOF(i) = gridDOF(Pos,gridCellArray{i,3});
     end
     if nargout>1
-        pointIndex=Pos;
+        pointIndex(i)=Pos;
     end
 end
 

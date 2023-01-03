@@ -40,7 +40,11 @@ function [model_stiff, celasIndex] = addNonlinearityStiffness(model, gapPoints, 
 celasIndex = 3e9+(1:size(gapPoints,1));
 
 % Check that the components for the scalar points are 0
-gapPoints{cellfun(@(x) x=="s",gapPoints(:,2)),3}=0;
+for i = 1:size(gapPoints,1)
+    if gapPoints{i,2}=='s'
+        gapPoints{i,3} = 0;
+    end
+end
 
 model_stiff = model;
 for i = 1:size(gapPoints,1)

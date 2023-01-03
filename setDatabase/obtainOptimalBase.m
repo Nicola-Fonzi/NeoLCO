@@ -324,9 +324,9 @@ if strcmp(type,"condensed")
     for i = 1:size(err,1)
         for j = 1:size(err,2)
             cond_err(i,j) = norm(squeeze(err(i,j,:)))/norm(squeeze(frfReference(i,j,:)))*100;
-            err = sum(sum(cond_err)) / (size(frf,1)*size(frf,2));
         end
     end
+    err = sum(sum(cond_err)) / (size(frf,1)*size(frf,2));
 end
 
 return
