@@ -199,7 +199,7 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
     trimDataDF.z = nan;
 
     speedVectorBias = options.Vmin:options.Vstep:options.Vmax;
-    KeqVectBias = linspace(0,kNominal,options.nKeq);
+    KeqVectBias = [KeqVect(1:end-1), linspace(KeqVect(end),kNominal,floor(options.nKeq/2))];
     for i = 1:length(speedVectorBias)
         % Loop on the speed vector and on the values of equivalent stiffness
         trimDataDF.Q = 0.5*options.rho*speedVectorBias(i)^2;
