@@ -204,6 +204,8 @@ for iGap = 1:nNonlinearities
     end
 end
 
+set_param(options.simulinkModel,"AlgebraicLoopSolver","Auto");
+
 save_system(options.simulinkModel)
 close_system(options.simulinkModel)
 

@@ -59,6 +59,7 @@ iOpt = iOpt+1; baseOpt.introduceStruLoads = false;    descr{iOpt} = 'Flag to int
 iOpt = iOpt+1; baseOpt.struLoads = {};                descr{iOpt} = 'Option to specify the locations of the loads. The format is {point1,"s" or "g",dof (1,2,3,4,5 or 6),load;point2,...}. {}.';
 iOpt = iOpt+1; baseOpt.introduceGravityLoads = false; descr{iOpt} = 'Flag to introduce gravity loads in the analysis. [false].';
 iOpt = iOpt+1; baseOpt.gravDirection = [0,0,-1];      descr{iOpt} = 'Direction of the gravity loads, when applied. [0,0,-1].';
+iOpt = iOpt+1; baseOpt.nProcessors = 1;               descr{iOpt} = 'Number of parallel processors. [1].';
 
 if nargin==0
     printOptionDescription(baseOpt, descr);
@@ -101,6 +102,8 @@ end
 if length(options.selectionTrim)>1
     error("Only one trim condition can be used at a time for the introduction of flight loads")
 end
+
+parpool('Processes',options.nProcessors);
 
 %% Define simulations to be performed
 
@@ -261,7 +264,7 @@ for i = 1:nstiffnessCombinations
         plotFixedPoints(modelForIntegration,stiffnessCombinations(:,i),options.gapPoints,resultsTrim(i),options)
     end
 
-    for j = 1:ngapCombinations
+    parfor j = 1:ngapCombinations
 
         qInitial = zeros(2*modelForIntegration.nStru,1);
 
