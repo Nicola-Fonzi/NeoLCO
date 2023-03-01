@@ -31,7 +31,7 @@ maxg = max(model.Node.ID);
 maxID = max([maxs, maxg])+1;
 
 % Extract the nonlinearities at grid points
-labels = gapPoints(:, 4);
+labels = cellfun(@(x) x, gapPoints(:, 4));
 
 duplicateLabel = [];
 while ~isempty(labels)
