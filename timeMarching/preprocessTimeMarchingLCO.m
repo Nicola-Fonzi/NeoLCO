@@ -204,7 +204,12 @@ for iGap = 1:nNonlinearities
     end
 end
 
-set_param(options.simulinkModel,"AlgebraicLoopSolver","Auto");
+try
+    set_param(options.simulinkModel,"AlgebraicLoopSolver","Auto");
+catch
+    set_param(options.simulinkModel,"AlgebraicLoopSolver","LineSearch");
+    fprintf(options.fidScreen, "Could not set automatic solver, switching to LineSearch");
+end
 
 save_system(options.simulinkModel)
 close_system(options.simulinkModel)
