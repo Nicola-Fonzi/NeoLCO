@@ -207,8 +207,7 @@ end
 try
     set_param(options.simulinkModel,"AlgebraicLoopSolver","Auto");
 catch
-    set_param(options.simulinkModel,"AlgebraicLoopSolver","LineSearch");
-    fprintf(options.fidScreen, "Could not set automatic solver, switching to LineSearch");
+    fprintf(options.fidScreen, "WARNING: Could not set automatic solver, switching to default");
 end
 
 save_system(options.simulinkModel)
