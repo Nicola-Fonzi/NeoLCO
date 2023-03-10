@@ -206,8 +206,9 @@ end
 
 try
     set_param(options.simulinkModel,"AlgebraicLoopSolver","Auto");
+    modelForIntegration.setAutomaticSolver = true;
 catch
-    fprintf(options.fidScreen, "WARNING: Could not set automatic solver, switching to default");
+    modelForIntegration.setAutomaticSolver = false;
 end
 
 save_system(options.simulinkModel)

@@ -362,9 +362,29 @@ for i = 1:nstiffnessCombinations
 
             % Run the actual simulation
             if k == 1
-                out = sim(options.simulinkModel,tmax);
+                if modelForIntegration.setAutomaticSolver
+                    out = sim(options.simulinkModel,tmax);
+                else
+                    try
+                        set_param(options.simulinkModel,"AlgebraicLoopSolver","LineSearch");
+                        out = sim(options.simulinkModel,tmax);
+                    catch
+                        set_param(options.simulinkModel,"AlgebraicLoopSolver","TrustRegion");
+                        out = sim(options.simulinkModel,tmax);
+                    end
+                end
             else
-                out = sim(options.simulinkModel,[out.tout(end),tmax]);
+                if modelForIntegration.setAutomaticSolver
+                    out = sim(options.simulinkModel,[out.tout(end),tmax]);
+                else
+                    try
+                        set_param(options.simulinkModel,"AlgebraicLoopSolver","LineSearch");
+                        out = sim(options.simulinkModel,[out.tout(end),tmax]);
+                    catch
+                        set_param(options.simulinkModel,"AlgebraicLoopSolver","TrustRegion");
+                        out = sim(options.simulinkModel,[out.tout(end),tmax]);
+                    end
+                end
                 % Remove initial condition as this is already present in the
                 % previous output
                 out.modes.signals.values = out.modes.signals.values(2:end,:);

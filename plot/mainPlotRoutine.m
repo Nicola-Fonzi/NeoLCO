@@ -131,8 +131,8 @@ if options.useDF
                         ' Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
                 else
                     string = strcat(describingFunctionOptions.gapPoints{m,4},...
-                        ' Gap ',num2str(describingFunctionResults.gapCombinations(m,j).'),' Stiffness ',...
-                        num2str(describingFunctionResults.stiffnessCombinations(m,i).'),' DF');
+                        ' Gap ',num2str(describingFunctionResults.gapCombinations(:,j).'),' Stiffness ',...
+                        num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
                 end
                 legendTitle{m,index(m)} =  string;
                 index(m)=index(m)+1;
@@ -169,8 +169,8 @@ if options.useTM
                 end
                 plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
                 string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},...
-                    ' Gap ',num2str(timeMarchingResults.gapCombinations(m,j).'),' Stiffness ',...
-                    num2str(timeMarchingResults.stiffnessCombinations(m,i).'),' TM');
+                    ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                    num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
                 legendTitle{m,index(m)} =  string;
                 index(m)=index(m)+1;
             end
@@ -222,8 +222,8 @@ if options.useDF
             if options.singleGapDF
                 string = strcat('Stiffness ', num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
             else
-                string = strcat('Gap ',num2str(describingFunctionResults.gapCombinations(m,j).'),' Stiffness ',...
-                    num2str(describingFunctionResults.stiffnessCombinations(m,i).'),' DF');
+                string = strcat('Gap ',num2str(describingFunctionResults.gapCombinations(:,j).'),' Stiffness ',...
+                    num2str(describingFunctionResults.stiffnessCombinations(:,i).'),' DF');
             end
             legendTitle{index} =  string;
             index=index+1;
@@ -246,8 +246,8 @@ if options.useTM
             end
             xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
             plotHysteresis(xtoPlot(:),ytoPlot(:),index)
-            string = strcat('Gap ',num2str(timeMarchingResults.gapCombinations(m,j).'),' Stiffness ',...
-                num2str(timeMarchingResults.stiffnessCombinations(m,i).'),' TM');
+            string = strcat('Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
             legendTitle{index} =  string;
             index=index+1;
         end
@@ -307,8 +307,8 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     end
                     plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
                     string = strcat(preprocessTimeMarchingOptions.monitorPoints{m,4},...
-                        ' Gap ',num2str(timeMarchingResults.gapCombinations(m,j).'),' Stiffness ',...
-                        num2str(timeMarchingResults.stiffnessCombinations(m,i).'),' TM');
+                        ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                        num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
                     legendTitle{m,index(m)} =  string;
                     index(m)=index(m)+1;
                 end
@@ -370,8 +370,8 @@ if options.useTM && isempty(timeMarchingResults.LCOmonitor{1,1,1})==0
                     end
                     plotHysteresis(xtoPlot(:),ytoPlot(:)/gapToPlot,index(m))
                     string = strcat(preprocessTimeMarchingOptions.gapPoints{m,4},...
-                        ' Gap ',num2str(timeMarchingResults.gapCombinations(m,j).'),' Stiffness ',...
-                        num2str(timeMarchingResults.stiffnessCombinations(m,i).'),' TM');
+                        ' Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
+                        num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
                     legendTitle{m,index(m)} =  string;
                     index(m)=index(m)+1;
                 end
