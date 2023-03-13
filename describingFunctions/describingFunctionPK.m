@@ -263,8 +263,8 @@ for i = 1:length(kNominal)
     for j = 1:length(gap)
         if options.introduceFlightLoads || options.introduceStruLoads || options.introduceGravityLoads
             % Range of values for A and B
-            AmplitudeDB = gap(j)/2*linspace(1e-12,5,1000);
-            BiasDB = gap(j)/2*linspace(-5,5,1000);
+            AmplitudeDB = gap(j)/2*linspace(1e-12,5,100);
+            BiasDB = gap(j)/2*linspace(-5,5,100);
             % Static stiffness as a function of A and B. Matrices that have
             % a different A per each column, and B changing row-wise.
             beta = (gap(j)/2 - BiasDB.')./AmplitudeDB;
@@ -365,7 +365,7 @@ for i = 1:length(kNominal)
                 end
             end
         else
-            amplitudeRatioDB = linspace(1/5,1,1000);
+            amplitudeRatioDB = linspace(1/5,1,100);
             for m = 1:length(amplitudeRatioDB)
                 kRatioDB(m) = 1/pi*(pi - 2*asin(amplitudeRatioDB(m)) + sin(2*asin(amplitudeRatioDB(m)))) - ...
                     4/pi*amplitudeRatioDB(m)*cos(asin(amplitudeRatioDB(m)));
