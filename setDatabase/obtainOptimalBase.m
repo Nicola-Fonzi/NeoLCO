@@ -189,7 +189,7 @@ end
 
 return
 
-function [D_free, V_free, D_stiff, V_stiff] = recomputeEigResults(struData, struData_stiff, resultsEig_common, stiffnessFactor)
+function [D_free, V_free, D_stiff, V_stiff] = recomputeEigResults(struData, struData_stiff, resultsEig_common)
 
 warning off;
 [V, D] = eig(resultsEig_common.V'*struData_stiff.Kzz*resultsEig_common.V,...
@@ -201,19 +201,14 @@ V = V(:,indexROTT);
 D_stiff = sqrt(abs(eigenvalue))/2/pi;
 V_stiff = resultsEig_common.V*V;
 
-if stiffnessFactor
-    [V, D] = eig(resultsEig_common.V'*struData.Kzz*resultsEig_common.V,...
-        resultsEig_common.V'*struData.Mzz*resultsEig_common.V);
-    warning on;
-    eigenvalue = diag(D);
-    [eigenvalue, indexROTT] = sort(eigenvalue);
-    V = V(:,indexROTT);
-    D_free = sqrt(abs(eigenvalue))/2/pi;
-    V_free = resultsEig_common.V*V;
-else
-    V_free = resultsEig_common.V;
-    D_free = resultsEig_common.Omega/2/pi;
-end
+[V, D] = eig(resultsEig_common.V'*struData.Kzz*resultsEig_common.V,...
+    resultsEig_common.V'*struData.Mzz*resultsEig_common.V);
+warning on;
+eigenvalue = diag(D);
+[eigenvalue, indexROTT] = sort(eigenvalue);
+V = V(:,indexROTT);
+D_free = sqrt(abs(eigenvalue))/2/pi;
+V_free = resultsEig_common.V*V;
 
 return
 
