@@ -248,7 +248,7 @@ if options.useTM
                     ytoPlot(k) = timeMarchingResults.LCOfrequency(i,j,k).fVect(freq_index);
                 end
                 xtoPlot = timeMarchingOptions.speedVector/options.normalisationSpeed;
-                plotHysteresis(xtoPlot(:),ytoPlot(:),index)
+                plotHysteresis(xtoPlot(:),ytoPlot(:),index(m))
                 string = strcat('Gap ',num2str(timeMarchingResults.gapCombinations(:,j).'),' Stiffness ',...
                     num2str(timeMarchingResults.stiffnessCombinations(:,i).'),' TM');
                 legendTitle{m,index(m)} =  string;
