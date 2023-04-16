@@ -283,11 +283,11 @@ for i = 1:length(kNominal)
                 figure
                 plot(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k))
                 hold on
-                plot(AmplitudeDB, Kd(1:100:end,:))
+                plot(AmplitudeDB, Kd(1:10:end,:))
                 xlabel("LCO amplitude [rad]","FontSize",12)
                 ylabel("Dynamic stiffness","FontSize",12)
                 legend([{"Equivalent stiffness for flutter"},...
-                    strcat("B=",string(num2cell(BiasDB(1:100:end))))],"FontSize",12)
+                    strcat("B=",string(num2cell(BiasDB(1:10:end))))],"FontSize",12)
                 h = gcf;
                 saveNoOverwrite(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
                     "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
@@ -309,10 +309,10 @@ for i = 1:length(kNominal)
                 hold on
                 % The intersection of this curve with all the possible Ks
                 % provides A2 and B2
-                plot(Ks(:,1:100:end), BiasDB, "LineWidth", 2)
+                plot(Ks(:,1:10:end), BiasDB, "LineWidth", 2)
                 ylabel("LCO bias [rad]","FontSize",12)
                 xlabel("Static stiffness","FontSize",12)
-                legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:100:end))))],"FontSize",12)
+                legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:10:end))))],"FontSize",12)
                 h = gcf;
                 saveNoOverwrite(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
                     "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
