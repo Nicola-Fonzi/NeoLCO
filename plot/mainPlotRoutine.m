@@ -270,7 +270,7 @@ for m = 1:size(legendTitle,1)
     catch
         string = strcat("frequency",preprocessTimeMarchingOptions.gapPoints{m,4},".fig");
     end
-    saveas(figure(1000+m),string)
+    saveas(figure(2000+m),string)
     if options.useInApp
         if m==options.plotForApp
             fig = gcf;
