@@ -186,7 +186,7 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
         globalOptions.trim.Mach = aeroData.dlmData.aero.M(options.machUsed);
         globalOptions.trim.z = nan;
         globalOptions.trim.Q = 1; % It is overwritten next
-        globalOptions.trim.aelinkIDlist = 'all'; % All the surface links are used
+        globalOptions.trim.aelinkIDlist = {'all'}; % All the surface links are used
         % If the model is free with gravity or loads it may have acceleration, it is thus taken into account
         globalOptions.trim.data(1).labelList = {'SIDES','ANGLEA','ROLL','PITCH','YAW'};
         globalOptions.trim.data(1).valueList = [0,0,0,0,0];
