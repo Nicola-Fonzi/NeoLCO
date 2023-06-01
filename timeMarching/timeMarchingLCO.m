@@ -251,7 +251,7 @@ for i = 1:nstiffnessCombinations
 
     fileid = fopen('README.txt','w');
     fprintf(fileid,"The values of nominal stiffnesses at the gap points are: ");
-    fprintf(fileid,num2str(stiffnessCombinations(:,i)));
+    fprintf(fileid,num2str(stiffnessCombinations(:,i)'));
     fclose(fileid);
 
     % Before to perform the integration in time, we can produce some useful
@@ -274,7 +274,7 @@ for i = 1:nstiffnessCombinations
 
             fileid = fopen('README.txt','w');
             fprintf(fileid,"The values of gaps at the gap points are: ");
-            fprintf(fileid,num2str(gapCombinations(:,j)));
+            fprintf(fileid,num2str(gapCombinations(:,j)'));
             fclose(fileid);
             % Note that this is a pseudo inverse
             qInitial(modelForIntegration.nStru+1:end) = modelForIntegration.Ugap\gapCombinations(:,j)/2*options.initialAmplitude;
