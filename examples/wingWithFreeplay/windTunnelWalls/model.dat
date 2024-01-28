@@ -69,6 +69,7 @@ RBE2           5   45000   12346     510
 RBE2           6       1    1246     100
 CELAS2         71465.776       1       3     100       3      0.        
 CELAS2         8  19.396       1       5     100       5      0.        
+$CELAS4         9   2.028   54000
 CONM2         10     300       0  .62868      0.      0.      0.        +       
 +             0.      0..0027575      0.      0.      0.
 CONM2         11     700       0  .18597      0.      0.      0.        +       
@@ -99,3 +100,15 @@ NTRIM   1       0       0.1     0.      URDD1   0.      URDD2   0.
         ROLL    0.      PITCH   0.      YAW     0.      THRUST  0.
         BANK    0.      HEAD    0.      CLIMB   0.      SIDES   0.
         ANGLEA  5.
+$ Femap Aero Panel 2001 : Aero Panel
+CAERO1      2001       1       0      10      10                       1+       
++            -5.     -.1     -5.     10.     -5.     -.1      5.     10.
+$ Femap Aero Panel 3001 : Aero Panel
+CAERO1      3001       1       0      10      10                       1+       
++            -5.     .62     -5.     10.     -5.     .62      5.     10.
+$ Femap Aero Panel 4001 : Aero Panel
+CAERO1      4001       1       0      10      50                       1+       
++            -5.      0.     .35     10.     -5.     .52     .35     10.
+$ Femap Aero Panel 5001 : Aero Panel
+CAERO1      5001       1       0      10      50                       1+       
++            -5.      0.    -.35     10.     -5.     .52    -.35     10.
