@@ -18,7 +18,7 @@
 % contact the copywright owner before using the software.                      *
 %                                                                              *
 %*******************************************************************************
-function set_neolco_header()
+function setNeolcoHeader()
 %**************************************************************************
 % This file creates a header to all the source code files
 
