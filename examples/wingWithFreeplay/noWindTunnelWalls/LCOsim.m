@@ -17,7 +17,7 @@ airDensity = 2.425;
 optimalBaseOptions.nModes = 3;
 optimalBaseOptions.fictitiousMass = [1e-4 1e-2 1e0 1e2 1e4];
 optimalBaseOptions.stiffnessFactor = [0.00001 0.001 0.1 0.5 1];
-optimalBaseOptions.optimumKnown = false;
+optimalBaseOptions.optimumKnown = true;
 optimalBaseOptions.gapPoints = {hingeScalarPoint,"s",0,"Aileron hinge"};
 optimalBaseOptions.kNominal = {kNominal};
 

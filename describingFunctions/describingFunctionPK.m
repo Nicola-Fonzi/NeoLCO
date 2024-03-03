@@ -110,6 +110,7 @@ plotOption.plotEnvelope = true;
 plotOption.envelopeLabel = "Equivalent stiffness";
 plotOption.envelopeMeasureUnit = "Nm";
 plotOption.envelopeList = KeqVect;
+plotOption.hideFigure = true;
 
 [speedVectorLCO, frequencyLCO, speedVectorEndLCO] = plotVgDiagrams(resultsFlutter, plotOption);
 
@@ -222,11 +223,12 @@ if options.introduceFlightLoads || options.introduceStruLoads || options.introdu
 
     %% Plot the quasi-linear bias results
     for j = 1:length(KeqVectBias)
+        h = figure('Visible', 'off');
+        set(h,'Visible','off','CreateFcn','set(gcf,''Visible'',''on'')')
         plot(speedVectorBias,biasVect(j,:),'LineWidth',2)
         xlabel("V [m/s]","FontSize",12)
         ylabel("Bias","FontSize",12)
         grid minor
-        h = gcf;
         saveas(h,strcat("Keq",num2str(KeqVectBias(j)),"_bias.fig"))
         close(h)
     end
@@ -279,7 +281,8 @@ for i = 1:length(kNominal)
                 % First, we find the combinations A1,B1 that provides an
                 % equivalent stiffness equal to the one that provokes
                 % flutter at our speed
-                figure
+                h = figure('Visible', 'off');
+                set(h,'CreateFcn','set(gcf,''Visible'',''on'')')
                 plot(AmplitudeDB, ones(1,length(AmplitudeDB))*KeqVect(k))
                 hold on
                 plot(AmplitudeDB, Kd(1:10:end,:))
@@ -287,7 +290,6 @@ for i = 1:length(kNominal)
                 ylabel("Dynamic stiffness","FontSize",12)
                 legend([{"Equivalent stiffness for flutter"},...
                     strcat("B=",string(num2cell(BiasDB(1:10:end))))],"FontSize",12)
-                h = gcf;
                 saveNoOverwrite(h,strcat("DynamicSolutionsKnominal",num2str(kNominal(i)),...
                     "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)
@@ -303,7 +305,8 @@ for i = 1:length(kNominal)
 
                 % Then, we can plot the SR at that speed
                 slicedBias = interp2(speedVectorBias, KeqVectBias, biasVect, speedVectorLCO(k), KeqVectBias);
-                figure
+                h = figure('Visible', 'off');
+                set(h,'CreateFcn','set(gcf,''Visible'',''on'')')
                 plot(KeqVectBias, slicedBias, "LineWidth", 2)
                 hold on
                 % The intersection of this curve with all the possible Ks
@@ -312,7 +315,6 @@ for i = 1:length(kNominal)
                 ylabel("LCO bias [rad]","FontSize",12)
                 xlabel("Static stiffness","FontSize",12)
                 legend([{"Static Response"}, strcat("A=",string(num2cell(AmplitudeDB(1:10:end))))],"FontSize",12)
-                h = gcf;
                 saveNoOverwrite(h,strcat("StaticSolutionsKnominal",num2str(kNominal(i)),...
                     "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)
@@ -328,7 +330,8 @@ for i = 1:length(kNominal)
 
                 % We can now find the intersection
                 [A3,B3]=polyxpoly(A1,B1,A2,B2);
-                figure
+                h = figure('Visible', 'off');
+                set(h,'CreateFcn','set(gcf,''Visible'',''on'')')
                 plot(A1,B1,'LineWidth',2)
                 hold on
                 plot(A2,B2,'LineWidth',2)
@@ -336,7 +339,6 @@ for i = 1:length(kNominal)
                 xlabel("A","FontSize",12)
                 ylabel("B","FontSize",12)
                 legend("Dynamic solutions","Static solutions")
-                h = gcf;
                 saveNoOverwrite(h,strcat("IntersectSolutionsKnominal",num2str(kNominal(i)),...
                     "Gap",num2str(gap(j)),"KeqDyn",num2str(KeqVect(k))))
                 close(h)

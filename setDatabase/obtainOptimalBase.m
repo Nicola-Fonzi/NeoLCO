@@ -96,7 +96,6 @@ struData_stiff = structuralPreprocessor(fid, model_stiff, struOpt);
 
 nonlinearityDOF = obtainDOF(options.gapPoints, model);
 
-
 %% Create the nominal base
 
 eigOpt.NROOTS = options.referenceNModes;
@@ -109,7 +108,6 @@ resultsEig = solve_eig_fun(fid, model, struData, eigOpt);
 rigidModes.V = resultsEig.V(:,resultsEig.Omega<1);
 rigidModes.suportTable = resultsEig.suportTable;
 rigidModes.surfNames = resultsEig.surfNames;
-
 
 %% Loop over all the possibilities and test them one by one
 
@@ -222,7 +220,8 @@ function [frequencyResponseErrorFree, frequencyResponseErrorStiff, frequencyResp
     V_stiff, struData, struData_stiff, fictitiousMass, nModes, stiffnessFactor, nonlinearityDOF, options, ...
     frequencyResponseErrorFree, frequencyResponseErrorStiff, frequencyResponseErrorFree_RB, frequencyResponseErrorStiff_RB)
 
-figure
+h = figure('Visible', 'off');
+set(h,'CreateFcn','set(gcf,''Visible'',''on'')')
 subplot(4,2,[1 2])
 semilogy(abs(resultsEig.Omega(1:length(D_free))/2/pi - D_free)./(resultsEig.Omega(1:length(D_free))/2/pi)*100,'LineWidth',2)
 hold on
@@ -295,8 +294,8 @@ frequencyResponseErrorStiff_RB(nModes==options.nModes,stiffnessFactor==options.s
 
 sgtitle(strcat("Fictitious mass = ",num2str(fictitiousMass),"; Number modes = ",num2str(nModes),"; stiffness Factor = ",num2str(stiffnessFactor)))
 
-saveas(gcf,"MAC.fig")
-close(gcf)
+saveas(h,"MAC.fig")
+close(h)
 
 return
 
