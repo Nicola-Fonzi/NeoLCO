@@ -7,9 +7,6 @@ clc
 % Input file
 filename_sma = 'flutter.dat';
 
-% Solver info
-ver = get_neolco_version(true);
-
 % Model specific values
 hingeScalarPoint = 1;
 kNominal = 48;

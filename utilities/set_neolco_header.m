@@ -18,39 +18,22 @@
 % contact the copywright owner before using the software.                      *
 %                                                                              *
 %*******************************************************************************
-function set_neolco_version(version)
+function set_neolco_header()
 %**************************************************************************
-% This file creates a header to all the source code files, and it also se a
-% tag in the git history for the new version number.
-% Input:
-% A string strictly of this format x.x.xxx
-%**************************************************************************
+% This file creates a header to all the source code files
 
 home = pwd;
 
-versionNum = split(version,'.');
-versionNum = cellfun(@(x) str2double(x),versionNum);
-
-version_old = get_neolco_version();
-versionNum_old = split(version_old,'.');
-versionNum_old = cellfun(@(x) str2double(x),versionNum_old);
-
-if versionNum_old(1) > versionNum(1) || ...
-        versionNum_old(1) == versionNum(1) && versionNum_old(2) > versionNum(2) || ...
-        versionNum_old(1) == versionNum(1) && versionNum_old(2) == versionNum(2) && versionNum_old(3) > versionNum(3)
-    error('The old version is newer that the version you are trying to set')
-end
-
-thisFile = which('set_neolco_version');
-[versionDir,~,~] = fileparts(thisFile);
-mainDir = extractBetween(versionDir,'',strcat(filesep,'versioning'));
-walkOnFiles(mainDir{1},version);
+thisFile = which('set_neolco_header');
+[utilDir,~,~] = fileparts(thisFile);
+mainDir = extractBetween(utilDir,'',strcat(filesep,'utilities'));
+walkOnFiles(mainDir{1});
 
 cd(home);
 
 return
 
-function walkOnFiles(mainDir,version)
+function walkOnFiles(mainDir)
 subfolders = (genpath(mainDir));
 if ispc()
     separator = ';';
@@ -71,11 +54,7 @@ for iSubfolder = 1:length(subfolders)
                 fid = fopen(files(iFile).name,'w');
                 if ~isempty(contentStripped)
                     % Write new header
-                    if strcmp(files(iFile).name,"get_neolco_version.m")
-                        printHeader(fid,version,true);
-                    else
-                        printHeader(fid,version);
-                    end
+                    printHeader(fid);
                     % Write code
                     fwrite(fid,contentStripped);
                 else
@@ -90,7 +69,7 @@ end
 
 return
 
-function printHeader(fid,version,longerHeader)
+function printHeader(fid)
 fprintf(fid,'%%*******************************************************************************\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%                    _   _            _     ____ ___                           *\n');
@@ -111,16 +90,6 @@ fprintf(fid,'%% together with the source code. If you have not received the lice
 fprintf(fid,'%% contact the copywright owner before using the software.                      *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%*******************************************************************************\n');
-if nargin == 3 && longerHeader
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%% Version: %-68s*\n',version);
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%%                                                                              *\n');
-    fprintf(fid,'%%*******************************************************************************\n');
-end
 fprintf(fid,'function');
 return
 
