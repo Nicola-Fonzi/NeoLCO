@@ -7,16 +7,15 @@
 %                   |_| \_|\___|\___/|_____\____\___/                          *
 %                                                                              *
 %                                                                              *
-% Copyright (C) 2020 - 2021                                                    *
+% Copyright (C) 2020 - 2024                                                    *
 %                                                                              *
-% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+% Nicola Fonzi (nicola.fonzi@outlook.com)                                      *
 %                                                                              *
-% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
-% Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 % This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
-% You are not entitled to use, distribute, or modify this file in any way,     *
-% unless explicitly authorized by the copyright owner.                         *
+% The use of this software is licensed based on the licence distributed        *
+% together with the source code. If you have not received the license please   *
+% contact the copywright owner before using the software.                      *
 %                                                                              *
 %*******************************************************************************
 function set_neolco_version(version)
@@ -101,16 +100,15 @@ fprintf(fid,'%%                   | |\\  |  __/ (_) | |__| |__| |_| |           
 fprintf(fid,'%%                   |_| \\_|\\___|\\___/|_____\\____\\___/                          *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% Copyright (C) 2020 - 2021                                                    *\n');
+fprintf(fid,'%% Copyright (C) 2020 - 2024                                                    *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *\n');
+fprintf(fid,'%% Nicola Fonzi (nicola.fonzi@outlook.com)                                      *\n');
 fprintf(fid,'%%                                                                              *\n');
-fprintf(fid,'%% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *\n');
-fprintf(fid,'%% Via La Masa 34, 20156 Milano - ITALY                                         *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%% This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *\n');
-fprintf(fid,'%% You are not entitled to use, distribute, or modify this file in any way,     *\n');
-fprintf(fid,'%% unless explicitly authorized by the copyright owner.                         *\n');
+fprintf(fid,'%% The use of this software is licensed based on the licence distributed        *\n');
+fprintf(fid,'%% together with the source code. If you have not received the license please   *\n');
+fprintf(fid,'%% contact the copywright owner before using the software.                      *\n');
 fprintf(fid,'%%                                                                              *\n');
 fprintf(fid,'%%*******************************************************************************\n');
 if nargin == 3 && longerHeader

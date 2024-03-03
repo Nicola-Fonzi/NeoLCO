@@ -7,16 +7,15 @@
 %                   |_| \_|\___|\___/|_____\____\___/                          *
 %                                                                              *
 %                                                                              *
-% Copyright (C) 2020 - 2021                                                    *
+% Copyright (C) 2020 - 2024                                                    *
 %                                                                              *
-% Nicola Fonzi (nicola.fonzi@polimi.it)                                        *
+% Nicola Fonzi (nicola.fonzi@outlook.com)                                      *
 %                                                                              *
-% Politecnico di Milano, Dipartimento di Ingegneria Aerospaziale               *
-% Via La Masa 34, 20156 Milano - ITALY                                         *
 %                                                                              *
 % This file is part of NeoLCO Software (github.com/Nicola-Fonzi/NeoLCO).       *
-% You are not entitled to use, distribute, or modify this file in any way,     *
-% unless explicitly authorized by the copyright owner.                         *
+% The use of this software is licensed based on the licence distributed        *
+% together with the source code. If you have not received the license please   *
+% contact the copywright owner before using the software.                      *
 %                                                                              *
 %*******************************************************************************
 function mainPlotRoutine(describingFunctionResults, describingFunctionOptions, ...

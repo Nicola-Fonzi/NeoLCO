@@ -1,0 +1,14 @@
+NeoLCO Software License Agreement
+
+1. General. The software, documentation, and examples are licensed, not sold, to you by Nicola Fonzi for use only under the terms of this License. He reserves all rights not expressly granted to you. The rights granted herein are limited to Nicola's intellectual property rights and do not include any other patents or intellectual property rights.
+
+2. Restrictions. You may not:
+   - Use the Software, in whole or in part, without explicit written permission.
+   - Distribute the Software.
+   - Sell the Software.
+
+3. No Open Source Inclusion. The Software may not be included in any open source project unless it is also licensed under a parallel non-proprietary license that permits such use.
+
+4. Disclaimer. THE SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE.
+
+By using the Software, you agree to these terms. If you do not agree, do not use the Software.
