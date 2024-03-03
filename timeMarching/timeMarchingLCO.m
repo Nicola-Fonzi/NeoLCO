@@ -419,6 +419,8 @@ for i = 1:nstiffnessCombinations
 
             close_system(options.simulinkModel,0)
 
+            rmdir('slprj')
+
             chdir(homeGap)
         end
         out=[];

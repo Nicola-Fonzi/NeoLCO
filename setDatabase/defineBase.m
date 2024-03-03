@@ -77,6 +77,8 @@ resultsFolder = strcat("FM",num2str(FMass),"KF",num2str(kFactor),"NMODES",num2st
 mkdir(resultsFolder)
 chdir(resultsFolder)
 
+save('structuralModel.mat', 'model', 'struData', 'reducedBasis')
+
 close all
 
 return

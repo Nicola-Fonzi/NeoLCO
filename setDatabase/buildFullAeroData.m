@@ -88,4 +88,6 @@ if options.DynVLM
     
 end
 
+save('aerodynamicModel.mat', 'aeroData')
+
 return
