@@ -24,7 +24,7 @@ function setNeolcoHeader()
 
 home = pwd;
 
-thisFile = which('set_neolco_header');
+thisFile = which('setNeolcoHeader');
 [utilDir,~,~] = fileparts(thisFile);
 mainDir = extractBetween(utilDir,'',strcat(filesep,'utilities'));
 walkOnFiles(mainDir{1});
